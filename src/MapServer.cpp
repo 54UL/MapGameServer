@@ -41,7 +41,7 @@ MapServer::MapServer(asio::io_context &io_context, short port)
                 if (size > 0)
                 {
                     alreadyCosumedTickTime_.clear();
-                    std::cout << "CLEARED ALREADY CONSUMED TICK USER LIST size:" << size << std::endl;
+                    // std::cout << "CLEARED ALREADY CONSUMED TICK USER LIST size:" << size << std::endl;
                 }
                 consumedTickMutex.unlock();
                 std::this_thread::sleep_for(std::chrono::milliseconds(8));
@@ -109,7 +109,7 @@ void MapServer::TickServer()
 {
     auto tickStartTime = std::chrono::high_resolution_clock::now();
     DispatchClientComands();
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(8));
 
     // //TODO: TIME ADJUST FOR LAG COMPENSATION
     // while (1)
@@ -174,7 +174,7 @@ bool MapServer::IgnoreRequest(udp::endpoint &client)
 {
     if (lastCommandOwnerEndpoint.address() == client.address() && lastCommandOwnerEndpoint.port() == client.port())
     {
-        std::cout << "[IGNORED COMMAND]" << std::endl;
+        // std::cout << "[IGNORED COMMAND]" << std::endl;
         return true;
     }
     consumedTickMutex.lock();
@@ -191,7 +191,7 @@ bool MapServer::IgnoreRequest(udp::endpoint &client)
     if (findedClient != std::end(alreadyCosumedTickTime_))
     {
         consumedTickMutex.unlock();
-        std::cout << "[IGNORED COMMAND]" << std::endl;
+        // std::cout << "[IGNORED COMMAND]" << std::endl;
         return true;
     }
     else
@@ -212,9 +212,9 @@ void MapServer::ReciveData()
             {
                 try
                 {
-                    std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiver_endpoint.address() << "] " << std::endl;
+                    // std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiver_endpoint.address() << "] " << std::endl;
                     data_[bytes_recvd] = '\0';
-                    std::cout << data_ << std::endl;
+                    // std::cout << data_ << std::endl;
                     auto stringToBeParsed = std::string(data_).substr(0, bytes_recvd);
                     json commandObj = json::parse(stringToBeParsed.begin(), stringToBeParsed.end());
                     auto header = commandObj["header"].get<std::string>();
@@ -226,7 +226,7 @@ void MapServer::ReciveData()
                 }
                 catch (std::exception &e)
                 {
-                    std::cerr << "[COMMAND LOST DUE:  :" << e.what() << "]\n";
+                    // std::cerr << "[COMMAND LOST DUE:  :" << e.what() << "]\n";
                 }
             }
         });
@@ -250,7 +250,7 @@ void MapServer::SendToClient(const MAP::Command &command, std::shared_ptr<MAP::C
     json commandObj;
     commandObj["header"] = command.Header;
     commandObj["payload"] = command.PayLoad.dump();
-    commandObj["clientId"] = 0;
+    commandObj["clientId"] = 0;//UNUSED BUT DEFINED IN THE TYPE
     auto dataString = commandObj.dump(-1, ' ', true);
     SendData(dataString.c_str(), dataString.length(), client->ClientEndpoint);
 }
@@ -262,7 +262,7 @@ void MapServer::SendData(const char *charArrayData, std::size_t length, asio::ip
         asio::buffer(charArrayData, length), to,
         [this](std::error_code err, std::size_t sended) {
             //DO SOMETHING WITH THE THINGS SENDED
-            std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
+            // std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
         });
 }
 
@@ -297,6 +297,7 @@ void MapServer::Subscribe(MAP::CommandArgs &args)
         commandPayload["ClientId"] = userId;
         commandPayload["AccesToken"] = "null";
         commandPayload["SpawnedEntities"] = spawnedObjs;
+        std::cout<<"user conected"<<std::endl;
         commandMutex_.lock();
         commandQueue_.push_back(MAP::Command("CLIENT_INFO", commandPayload, false, connectedClients_.back()));
         commandMutex_.unlock();
@@ -331,7 +332,6 @@ void MapServer::EndPool(MAP::CommandArgs &args)
 {
 }
 
-//TODO: ROUND ROBIN like dispatching
 void MapServer::UpssertProperty(MAP::CommandArgs &args)
 {
     json commandPayload;
