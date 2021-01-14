@@ -4,6 +4,8 @@
 #include <asio.hpp>
 #include <mutex>
 
+#define SINGLE_THREAD
+
 using namespace nlohmann;
 using asio::ip::udp;
 
@@ -11,7 +13,9 @@ using asio::ip::udp;
 MapServer::MapServer(asio::io_context &io_context, short port)
     : socket_(io_context, udp::endpoint(udp::v4(), port)), serverTicks_(0), lastClientIndex(32)
 {
-    // auto serverStartTime = std::chrono::high_resolution_clock::now();
+    auto serverStartTime = std::chrono::high_resolution_clock::now();
+#ifndef SINGLE_THREAD
+    std::cout << "MULTI THREAD IMPL..." << std::endl;
     tf::Executor executor;
     tf::Taskflow mainTask;
     mainTask.emplace(
@@ -21,6 +25,7 @@ MapServer::MapServer(asio::io_context &io_context, short port)
                 ReciveData();
                 // std::this_thread::sleep_for(std::chrono::milliseconds(1));
                 io_context.run();
+                io_context.reset();
                 // std::this_thread::sleep_for(std::chrono::milliseconds(14));
             }
         },
@@ -28,6 +33,9 @@ MapServer::MapServer(asio::io_context &io_context, short port)
             while (1)
             {
                 TickServer();
+                io_context.run();
+                io_context.reset();
+
                 // auto thread2ServerTime = std::chrono::high_resolution_clock::now();
                 // auto currentTime = thread2ServerTime - serverStartTime;
                 // std::cout << "Trhead 2 server time:" << currentTime.count() << std::endl;
@@ -47,33 +55,40 @@ MapServer::MapServer(asio::io_context &io_context, short port)
                 std::this_thread::sleep_for(std::chrono::milliseconds(8));
             }
         });
-    // mainTask.emplace(
-    //     [&]() {
-    //         while (1)
-    //         {
-    //             consumedTickMutex.lock();
-    //             auto size = alreadyCosumedTickTime_.size();
-    //             if (size > 0)
-    //             {
-    //                 alreadyCosumedTickTime_.clear();
-    //                 std::cout << "CLEARED ALREADY CONSUMED TICK USER LIST size:" << size << std::endl;
-    //             }
-    //             consumedTickMutex.unlock();
-    //             std::this_thread::sleep_for(std::chrono::milliseconds(8));
-    //         }
-    //     });
+    mainTask.emplace(
+        [&]() {
+            while (1)
+            {
+                consumedTickMutex.lock();
+                auto size = alreadyCosumedTickTime_.size();
+                if (size > 0)
+                {
+                    alreadyCosumedTickTime_.clear();
+                    std::cout << "CLEARED ALREADY CONSUMED TICK USER LIST size:" << size << std::endl;
+                }
+                consumedTickMutex.unlock();
+                std::this_thread::sleep_for(std::chrono::milliseconds(8));
+            }
+        });
+#endif
     Initialize();
+#ifndef SINGLE_THREAD
     executor.run(mainTask);
+#endif
     std::cout << "SERVER RUNNING..." << std::endl;
-    // while (1)
-    // {
-    //     ReciveData();
-    //     io_context.run();
-    //     TickServer();
-    //     // auto thread1ServerTime = std::chrono::high_resolution_clock::now();
-    //     // auto currentTime = thread1ServerTime - serverStartTime;
-    //     // std::cout << "Trhead 1 server time:" << currentTime.count() << std::endl;
-    // }
+#if defined(SINGLE_THREAD) 
+    std::cout << "SINGLE THREAD IMPL..." << std::endl;
+    while (1)
+    {
+        io_context.reset();
+        ReciveData();
+        io_context.run();
+        TickServer();
+        // auto thread1ServerTime = std::chrono::high_resolution_clock::now();
+        // auto currentTime = thread1ServerTime - serverStartTime;
+        // std::cout << "Trhead 1 server time:" << currentTime.count() << std::endl;
+    }
+#endif
 }
 
 MapServer::~MapServer()
@@ -109,11 +124,8 @@ void MapServer::TickServer()
 {
     auto tickStartTime = std::chrono::high_resolution_clock::now();
     DispatchClientComands();
-    std::this_thread::sleep_for(std::chrono::milliseconds(8));
-
-    // //TODO: TIME ADJUST FOR LAG COMPENSATION
-    // while (1)
-    // {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+   
     //     auto currentTime = std::chrono::high_resolution_clock::now();
     //     std::chrono::duration<double, std::milli> duration = currentTime - tickStartTime;
     //     if (duration.count() <= 8)
@@ -208,11 +220,11 @@ void MapServer::ReciveData()
     socket_.async_receive_from(
         asio::buffer(data_, MAX_DATA_PAYLOAD), receiver_endpoint,
         [&](std::error_code ec, std::size_t bytes_recvd) {
-            if (!ec && bytes_recvd > 0 && !IgnoreRequest(receiver_endpoint))
+            if (!ec && bytes_recvd > 0)
             {
                 try
                 {
-                    // std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiver_endpoint.address() << "] " << std::endl;
+                    //  std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiver_endpoint.address() << "] " << std::endl;
                     data_[bytes_recvd] = '\0';
                     // std::cout << data_ << std::endl;
                     auto stringToBeParsed = std::string(data_).substr(0, bytes_recvd);
@@ -262,7 +274,7 @@ void MapServer::SendData(const char *charArrayData, std::size_t length, asio::ip
         asio::buffer(charArrayData, length), to,
         [this](std::error_code err, std::size_t sended) {
             //DO SOMETHING WITH THE THINGS SENDED
-            // std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
+            //  std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
         });
 }
 
@@ -352,8 +364,11 @@ void MapServer::SpawnObject(MAP::CommandArgs &args)
     json commandPayload;
     commandPayload["PrefabName"] = args.data["PrefabName"];
     commandPayload["PlayerId"] = args.data["PlayerId"];
+    auto owner = args.data["PlayerId"].get<uint64_t>();
+    auto prefabName = args.data["PrefabName"].get<std::string>();
+    MAP::SpawnedEntity spawnedEntity(prefabName,owner);
     commandMutex_.lock();
-    spawnedObjects_.push_back(MAP::SpawnedEntity(args.data["PrefabName"].get<std::string>(),args.data["PlayerId"].get<uint64_t>()));
+    spawnedObjects_.push_back(spawnedEntity);
     commandQueue_.push_back(MAP::Command("SPAWN", commandPayload, true, args.Owner));
     commandMutex_.unlock();
 }

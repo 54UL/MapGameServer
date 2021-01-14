@@ -50,7 +50,6 @@ private:
     void GetActivePools(MAP::CommandArgs &args);
     bool IgnoreRequest(udp::endpoint& client);
 private:
-    asio::io_context *io_context;
     MAP::Vector<std::shared_ptr<MAP::Client>> connectedClients_;
     std::map<std::string, std::function<void(MAP::CommandArgs &args)>> commands_;
     MAP::Vector<MAP::Command> commandQueue_;

@@ -7,21 +7,6 @@
 #include "../include/json.hpp"
 #include "../include/Models/Client.hpp"
 
-
-
-class some{
-    public :
-    
-    some(){std::cout<<"empty constructed"<<std::endl;}
-    some(int value):valueA(value){}
-    ~some(){}
-
-    int valueA;
-    int valueB;
-    std::string lol;
-};
-
-
 int main(int argc, char *argv[])
 {
     try
