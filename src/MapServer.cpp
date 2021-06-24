@@ -1,10 +1,9 @@
 #include "MapServer.hpp"
 #include <taskflow.hpp>
-#include "../include/json.hpp"
 #include <asio.hpp>
 #include <mutex>
 
-#define SINGLE_THREAD
+// #define SINGLE_THREAD
 
 using namespace nlohmann;
 using asio::ip::udp;
@@ -259,12 +258,12 @@ void MapServer::DecodeCommand(std::string header, MAP::CommandArgs &payload)
 
 void MapServer::SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client)
 {
-    json commandObj;
-    commandObj["header"] = command.Header;
-    commandObj["payload"] = command.PayLoad.dump();
-    commandObj["clientId"] = 0;//UNUSED BUT DEFINED IN THE TYPE
-    auto dataString = commandObj.dump(-1, ' ', true);
-    SendData(dataString.c_str(), dataString.length(), client->ClientEndpoint);
+    // json commandObj;
+    // commandObj["header"] = command.Header;
+    // commandObj["payload"] = command.PayLoad.dump();
+    // commandObj["clientId"] = 0;//UNUSED BUT DEFINED IN THE TYPE
+    // auto dataString = commandObj.dump(-1, ' ', true);
+    // SendData(dataString.c_str(), dataString.length(), client->ClientEndpoint);
 }
 
 //TODO: VERIFICAR ENVIOS DE CADA CLIENTE (ASEGURAR TICKS SINCRONIZADOS)
@@ -281,55 +280,55 @@ void MapServer::SendData(const char *charArrayData, std::size_t length, asio::ip
 //COMAND IMPLEMENTATION (CONSIDER MOVING THIS TO OTHER CLASSES)
 void MapServer::Subscribe(MAP::CommandArgs &args)
 {
-    json commandArg;
+    // json commandArg;
 
-    if (args.data["IpAddress"] == "")
-        return;
+    // if (args.data["IpAddress"] == "")
+    //     return;
 
-    if (connectedClients_.size() < MAX_CLIENTS)
-    {
-        auto userId = lastClientIndex++;
-        auto ipAdrres = asio::ip::address::from_string(args.data["IpAddress"].get<std::string>());
-        auto clientEndpoint = udp::endpoint(ipAdrres, args.data["Port"]);
-        auto playerName = args.data["PlayerName"].get<std::string>();
-        auto hostName = args.data["HostName"].get<std::string>();
-        auto port = args.data["Port"].get<uint32_t>();
-        auto newClient = std::make_shared<MAP::Client>(userId, playerName, hostName, clientEndpoint, port);
-        connectedClients_.emplace_back(newClient);
-        //SEND REPLY
-        json commandPayload;
-        json spawnedObjs;
-        for (const auto &entity : spawnedObjects_)
-        {
-            json entityJson;
-            entityJson["PrefabName"] = entity.PrefabName;
-            entityJson["PlayerId"] = entity.PlayerOwner;
-            spawnedObjs.push_back(entityJson);
-        }
-        commandPayload["ClientId"] = userId;
-        commandPayload["AccesToken"] = "null";
-        commandPayload["SpawnedEntities"] = spawnedObjs;
-        std::cout<<"user conected"<<std::endl;
-        commandMutex_.lock();
-        commandQueue_.push_back(MAP::Command("CLIENT_INFO", commandPayload, false, connectedClients_.back()));
-        commandMutex_.unlock();
-    }
+    // if (connectedClients_.size() < MAX_CLIENTS)
+    // {
+    //     auto userId = lastClientIndex++;
+    //     auto ipAdrres = asio::ip::address::from_string(args.data["IpAddress"].get<std::string>());
+    //     auto clientEndpoint = udp::endpoint(ipAdrres, args.data["Port"]);
+    //     auto playerName = args.data["PlayerName"].get<std::string>();
+    //     auto hostName = args.data["HostName"].get<std::string>();
+    //     auto port = args.data["Port"].get<uint32_t>();
+    //     auto newClient = std::make_shared<MAP::Client>(userId, playerName, hostName, clientEndpoint, port);
+    //     connectedClients_.emplace_back(newClient);
+    //     //SEND REPLY
+    //     json commandPayload;
+    //     json spawnedObjs;
+    //     for (const auto &entity : spawnedObjects_)
+    //     {
+    //         json entityJson;
+    //         entityJson["PrefabName"] = entity.PrefabName;
+    //         entityJson["PlayerId"] = entity.PlayerOwner;
+    //         spawnedObjs.push_back(entityJson);
+    //     }
+    //     commandPayload["ClientId"] = userId;
+    //     commandPayload["AccesToken"] = "null";
+    //     commandPayload["SpawnedEntities"] = spawnedObjs;
+    //     std::cout<<"user conected"<<std::endl;
+    //     commandMutex_.lock();
+    //     commandQueue_.push_back(MAP::Command("CLIENT_INFO", commandPayload, false, connectedClients_.back()));
+    //     commandMutex_.unlock();
+    // }
 }
 
 void MapServer::GetActivePools(MAP::CommandArgs &args)
 {
-    json commandPayload;
-    // for(const auto & pools,)
-    // commandQueue_.push_back(MAP::Command("GET_POOLS", commandPayload, false, std::move(lastClient)));
-    json PoolPair;
-    PoolPair["PoolId"] = "666";
-    PoolPair["PoolName"] = "DEFAULT POOL";
-    commandPayload["pools"].push_back(PoolPair);
-    commandPayload["pools"].push_back(PoolPair);
-    commandPayload["pools"].push_back(PoolPair);
-    commandMutex_.lock();
-    commandQueue_.push_back(MAP::Command("GET_POOLS", commandPayload, false, args.Owner));
-    commandMutex_.unlock();
+    // json commandPayload;
+    // // for(const auto & pools,)
+    // // commandQueue_.push_back(MAP::Command("GET_POOLS", commandPayload, false, std::move(lastClient)));
+    // json PoolPair;
+    // PoolPair["PoolId"] = "666";
+    // PoolPair["PoolName"] = "DEFAULT POOL";
+    // commandPayload["pools"].push_back(PoolPair);
+    // commandPayload["pools"].push_back(PoolPair);
+    // commandPayload["pools"].push_back(PoolPair);
+    // commandMutex_.lock();
+    // commandQueue_.push_back(MAP::Command("GET_POOLS", commandPayload, false, args.Owner));
+    // commandMutex_.unlock();
 }
 
 void MapServer::Unsubscribe(MAP::CommandArgs &args)
@@ -346,13 +345,13 @@ void MapServer::EndPool(MAP::CommandArgs &args)
 
 void MapServer::UpssertProperty(MAP::CommandArgs &args)
 {
-    json commandPayload;
-    testingPool_[args.data["Key"]] = args.data["Value"].get<std::string>();
-    commandPayload["Key"] = args.data["Key"];
-    commandPayload["Value"] = args.data["Value"].get<std::string>();
-    commandMutex_.lock();
-    commandQueue_.push_back(MAP::Command("UPPSERT", commandPayload, true, args.Owner));
-    commandMutex_.unlock();
+    // json commandPayload;
+    // testingPool_[args.data["Key"]] = args.data["Value"].get<std::string>();
+    // commandPayload["Key"] = args.data["Key"];
+    // commandPayload["Value"] = args.data["Value"].get<std::string>();
+    // commandMutex_.lock();
+    // commandQueue_.push_back(MAP::Command("UPPSERT", commandPayload, true, args.Owner));
+    // commandMutex_.unlock();
 }
 
 void MapServer::RemoveProperty(MAP::CommandArgs &args)
@@ -361,14 +360,14 @@ void MapServer::RemoveProperty(MAP::CommandArgs &args)
 
 void MapServer::SpawnObject(MAP::CommandArgs &args)
 {
-    json commandPayload;
-    commandPayload["PrefabName"] = args.data["PrefabName"];
-    commandPayload["PlayerId"] = args.data["PlayerId"];
-    auto owner = args.data["PlayerId"].get<uint64_t>();
-    auto prefabName = args.data["PrefabName"].get<std::string>();
-    MAP::SpawnedEntity spawnedEntity(prefabName,owner);
-    commandMutex_.lock();
-    spawnedObjects_.push_back(spawnedEntity);
-    commandQueue_.push_back(MAP::Command("SPAWN", commandPayload, true, args.Owner));
-    commandMutex_.unlock();
+    // json commandPayload;
+    // commandPayload["PrefabName"] = args.data["PrefabName"];
+    // commandPayload["PlayerId"] = args.data["PlayerId"];
+    // auto owner = args.data["PlayerId"].get<uint64_t>();
+    // auto prefabName = args.data["PrefabName"].get<std::string>();
+    // MAP::SpawnedEntity spawnedEntity(prefabName,owner);
+    // commandMutex_.lock();
+    // spawnedObjects_.push_back(spawnedEntity);
+    // commandQueue_.push_back(MAP::Command("SPAWN", commandPayload, true, args.Owner));
+    // commandMutex_.unlock();
 }
