@@ -11,7 +11,7 @@ include_directories(
    )
 
 file(GLOB MGS_SOURCES
-        include/*.hpp
+        src/*.hpp
         src/*.cpp)
 
 find_package(Threads REQUIRED)

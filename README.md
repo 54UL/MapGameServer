@@ -1,58 +1,155 @@
-MapGameServer
+# Features
+
+Streams data via UDP using map data structure rules
+* Subscribe to an pool (map) and start comunicating
+* Upserts information from a pool and notifiy the changes to the subscribed clients
+* Centralized server architecture
+* Lightweightnetworking solution
+  
+----
+
+# Example
+
+#### Unity client player:
+Subscribe to a  property change in the initialization of some script
+```c#
+//Subscribe to a property change, every time the data is recived the  callback function is called
+void  start (){
+    NetClient.GetPropperty("PLAYER_DATA#1", ((jsonString) =>{
+            updateProperties(jsonString);
+            SetVehicleTransform();
+        }));
+}
+```
+
+Share the corresponding data each 16 ms to the server 
+```c#
+public void shareData()
+{
+    var playerPrefix = "PLAYER_DATA#1";
+    var playerPosition = VehicleTransfom.position;
+    this.NetClientData.NP = playerPosition;
+    this.NetClientData.NR = VehicleTransfom.rotation;
+    var dataToSend = JsonUtility.ToJson(this.NetClientData);
+    NetClient.UppsertProperty(playerPrefix, dataToSend);
+}
+
+public IEnumerator sendPackets()
+{
+    shareData();
+    yield return new WaitForSeconds(0.016F); 
+}
+
+private void Update()
+{
+    StartCoroutine("sendPackets");
+}
+```
 
 
-### NETWORK BINARY SERIALIZATION.
-# NETWORK TYPES MEMORY LAYOUT:
 
-#### COMMAND : 2 BYTES WIDE. 
-    TYPE_CODE (0X01)       : 1 byte
-    ID   : 1 byte                                 
+----
 
-#### STRING: 3 BYTES MIN , MAX 512 BYTES WIDE
-    TYPE_CODE (0X02)      : 1 byte
-    STR_LENGHT                  : 1 byte
-    CHAR_PAYLOAD            : N bytes
-    EJ:  
-    [0x02,0x04,'s','a','u','l']
-    
-#### FLOAT : 4 BYTES WIDE
-    TYPE_CODE(0X03): 1 byte
-    MANTISSA             : 23 bits
-    EXPONENT           : 8  bits
-    SIGN                        : 1 bit
+# Platforms
 
- #### ARRAY:  5 BYTES MIN MAX 512 BYTES WIDE
-    TYPE_CODE(0X04): 1 byte
-    ARRAY_LENGHT: 2 bytes
-    ARRAY_TYPE: 1 byte 
-    ARRAY_PAYLOAD: N bytes
-    EJ:
-    Array of strings equivalent to : ["hello","world]
-    [0x04,0x02,0x05,'h','e','l','l','o',0x05,'w','o','r','l,'d'] 
-    Array of binary objecst (interpreted by clients):
-    [0x04,SIZE,0x08,DATA_1_SIZE,DATA_1,DATA_2_SIZE,DATA_2...]
+* Linux and windows for the dedicated server
+* Platforms supported by unity for the client
+  
+----
+# BINARY TYPES MEMORY LAYOUT:
 
+## COMMAND : 
+* 2 BYTES WIDE.
+#### STRUCTURE:
+~~~
+TYPE_CODE (0X01)       : 1 byte
+ID                     : 1 byte                                 
+~~~
 
- #### BYTE: 2 byte wide
-    TYPE_CODE(0X05) :1 byte
-    VALUE: 1 byte
+## STRING:
 
-####  INT : 5 bytes wide
-    TYPE_CODE(0X06) :1 byte
-    VALUE: 4 byte
+*  3 BYTES MIN 
+ * 512 BYTES MAX
 
- #### UINT: 5 bytes wide
-    TYPE_CODE(0X07)  :1 byte
-    VALUE                          : 4 byte
+#### STRUCTURE:
+ type | byte span
+ ---- | ----
+TYPE_CODE (0X02)      | 1 byte
+STR_LENGHT            | 1 byte
+CHAR_PAYLOAD          | N bytes
 
-#### OBJECT: MIN 2 bytes MAX N bytes wide 
-    TYPE_CODE(0x08) :1 byte
-    DATA:N bytes
+###### EXAMPLE BUFFER:  
+`[0x02,0x04,'s','a','u','l']`
 
+## FLOAT :
+* 4 BYTES WIDE
 
-# SEQUENCE TYPES
+#### STRUCTURE:
 
-SUBSCRIBE:
+ type | byte span
+ ---- | ----
+TYPE_CODE(0X03) | 1 byte
+MANTISSA | 23 bits
+EXPONENT | 8  bits
+SIGN               |1 bit
+
+ ## ARRAY: 
+ * 5 BYTES MIN MAX 512 BYTES WIDE
+  #### STRUCTURE:
+ type | byte span
+ ---- | ----
+TYPE_CODE(0X04) | 1 byte
+ARRAY_LENGHT | 2 bytes
+ARRAY_TYPE | 1 byte 
+ARRAY_PAYLOAD | N bytes
+
+###### EXAMPLE BUFFER:  
+Array of strings equivalent to : ["hello","world]
+
+` [0x04,0x02,0x05,'h','e','l','l','o',0x05,'w','o','r','l,'d']` 
+
+Array of binary objecst (interpreted by clients):
+
+` [0x04,SIZE,0x08,DATA_1_SIZE,DATA_1,DATA_2_SIZE,DATA_2...]`
+
+ ## BYTE:
+ * 2 byte wide
+  #### STRUCTURE:
+
+ type | byte span
+ ---- | ----
+TYPE_CODE(0X05) |1 byte
+VALUE | 1 byte
+
+##  INT : 
+* 5 bytes wide
+#### STRUCTURE:
+type | byte span
+---- | ----
+TYPE_CODE(0X06) | 1 byte
+VALUE | 4 byte
+
+ ## UINT: 
+ * 5 bytes wide
+#### STRUCTURE:
+type | byte span
+---- | ----
+TYPE_CODE(0X07)  |1 byte
+VALUE                          | 4 byte
+
+## OBJECT:
+ * MIN 2 bytes 
+ * MAX N bytes wide 
+#### STRUCTURE:
+type | byte span
+---- | ----
+TYPE_CODE(0x08) | 1 byte
+DATA | N bytes
+----
+
+# Commands specification
+#### SUBSCRIBE:
+~~~
 CODE : 0X01
     DESCRIPTION:
     SUBSCRIBE {PLAYER_NAME} {PLAYER_ADDRESS}  {PORT}
@@ -60,8 +157,10 @@ CODE : 0X01
     [0X01,0X01,STRING,STRING,INT]
 RESPONSE:
 {STRING:AccessToken,INT:ClientId}
+~~~
 
-UNSUSCRBIE:
+#### UNSUSCRBIE:
+~~~
 CODE : 0X02
 DESCRIPTION:
     UNSUSCRBIE {POOL_ID} 
@@ -69,8 +168,10 @@ DESCRIPTION:
     [0X01,0X02,INT]
 RESPONSE:
 {INT:Status}
+~~~
 
-START_POOL
+#### START_POOL
+~~~
 CODE : 0X03
 DESCRIPTION:
     START_POOL {POOL_NAME}
@@ -78,8 +179,10 @@ DESCRIPTION:
     [0X01,0X03,STRING]
 RESPONSE:
 {INT:Status}
+~~~
 
-END_POOL
+#### END_POOL
+~~~
 CODE : 0X04
 DESCRIPTION:
     END_POOL {INT} 
@@ -87,16 +190,20 @@ DESCRIPTION:
     [0X01,0X04,POOL_ID]
 RESPONSE:
 {INT:Status}
+~~~
 
-UPSERT:
+#### UPSERT:
+~~~
 CODE : 0x05
 DESCRIPTION:
     UPSERT {INT} {TYPE_HEADER} {DATA}
     ej:
     [0X01,0X05,ID,TYPE,DATA]
 RESPONSE:
+~~~
 
-REMOVE
+#### REMOVE
+~~~
 CODE : 0x06
 DESCRIPTION:
     UPSERT {ID} 
@@ -104,8 +211,10 @@ DESCRIPTION:
     [0X01,0X05,INT]
 RESPONSE:
 {INT:Status}
+~~~
 
-SPAWN:
+#### SPAWN:
+~~~
 CODE : 0x08
 DESCRIPTION:
     SPAWN {PREFAB_ID,FLOAT_VECTOR_3,FLOAT_QUATERNIION} 
@@ -113,8 +222,10 @@ DESCRIPTION:
     [0X01,0X05,INT,OBJECT,OBJECT]
 RESPONSE:
 {INT:Status}
+~~~
 
-GET_ACTIVE_POOLS:
+#### GET_ACTIVE_POOLS:
+~~~
 CODE : 0x9
 DESCRIPTION:
     GET_ACTIVE_POOLS 
@@ -122,30 +233,26 @@ DESCRIPTION:
     [0X01,0X09]
 RESPONSE:
 {INT:Status,ARRAY:ActivePools}
+~~~
+----
+# Server commands summary
+SPEC DRAFT 1.0 (NO SECURITY FEATURES)
 
+ CODE | NAME | PAYLOAD |  RESPONSE | BROADCAST|
+--- | --- | --- | --- | ---
+0x00| SUBSCRIBE | {PlayerName,HostName,IpAddress,port} | {playerId} | false
+0X01| UNSUBSCRIBE | {PoolId} | NONE | false
+0X02| START_POOL | {} | {PoolId} | false
+0X03| END_POOL | {PoolId} | {Status} | false
+0x04| UPSERT | {PROPERTY_ID,VALUE} | {propertyName,newValue} | true
+0x05| REMOVE | {PROPERTY_ID} | {propertyName} | true
+0x06| SPAWN | {PREFAB_NAME,TRANSFORM} | {propertyName} | true
+0X07| GET_ACTIVE_POOLS | {} | {pools[]} | false
 
-#NET SERVER SPEC DRAFT 1.0 (NO SECURITY FEATURES)
-### Connection
-COMMAND_HEADER {header,payload}
-SERVER COMMANDS:
-SERVER CONTROL COMMANDS:
-SUBSCRIBE {PlayerName,HostName,IpAddress,port};
-UNSUBSCRIBE {POOL_ID}
-START_POOL {DATA}
-END_POOL {DATA}; RESPONSE TO CLIENTS: "STATUS:POOL ENEDED"```
- ### DATA STREAMING/BROADCASTING COMMANDS (both sides commands):
-UPSERT {PROPERTY_ID,{value}}; RESPONSE TO CLIENT: {propertyName, newValue}
-REMOVE   {PROPERTY_ID}; RESPONSE TO CLIENT : {propertyName}   
-SPAWN {PREFAB_NAME,TRANSFORM{VECTOR3,QUATERNION}}; RESPONSE TO CLIENT :{propertyName}
-### REQUEST COMMANDS 
-GET_ACTIVE_POOLS; RESPONSE TO CLIENT : {pools[]}  
-      
+---
 
-/*
-** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-**  Single Precision (float)  --  Standard IEEE 754 Floating-point Specification
-*/
-
+### Single Precision (float)  --  Standard IEEE 754 Floating-point Specification
+```c++
 # define IEEE_754_FLOAT_MANTISSA_BITS (23)
 # define IEEE_754_FLOAT_EXPONENT_BITS (8)
 # define IEEE_754_FLOAT_SIGN_BITS     (1)
@@ -177,8 +284,7 @@ GET_ACTIVE_POOLS; RESPONSE TO CLIENT : {pools[]}
             int8_t   sign     : IEEE_754_FLOAT_SIGN_BITS;
         };
     } IEEE_754_float;
-# endif
-
-
-
+# endif```
 https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter?view=net-5.0
+
+

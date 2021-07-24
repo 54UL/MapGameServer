@@ -2,10 +2,8 @@
 #include <iostream>
 #include <future>
 #include <thread>
-#include "../include/Api.hpp"
-#include "../include/MapServer.hpp"
-#include "../include/json.hpp"
-#include "../include/Models/Client.hpp"
+
+#include "./MAP/MapServer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +14,7 @@ int main(int argc, char *argv[])
     }
     catch (std::exception &e)
     {
-        std::cerr << "Exception ='(  :" << e.what() << "\n";
+        std::cerr << "cannot initialize MAP server:" << e.what() << "\n";
     }
     return 0;
 }
