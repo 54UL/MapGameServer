@@ -1,22 +1,26 @@
-#ifndef SERIALIIZER_API_H
-#define SERIALIIZER_API_H
+#ifndef SERIALIZER_API_H
+#define SERIALIZER_API_H
 
 #include <stdint.h>
 #include <memory>
 #include <vector>
 #include <map>
 
+#include "./BinaryObject.hpp"
+
 namespace MAP
 {
     enum class NetworkType : uint8_t
     {
-        COMMAND = 0x01,
-        STRING = 0x02,
-        FLOAT = 0x03,
-        ARRAY = 0x04,
-        BYTE = 0x05,
-        INT = 0x06,
-        UINT = 0x07
+        TAG = 0x01,
+        COMMAND = 0x02,
+        STRING = 0x03,
+        FLOAT = 0x04,
+        ARRAY = 0x05,
+        BYTE = 0x06,
+        INT = 0x07,
+        UINT = 0x08,
+        BLOB = 0x09,
     };
 
     class INetworkType
@@ -24,11 +28,9 @@ namespace MAP
     public:
         INetworkType() {}
         virtual ~INetworkType() {}
-        // virtual bool TrySerialize(std::vector<uint8_t> memoryVector) = 0;
-        virtual bool TrySerialize(Serializer *serializer) = 0;
-
-        // virtual std::vector<std::shared_ptr<INetworkType>> Deserialize(std::vector<uint8_t> payloadData, uint16_t lastPayloadPosition) = 0;
-        virtual std::vector<std::shared_ptr<INetworkType>> Deserialize(Serializer *serializer) = 0;
+        virtual std::vector<uint8_t> TrySerialize() = 0;
+        virtual std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) = 0;
+        virtual const char *GetName() = 0;
         virtual NetworkType GetType() = 0;
         virtual uint32_t GetSize() = 0;
     };

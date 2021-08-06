@@ -1,21 +1,23 @@
 #ifndef COMMANDARGS_H
 #define COMMANDARGS_H
-#include <string>
-#include <string>
-#include "Client.hpp"
 
-
+#include <string>
+#include <memory>
+#include "./Client.hpp"
+#include "../Serialization/BinaryObject.hpp"
+#include "../Serialization/SerializerAPI.hpp"
 
 namespace MAP
 {
     class CommandArgs
     {
     public:
-        CommandArgs(std::shared_ptr<MAP::Client> owner, const uint8_t * args) : Owner(owner), data(args)
+        CommandArgs(std::shared_ptr<MAP::Client> owner, std::vector<std::shared_ptr<MAP::INetworkType>> args) : Owner(owner), Args(args)
         {
+
         }
         std::shared_ptr<MAP::Client> Owner;
-        uint8_t Args;
+        std::vector<std::shared_ptr<MAP::INetworkType>> Args;
     };
 
 } // namespace MAP

@@ -1,25 +1,29 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef SERVER_COMMAND_H
+#define SERVER_COMMAND_H
 #include <string>
 #include <string>
 #include "Client.hpp"
 #include <memory>
+#include <vector>
 
+#include "../Serialization/BinaryObject.hpp"
+#include "../Serialization/SerializerAPI.hpp"
 
 namespace MAP
 {
     class Command
     {
     public:
-        Command(const std::string &header, const char* payLoad, bool broadcast, std::shared_ptr<MAP::Client> owner) : Header(header), PayLoad(payLoad), IsBroadCast(broadcast), Owner(owner)
+        Command(const uint8_t code, std::vector<std::shared_ptr<MAP::INetworkType>> payLoad,bool broadcast, std::shared_ptr<MAP::Client> owner) 
+        : Code(code), PayLoad(payLoad), IsBroadCast(broadcast), Owner(owner)
         {
         }
         ~Command()
         {
         }
-        std::string Header;
+        uint8_t Code;
         bool IsBroadCast;
-       const char* PayLoad;
+        std::vector<std::shared_ptr<MAP::INetworkType>> PayLoad;
         std::shared_ptr<MAP::Client> Owner;
     };
 

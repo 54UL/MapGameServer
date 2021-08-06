@@ -27,14 +27,14 @@ int main(int argc, char* argv[])
     asio::io_context io_context;
 
     udp::resolver resolver(io_context);
-    udp::endpoint receiver_endpoint =
+    udp::endpoint receiverEndpoint_ =
       *resolver.resolve(udp::v4(), argv[1], "daytime").begin();
 
     udp::socket socket(io_context);
     socket.open(udp::v4());
 
     boost::array<char, 1> send_buf  = {{ 0 }};
-    socket.send_to(asio::buffer(send_buf), receiver_endpoint);
+    socket.send_to(asio::buffer(send_buf), receiverEndpoint_);
 
     boost::array<char, 128> recv_buf;
     udp::endpoint sender_endpoint;

@@ -10,9 +10,10 @@
 #include <queue>
 #include <string>
 
-
-
+#define MAX_DATA_PAYLOAD 512
+#define MAX_CLIENTS 16
 #define MAX_ARRAY_SIZE 1024
+
 namespace MAP
 {
     //Containers
