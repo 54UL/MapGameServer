@@ -1,9 +1,9 @@
 
 #ifndef BYTE_TYPE_H
 #define BYTE_TYPE_H
-
-#include "../BinaryObject.hpp"
+#include "./Byte.hpp"
 #include "./MemoryTag.hpp"
+#include "../BinaryObject.hpp"
 
 #include <string>
 
@@ -45,7 +45,7 @@ namespace MAP
                 valueLocation += type->GetSize();
             }
             objectStructure.insert(objectStructure.end(), memoryTag.begin(), memoryTag.end());
-            objectStructure.push_back(std::make_shared<Byte>(argsMemory[valueLocation]));
+            objectStructure.push_back(std::make_shared<MAP::Byte>(argsMemory[valueLocation]));
             return objectStructure;
         }
 
