@@ -180,14 +180,12 @@ namespace MAP
                         std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
                         std::cout << data_ << std::endl;
                         //DESERIALIZE A command
-                        auto vectorData = std::vector<uint8_t>(std::begin(data_),std::end(data_));
-                        auto decodedPacket = binaryEncoder->Decode(vectorData);
+                        
+                        auto decodedPacket = binaryEncoder->DecodeAsMap(data_,bytes_recvd);
 
                         auto decodedCommand = std::dynamic_pointer_cast<MAP::CommandType>((decodedPacket.at(0)));
-
-                        auto commandPayload = std::vector<std::shared_ptr<MAP::INetworkType>>(decodedPacket.begin() + 2, decodedPacket.end());
                         
-                        MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), commandPayload);
+                        MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), decodedPacket);
                         DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
                         //TODO:CONSEGUIR EL DUEÑO PARA CONSTRUIR UN OBJETO LLAMADO COMMAND ARGS
                         //PAYLOAD EJ: []
@@ -219,16 +217,10 @@ namespace MAP
 
     void MapServer::SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client)
     {
-        //TODO:ACTUALIZAR!!!
         std::vector<std::shared_ptr<MAP::INetworkType>> objStructure;
         objStructure.push_back(std::make_shared<MAP::CommandType>(command.Code,client->UserId));
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
-        std::vector<uint8_t> memoryBuffer;
-        for (auto typeIt : objStructure)
-        {
-            auto serializedVector = typeIt->TrySerialize();
-            memoryBuffer.insert(memoryBuffer.begin(), serializedVector.begin(), serializedVector.end());
-        }
+        std::vector<uint8_t> memoryBuffer = binaryEncoder->Encode(objStructure);
         SendData(memoryBuffer.data(), memoryBuffer.size(), client->ClientEndpoint);
     }
 
@@ -248,6 +240,7 @@ namespace MAP
     void MapServer::Subscribe(MAP::CommandArgs &args)
     {
         // json commandArg;
+        //auto args.Payload["IpAddress"]; TODO:DESPUES DE IMPLEMENTAR LOS TIPOS CONTINUAR AQUI
 
         // if (args.data["IpAddress"] == "")
         //     return;

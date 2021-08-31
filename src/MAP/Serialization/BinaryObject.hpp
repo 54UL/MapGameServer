@@ -36,7 +36,6 @@ namespace MAP
 
         std::map<std::string, std::shared_ptr<INetworkType>> DecodeAsMap(uint8_t *bytes,std::size_t length)
         {
-
             std::map<std::string, std::shared_ptr<INetworkType>> objectStructure;
             for (uint32_t memPos = 0; memPos < length;)
             {

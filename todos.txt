@@ -4,6 +4,7 @@ Add float type
 Add int type       
 
 Implement serialization in the server
+
 Implement serialization in the c# client
     * BinaryObject and typeInterface in c#
     * Implement all types interfaces
