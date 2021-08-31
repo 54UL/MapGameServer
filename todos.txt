@@ -10,12 +10,21 @@ Implement serialization in the c# client
     * Implement serialization in c# client
 
 Implement benchmarking with juicy logs(also implement a logger)
+    *Cpp proyect (ping,packet loss,etc)
+    *Unity proyect (ping,packet loss,etc)
+
 Implement syncronization and rollback mechanisms
 
 Implement the chat system
 Implement all remaining server commands with clustered map pools
     *Implement in c#
 
-    
+
+Create single proyect demo(unity/c# and c++)
+    * Car demo (already made)
+
+
+Implement and expose mongo db features in the game server commands
+
 Add uint type     
 Add blob type     
