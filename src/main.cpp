@@ -18,6 +18,9 @@ int main(int argc, char *argv[])
         {
             std::cout << "ALL TESTS SUCCEDED...\n";
         }
+        else{
+            std::cout << "SOME TEST FAILED\n";
+        }
         std::cin.get();
 #endif
 

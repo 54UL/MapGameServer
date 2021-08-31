@@ -1,0 +1,21 @@
+Add array type    
+Add string type 
+Add float type    
+Add int type       
+
+Implement serialization in the server
+Implement serialization in the c# client
+    * BinaryObject and typeInterface in c#
+    * Implement all types interfaces
+    * Implement serialization in c# client
+
+Implement benchmarking with juicy logs(also implement a logger)
+Implement syncronization and rollback mechanisms
+
+Implement the chat system
+Implement all remaining server commands with clustered map pools
+    *Implement in c#
+
+    
+Add uint type     
+Add blob type     

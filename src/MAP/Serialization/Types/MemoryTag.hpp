@@ -8,6 +8,7 @@
 
 namespace MAP
 {
+    //Internal serializer class, don't use outside
     class MemoryTag : public INetworkType
     {
     public:
@@ -27,6 +28,7 @@ namespace MAP
         {
             std::vector<uint8_t> memoryVector(0);
             //NOTE: MEMORY TAG DOES NOT HAVE TO PASS HIS TYPE ID (ASSUMPTION DUE TO COMPOSITION)
+        
             memoryVector.push_back(static_cast<uint8_t>(instance_name_.length())); //CHANGE THIS CAST of size_t by uint8_t
             for (auto stringIterator : instance_name_)
             {
@@ -35,7 +37,6 @@ namespace MAP
             return memoryVector;
         }
 
-        //TODO:CONTINUAR IMPLEMENTANDO EL DESERIALIZADO PARA TODOS LOS TIPOS
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override
         {
             uint8_t tagLength = argsMemory[1]; //lenght first pos
