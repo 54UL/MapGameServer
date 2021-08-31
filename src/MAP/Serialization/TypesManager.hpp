@@ -22,16 +22,20 @@ namespace MAP
         }
         ~TypesManager()
         {
+            Clean();
         }
 
     public:
         void Initialize()
         {
-            
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::TAG, std::make_shared<MAP::MemoryTag>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::COMMAND, std::make_shared<MAP::CommandType>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::BYTE, std::make_shared<MAP::Byte>()));
         }
 
         void Clean()
         {
+            m_serializer_network_types.clear();
         }
 
         std::map<MAP::NetworkType, std::shared_ptr<INetworkType>> Get()

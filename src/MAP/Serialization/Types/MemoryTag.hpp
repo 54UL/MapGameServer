@@ -25,8 +25,8 @@ namespace MAP
 
         std::vector<uint8_t> TrySerialize() override
         {
-            std::vector<uint8_t> memoryVector;
-            memoryVector.push_back(static_cast<uint8_t>(GetType()));
+            std::vector<uint8_t> memoryVector(0);
+            //NOTE: MEMORY TAG DOES NOT HAVE TO PASS HIS TYPE ID (ASSUMPTION DUE TO COMPOSITION)
             memoryVector.push_back(static_cast<uint8_t>(instance_name_.length())); //CHANGE THIS CAST of size_t by uint8_t
             for (auto stringIterator : instance_name_)
             {
@@ -38,11 +38,11 @@ namespace MAP
         //TODO:CONTINUAR IMPLEMENTANDO EL DESERIALIZADO PARA TODOS LOS TIPOS
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override
         {
-            uint8_t tagLength = argsMemory[0]; //lenght first pos
-            std::string instanceName;
-            for (uint8_t i = 1; i < tagLength; i++)
+            uint8_t tagLength = argsMemory[1]; //lenght first pos
+            std::string instanceName = "";
+            for (uint8_t i = 0; i < tagLength; i++)
             {
-                instanceName.push_back(i);
+                instanceName.push_back(argsMemory[2+ i]);
             }
             std::vector<std::shared_ptr<INetworkType>> objectStructure;
             objectStructure.push_back(std::make_shared<MAP::MemoryTag>(instanceName));
@@ -61,7 +61,7 @@ namespace MAP
 
         uint32_t GetSize() override
         {
-            return instance_name_.length() + 2; //1 byte for the type and other for the tag string length
+            return instance_name_.length() + 1;  //1 byte extra for the size byte
         }
 
     private:

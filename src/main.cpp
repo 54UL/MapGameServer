@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
         {
             std::cout << "ALL TESTS SUCCEDED...\n";
         }
+        std::cin.get();
 #endif
 
         asio::io_context io_context;

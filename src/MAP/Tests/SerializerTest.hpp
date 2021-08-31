@@ -5,7 +5,7 @@
 #include "../Serialization/BinaryObject.hpp"
 #include "../UnitTesting.hpp"
 #include "../MapServer.hpp"
-
+#include <iomanip>
 namespace MAP
 {
     class SerializerTest : public IMapTest
@@ -26,21 +26,26 @@ namespace MAP
         inline bool EncodingTest()
         {
             std::size_t index = 0;
-            std::vector<std::shared_ptr<MAP::INetworkType>> sequence;
-            //TODO: terminar de agregar tipos
-            sequence.push_back(std::make_shared<MAP::CommandType>(MAP::ServerCommandType::SUBSCRIBE));
-            sequence.push_back(std::make_shared<MAP::Byte>(42));
-            sequence.push_back(std::make_shared<MAP::Byte>(128));
-            sequence.push_back(std::make_shared<MAP::Byte>(256));
-
             BinaryObject testObj;
-            auto binaryData = testObj.Encode(sequence);
-            while (binaryData + index != nullptr)
-            {
-                std::cout << "|" << std::hex << binaryData[index++] << "|";
-            }
+            std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
+                std::make_shared<MAP::CommandType>(static_cast<uint8_t>(MAP::ServerCommandType::SUBSCRIBE), 102),
+                std::make_shared<MAP::Byte>(42, "answer"),
+                std::make_shared<MAP::Byte>(128, "halfbyte"),
+                std::make_shared<MAP::Byte>(255, "fullbyte")
+                };
 
-            return true;
+            auto binaryData = testObj.Encode(sequence);
+            auto deserialized = testObj.DecodeAsMap(binaryData.data(), binaryData.size());
+
+            auto half = std::dynamic_pointer_cast<MAP::Byte>(deserialized["halfbyte"]);
+            auto full = std::dynamic_pointer_cast<MAP::Byte>(deserialized["fullbyte"]);
+            auto answer = std::dynamic_pointer_cast<MAP::Byte>(deserialized["answer"]);
+
+            auto test1 = half->GetValue();
+            auto test2 = full->GetValue();
+            auto test3 = answer->GetValue();
+
+            return (test1 == 128 && test2 == 255 && test3 == 42);
         }
 
         inline bool DecodingTest()

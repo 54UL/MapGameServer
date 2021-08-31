@@ -27,10 +27,10 @@ namespace MAP
 
         std::vector<uint8_t> TrySerialize() override
         {
-            std::vector<uint8_t> memoryVector;
+            std::vector<uint8_t> memoryVector(0);
             memoryVector.push_back((uint8_t)GetType());
             auto memoryTagVector = instance_name_.TrySerialize();
-            memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryVector.end());
+            memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end());
             memoryVector.push_back(m_value);
             return memoryVector;
         }
@@ -38,14 +38,8 @@ namespace MAP
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override
         {
             std::vector<std::shared_ptr<INetworkType>> objectStructure;
-            auto memoryTag = instance_name_.Deserialize(argsMemory);
-            uint8_t valueLocation = 0;
-            for (auto type : memoryTag)
-            {
-                valueLocation += type->GetSize();
-            }
-            objectStructure.insert(objectStructure.end(), memoryTag.begin(), memoryTag.end());
-            objectStructure.push_back(std::make_shared<MAP::Byte>(argsMemory[valueLocation]));
+            auto memoryTag = instance_name_.Deserialize(argsMemory).at(0);            
+            objectStructure.push_back(std::make_shared<MAP::Byte>(argsMemory[memoryTag->GetSize()+1],memoryTag->GetName()));
             return objectStructure;
         }
 
@@ -61,7 +55,11 @@ namespace MAP
 
         uint32_t GetSize() override
         {
-            return instance_name_.GetSize() + sizeof(m_value);
+            return instance_name_.GetSize() + sizeof(m_value);  //+1  is the type size offset
+        }
+
+        uint8_t GetValue(){
+            return m_value;
         }
 
     private:

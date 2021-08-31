@@ -180,11 +180,13 @@ namespace MAP
                         std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
                         std::cout << data_ << std::endl;
                         //DESERIALIZE A command
-                        auto decodedPacket = binaryEncoder->Decode(data_);
+                        auto vectorData = std::vector<uint8_t>(std::begin(data_),std::end(data_));
+                        auto decodedPacket = binaryEncoder->Decode(vectorData);
 
                         auto decodedCommand = std::dynamic_pointer_cast<MAP::CommandType>((decodedPacket.at(0)));
 
                         auto commandPayload = std::vector<std::shared_ptr<MAP::INetworkType>>(decodedPacket.begin() + 2, decodedPacket.end());
+                        
                         MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), commandPayload);
                         DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
                         //TODO:CONSEGUIR EL DUEÑO PARA CONSTRUIR UN OBJETO LLAMADO COMMAND ARGS
@@ -219,7 +221,7 @@ namespace MAP
     {
         //TODO:ACTUALIZAR!!!
         std::vector<std::shared_ptr<MAP::INetworkType>> objStructure;
-        objStructure.push_back(std::make_shared<MAP::CommandType>(command.Code));
+        objStructure.push_back(std::make_shared<MAP::CommandType>(command.Code,client->UserId));
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
         std::vector<uint8_t> memoryBuffer;
         for (auto typeIt : objStructure)
@@ -227,7 +229,7 @@ namespace MAP
             auto serializedVector = typeIt->TrySerialize();
             memoryBuffer.insert(memoryBuffer.begin(), serializedVector.begin(), serializedVector.end());
         }
-        SendData(&memoryBuffer[0], memoryBuffer.size(), client->ClientEndpoint);
+        SendData(memoryBuffer.data(), memoryBuffer.size(), client->ClientEndpoint);
     }
 
     //TODO: VERIFICAR ENVIOS DE CADA CLIENTE (ASEGURAR TICKS SINCRONIZADOS)
