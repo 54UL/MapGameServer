@@ -39,11 +39,11 @@ namespace MAP
 
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override
         {
-            uint8_t tagLength = argsMemory[1]; //lenght first pos
+            uint8_t tagLength = argsMemory[MEM_OFFSET_1]; //lenght first pos
             std::string instanceName = "";
             for (uint8_t i = 0; i < tagLength; i++)
             {
-                instanceName.push_back(argsMemory[2+ i]);
+                instanceName.push_back(argsMemory[MEM_OFFSET_2+ i]);
             }
             std::vector<std::shared_ptr<INetworkType>> objectStructure;
             objectStructure.push_back(std::make_shared<MAP::MemoryTag>(instanceName));

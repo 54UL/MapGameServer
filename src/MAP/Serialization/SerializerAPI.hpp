@@ -10,6 +10,11 @@
 
 namespace MAP
 {
+    constexpr uint8_t MEM_OFFSET_1 = 1;
+    constexpr uint8_t MEM_OFFSET_2 = 2;
+    constexpr uint8_t MEM_OFFSET_3 = 3;
+    constexpr uint8_t MEM_OFFSET_4 = 4;
+ 
     enum class NetworkType : uint8_t
     {
         TAG = 0x01,

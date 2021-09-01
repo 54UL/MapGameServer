@@ -10,20 +10,20 @@
 
 namespace MAP
 {
-    class CommandType : public INetworkType
+    class NetCommand : public INetworkType
     {
     public:
-        CommandType() : m_command_id(0)
+        NetCommand() : m_command_id(0)
         {
             m_client_id = 255;
         }
 
-        CommandType(uint8_t commandId,uint8_t clientId) : m_command_id(commandId)
+        NetCommand(uint8_t commandId,uint8_t clientId) : m_command_id(commandId)
         {
             m_client_id = clientId;
         }
 
-        ~CommandType()
+        ~NetCommand()
         {
         }
 
@@ -38,10 +38,10 @@ namespace MAP
 
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override
         {
-            auto commandId = argsMemory[1];
-            auto clientId = argsMemory[2];
+            auto commandId = argsMemory[MEM_OFFSET_1];
+            auto clientId = argsMemory[MEM_OFFSET_2];
             std::vector<std::shared_ptr<MAP::INetworkType>> objectStructure;
-            objectStructure.push_back(std::make_shared<CommandType>(commandId,clientId));
+            objectStructure.push_back(std::make_shared<NetCommand>(commandId,clientId));
             return objectStructure;
         }
 

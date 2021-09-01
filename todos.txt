@@ -15,6 +15,8 @@ Implement benchmarking with juicy logs(also implement a logger)
     *Unity proyect (ping,packet loss,etc)
 
 Implement syncronization and rollback mechanisms
+Implement assertions and error handling in all sides
+
 
 Implement the chat system
 Implement all remaining server commands with clustered map pools

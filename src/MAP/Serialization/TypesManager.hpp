@@ -29,8 +29,8 @@ namespace MAP
         void Initialize()
         {
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::TAG, std::make_shared<MAP::MemoryTag>()));
-            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::COMMAND, std::make_shared<MAP::CommandType>()));
-            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::BYTE, std::make_shared<MAP::Byte>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::COMMAND, std::make_shared<MAP::NetCommand>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::BYTE, std::make_shared<MAP::NetByte>()));
         }
 
         void Clean()

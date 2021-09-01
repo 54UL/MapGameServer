@@ -9,19 +9,19 @@
 
 namespace MAP
 {
-    class Byte : public INetworkType
+    class NetByte : public INetworkType
     {
     public:
-        Byte() : m_value(0)
+        NetByte() : m_value(0)
         {
         }
-        Byte(uint8_t value) : m_value(value), instance_name_("NONE")
+        NetByte(uint8_t value) : m_value(value), instance_name_("NONE")
         {
         }
-        Byte(uint8_t value, std::string name) : m_value(value), instance_name_(name)
+        NetByte(uint8_t value, std::string name) : m_value(value), instance_name_(name)
         {
         }
-        ~Byte()
+        ~NetByte()
         {
         }
 
@@ -39,7 +39,7 @@ namespace MAP
         {
             std::vector<std::shared_ptr<INetworkType>> objectStructure;
             auto memoryTag = instance_name_.Deserialize(argsMemory).at(0);            
-            objectStructure.push_back(std::make_shared<MAP::Byte>(argsMemory[memoryTag->GetSize()+1],memoryTag->GetName()));
+            objectStructure.push_back(std::make_shared<MAP::NetByte>(argsMemory[memoryTag->GetSize()+MEM_OFFSET_1],memoryTag->GetName()));
             return objectStructure;
         }
 
