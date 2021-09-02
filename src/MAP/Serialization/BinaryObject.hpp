@@ -51,7 +51,7 @@ namespace MAP
                     return std::map<std::string, std::shared_ptr<INetworkType>>();
                 }
 
-                auto currentDeserializedType = m_network_types.Get()[typeCode]->Deserialize(bytes + memPos);
+                auto currentDeserializedType = SerializerTypes.Get()[typeCode]->Deserialize(bytes + memPos);
 
                 for (auto dtype : currentDeserializedType)
                 {
@@ -78,7 +78,7 @@ namespace MAP
                     std::cout << "Missing binary command" << std::endl;
                     return std::vector<std::shared_ptr<INetworkType>>();
                 }
-                auto currentDeserializedType = m_network_types.Get()[typeCode]->Deserialize(&bytes.at(memPos));
+                auto currentDeserializedType = SerializerTypes.Get()[typeCode]->Deserialize(&bytes.at(memPos));
                 for (auto dtype : currentDeserializedType)
                 {
                     currentDeserializedBytes += dtype->GetSize();
@@ -88,9 +88,6 @@ namespace MAP
             }
             return objectStructure;
         }
-
-    private:
-        MAP::TypesManager m_network_types;
     };
 }
 

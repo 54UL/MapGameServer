@@ -2,7 +2,6 @@
 #ifndef NET_ARRAY_TYPE
 #define NET_ARRAY_TYPE
 
-#include "../SerializerAPI.hpp"
 #include <string>
 
 namespace MAP
@@ -48,10 +47,10 @@ namespace MAP
             auto memoryTag = m_instance_name.Deserialize(argsMemory).at(0);
             auto memoryTagOffset = memoryTag->GetSize();
             auto arrayLength = argsMemory[memoryTagOffset + MEM_OFFSET_1];
-            BinaryObject binObj; //HACER DECODE STATIC PARA QUITAR ESTO DE AQUI
             auto valuesMemoryVector = std::vector<uint8_t>(argsMemory+memoryTagOffset+MEM_OFFSET_2, argsMemory+arrayLength);
-            auto decodedArrayVal = binObj.Decode(valuesMemoryVector);
-            objectStructure.push_back(std::make_shared<MAP::NetArray>(decodedArrayVal, memoryTag->GetName()));
+            // BinaryObject binObj; //HACER DECODE STATIC PARA QUITAR ESTO DE AQUI
+            // auto decodedArrayVal = binObj.Decode(valuesMemoryVector);
+            // objectStructure.push_back(std::make_shared<MAP::NetArray>(decodedArrayVal, memoryTag->GetName()));
             return objectStructure;
         }
 

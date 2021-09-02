@@ -59,7 +59,7 @@ namespace MAP
             };
             auto arrayObj = std::make_shared<MAP::NetArray>(sequence,"arrayTest");
             auto serializedArrayVector = arrayObj->TrySerialize();
-           auto  xd= testObj.DecodeAsMap(serializedArrayVector.data(),serializedArrayVector.size());
+            auto  xd = testObj.DecodeAsMap(serializedArrayVector.data(),serializedArrayVector.size());
             return true;
         }
 

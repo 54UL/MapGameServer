@@ -6,7 +6,6 @@
 #include <vector>
 #include <map>
 
-#include "./BinaryObject.hpp"
 
 namespace MAP
 {
