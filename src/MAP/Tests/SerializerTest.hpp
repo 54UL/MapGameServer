@@ -2,9 +2,8 @@
 #define SERIALIZER_TEST
 #include <memory>
 #include <vector>
-#include "../Serialization/BinaryObject.hpp"
 #include "../UnitTesting.hpp"
-#include "../MapServer.hpp"
+#include "../Serialization/BinaryObject.hpp"
 #include "../Serialization/Types/Array.hpp"
 #include <iomanip>
 
@@ -53,14 +52,14 @@ namespace MAP
             std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
                 std::make_shared<MAP::NetByte>(42, "answer"),
                 std::make_shared<MAP::NetByte>(128, "halfbyte"),
-                std::make_shared<MAP::NetByte>(255, "fullbyte"),
-                std::make_shared<MAP::NetByte>(255, "fullbyte"),
-                std::make_shared<MAP::NetByte>(255, "fullbyte")
-            };
-            auto arrayObj = std::make_shared<MAP::NetArray>(sequence,"arrayTest");
+                std::make_shared<MAP::NetByte>(255, "fullbyte")};
+
+            auto arrayObj = std::make_shared<MAP::NetArray>(sequence, "arrayTest");
             auto serializedArrayVector = arrayObj->TrySerialize();
-            auto  xd = testObj.DecodeAsMap(serializedArrayVector.data(),serializedArrayVector.size());
-            return true;
+            auto objMap = testObj.DecodeAsMap(serializedArrayVector.data(), serializedArrayVector.size());
+            auto half =  std::dynamic_pointer_cast<MAP::NetArray>(objMap["halfbyte"]);
+            auto byte =  std::dynamic_pointer_cast<MAP::NetByte>(half->At(1));
+            return byte->GetValue() == 128;
         }
 
         inline bool DecodingTest()
@@ -75,9 +74,9 @@ namespace MAP
             allRight = ArrayTest();
             return allRight;
         }
-        private:
-            BinaryObject testObj;
 
+    private:
+        BinaryObject testObj;
     };
 
 }

@@ -180,7 +180,7 @@ namespace MAP
                         std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
                         std::cout << data_ << std::endl;
                         //DESERIALIZE A command
-                        auto decodedPacket = binaryEncoder->DecodeAsMap(data_,bytes_recvd);
+                        auto decodedPacket = binaryParser.DecodeAsMap(data_,bytes_recvd);
                         auto decodedCommand = std::dynamic_pointer_cast<MAP::NetCommand>((decodedPacket.at(0)));
                         MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), decodedPacket);
                         DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
@@ -217,7 +217,7 @@ namespace MAP
         std::vector<std::shared_ptr<MAP::INetworkType>> objStructure;
         objStructure.push_back(std::make_shared<MAP::NetCommand>(command.Code,client->UserId));
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
-        std::vector<uint8_t> memoryBuffer = binaryEncoder->Encode(objStructure);
+        std::vector<uint8_t> memoryBuffer = binaryParser.Encode(objStructure);
         SendData(memoryBuffer.data(), memoryBuffer.size(), client->ClientEndpoint);
     }
 

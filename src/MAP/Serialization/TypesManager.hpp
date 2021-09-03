@@ -6,7 +6,6 @@
 #include <vector>
 #include <map>
 #include "./SerializerAPI.hpp"
-#include "./BinaryObject.hpp"
 #include "./Types/MemoryTag.hpp"
 #include "./Types/Command.hpp"
 #include "./Types/Byte.hpp"
@@ -14,6 +13,7 @@
 
 namespace MAP
 {
+    class BinaryObject;
     class TypesManager
     {
     public:
@@ -44,6 +44,8 @@ namespace MAP
         {
             return m_serializer_network_types;
         }
+
+
 
     private:
         std::map<MAP::NetworkType, std::shared_ptr<INetworkType>> m_serializer_network_types;

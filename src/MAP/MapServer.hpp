@@ -78,7 +78,6 @@ namespace MAP
         udp::endpoint receiverEndpoint_;
         udp::endpoint lastCommandOwnerEndpoint_;
         std::thread receiverThread_, dispatcherThread_;
-        std::shared_ptr<MAP::BinaryObject> binaryEncoder;
     };
 }
 
