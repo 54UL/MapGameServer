@@ -17,7 +17,7 @@ namespace MAP
 
     std::vector<uint8_t> NetByte::TrySerialize()
     {
-        std::vector<uint8_t> memoryVector(0);
+        std::vector<uint8_t> memoryVector;
         memoryVector.push_back((uint8_t)GetType());
         auto memoryTagVector = instance_name_.TrySerialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end());
@@ -45,7 +45,7 @@ namespace MAP
 
     uint32_t NetByte::GetSize()
     {
-        return instance_name_.GetSize() + sizeof(m_value); + 1; //
+        return instance_name_.GetSize() + sizeof(m_value); //
     }
 
     uint8_t NetByte::GetValue()

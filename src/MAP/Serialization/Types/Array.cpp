@@ -17,21 +17,18 @@ namespace MAP
     std::vector<uint8_t> NetArray::TrySerialize()
     {
         std::vector<uint8_t> memoryVector;
-        uint8_t sizeInByes = 0;
 
         memoryVector.push_back((uint8_t)GetType()); //TYPE
         auto memoryTagVector = m_instance_name.TrySerialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end()); //MEMORY_TAG
-
-        for (auto &arrayVal : m_values)
-            sizeInByes += arrayVal->GetSize();
-
-        memoryVector.push_back(sizeInByes); //LENGTH  IN BYTES
-        for (auto arrayValue : m_values)    //ARRAY_BINARY_VALUE/S
+        auto arrayValuesVector = std::vector<uint8_t>();
+        for (auto arrayValue : m_values) //ARRAY_BINARY_VALUE/S
         {
             auto memoryChunk = arrayValue->TrySerialize();
-            memoryVector.insert(memoryVector.end(), memoryChunk.begin(), memoryChunk.end());
+            arrayValuesVector.insert(arrayValuesVector.end(), memoryChunk.begin(), memoryChunk.end());
         }
+        memoryVector.push_back(memoryVector.size() + arrayValuesVector.size() + 1); //LENGTH  IN BYTES
+        memoryVector.insert(memoryVector.end(), arrayValuesVector.begin(), arrayValuesVector.end());
         return memoryVector;
     }
 
@@ -41,9 +38,8 @@ namespace MAP
         auto memoryTag = m_instance_name.Deserialize(argsMemory).at(0);
         auto memoryTagOffset = memoryTag->GetSize();
         auto arrayLength = argsMemory[memoryTagOffset + MEM_OFFSET_1];
-
         auto startOffset = memoryTagOffset + MEM_OFFSET_2;
-        auto valuesMemoryVector = std::vector<uint8_t>(argsMemory + startOffset, argsMemory + startOffset + arrayLength);
+        auto valuesMemoryVector = std::vector<uint8_t>(argsMemory + startOffset, (argsMemory + arrayLength));
         auto decodedArrayVal = binaryParser.Decode(valuesMemoryVector);
         objectStructure.push_back(std::make_shared<MAP::NetArray>(decodedArrayVal, memoryTag->GetName()));
         return objectStructure;
