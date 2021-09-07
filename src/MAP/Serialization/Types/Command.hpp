@@ -16,7 +16,7 @@ namespace MAP
         NetCommand(uint8_t commandId, uint8_t clientId);
         ~NetCommand();
 
-        std::vector<uint8_t> TrySerialize() override;
+        std::vector<uint8_t> Serialize() override;
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override;
         const char *GetName() override;
         NetworkType GetType() override;

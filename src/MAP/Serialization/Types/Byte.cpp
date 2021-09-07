@@ -15,11 +15,11 @@ namespace MAP
     {
     }
 
-    std::vector<uint8_t> NetByte::TrySerialize()
+    std::vector<uint8_t> NetByte::Serialize()
     {
         std::vector<uint8_t> memoryVector;
         memoryVector.push_back((uint8_t)GetType());
-        auto memoryTagVector = m_instance_name.TrySerialize();
+        auto memoryTagVector = m_instance_name.Serialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end());
         memoryVector.push_back(m_value);
         return memoryVector;

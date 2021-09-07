@@ -14,11 +14,11 @@ namespace MAP
     {
     }
 
-    std::vector<uint8_t> NetString::TrySerialize()
+    std::vector<uint8_t> NetString::Serialize()
     {
         std::vector<uint8_t> memoryVector(0);
         memoryVector.push_back((uint8_t)GetType());
-        auto memoryTagVector = m_instance_name.TrySerialize();
+        auto memoryTagVector = m_instance_name.Serialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end());
         //INSERT STRING VALUE
         memoryVector.push_back(static_cast<uint8_t>(m_string_value.length())); //Length string

@@ -17,7 +17,7 @@ namespace MAP
     {
     }
 
-    std::vector<uint8_t> NetCommand::TrySerialize()
+    std::vector<uint8_t> NetCommand::Serialize()
     {
         std::vector<uint8_t> memoryVector(0);
         memoryVector.push_back(static_cast<uint8_t>(GetType()));

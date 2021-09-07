@@ -32,7 +32,7 @@ namespace MAP
     public:
         INetworkType() {}
         virtual ~INetworkType() {}
-        virtual std::vector<uint8_t> TrySerialize() = 0;
+        virtual std::vector<uint8_t> Serialize() = 0;
         virtual std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) = 0;
         virtual const char *GetName() = 0;
         virtual NetworkType GetType() = 0;

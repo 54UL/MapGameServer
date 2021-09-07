@@ -14,7 +14,7 @@ namespace MAP
     {
     }
 
-    std::vector<uint8_t> MemoryTag::TrySerialize()
+    std::vector<uint8_t> MemoryTag::Serialize()
     {
         std::vector<uint8_t> memoryVector(0);
         //NOTE: MEMORY TAG DOES NOT HAVE TO PASS HIS TYPE ID (ASSUMPTION DUE TO COMPOSITION)

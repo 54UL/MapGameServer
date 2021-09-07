@@ -53,7 +53,7 @@ namespace MAP
         NetFloat(float value, std::string name);
         ~NetFloat();
 
-        std::vector<uint8_t> TrySerialize() override;
+        std::vector<uint8_t> Serialize() override;
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override;
         NetworkType GetType() override;
         const char *GetName() override;

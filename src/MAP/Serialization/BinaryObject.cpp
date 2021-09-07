@@ -18,7 +18,7 @@ namespace MAP
         //Evalua toda la sequencia y retorna el valor de memoria puro.
         for (auto typeInstance : sequence)
         {
-            auto serializedDataVector = typeInstance->TrySerialize();
+            auto serializedDataVector = typeInstance->Serialize();
             m_raw_memory_packet.insert(m_raw_memory_packet.end(), serializedDataVector.begin(), serializedDataVector.end());
         }
         return m_raw_memory_packet;
@@ -33,13 +33,7 @@ namespace MAP
             auto currentDeserializedBytes = 0;
             auto commandValue = bytes[memPos];
             auto typeCode = static_cast<MAP::NetworkType>(commandValue);
-
-            if (commandValue == 0)
-            {
-                std::cout << "Missing binary command" << std::endl;
-                return std::map<std::string, std::shared_ptr<INetworkType>>();
-            }
-
+            
             auto currentDeserializedType = SerializerTypes.Get()[typeCode]->Deserialize(bytes + memPos);
 
             for (auto dtype : currentDeserializedType)
@@ -59,7 +53,7 @@ namespace MAP
 
         for (uint32_t memPos = 0; memPos < byteSequenceLength;)
         {
-            auto commandValue = bytes.at(0);
+            auto commandValue = bytes.at(memPos);
             auto typeCode = static_cast<MAP::NetworkType>(commandValue);
             auto currentDeserializedBytes = 0;
 

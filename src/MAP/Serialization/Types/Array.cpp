@@ -14,20 +14,19 @@ namespace MAP
     {
     }
 
-    std::vector<uint8_t> NetArray::TrySerialize()
+    std::vector<uint8_t> NetArray::Serialize()
     {
         std::vector<uint8_t> memoryVector;
-
         memoryVector.push_back((uint8_t)GetType()); //TYPE
-        auto memoryTagVector = m_instance_name.TrySerialize();
+        auto memoryTagVector = m_instance_name.Serialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end()); //MEMORY_TAG
         auto arrayValuesVector = std::vector<uint8_t>();//TEMP
         for (auto arrayValue : m_values) 
         {
-            auto memoryChunk = arrayValue->TrySerialize();
+            auto memoryChunk = arrayValue->Serialize();
             arrayValuesVector.insert(arrayValuesVector.end(), memoryChunk.begin(), memoryChunk.end());
         }
-        memoryVector.push_back(memoryVector.size() + arrayValuesVector.size() + 1); //LENGTH  IN BYTES
+        memoryVector.push_back(memoryVector.size() + arrayValuesVector.size()+1); //LENGTH  IN BYTES
         memoryVector.insert(memoryVector.end(), arrayValuesVector.begin(), arrayValuesVector.end());//ARRAY_BINARY_VALUE/S
         return memoryVector;
     }

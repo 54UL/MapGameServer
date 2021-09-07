@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include "./SerializerAPI.hpp"
 #include "./TypesManager.hpp"
 #include <iostream>
@@ -27,6 +28,16 @@ namespace MAP
         static std::shared_ptr<T> Get(std::map<std::string, std::shared_ptr<MAP::INetworkType>> &sequence, std::string name)
         {
             return std::dynamic_pointer_cast<T>(sequence[name]);
+        }
+
+        template <class T>
+        static std::shared_ptr<T> Get(std::vector<std::shared_ptr<MAP::INetworkType>> &sequence, std::string name)
+        {
+            auto findedElement = std::find_if(sequence.begin(),sequence.end(),[&](std::shared_ptr<MAP::INetworkType> typeIt){
+                return std::strcmp(typeIt->GetName(),name.c_str()) == 0 ;
+            });
+        
+            return std::dynamic_pointer_cast<T>(*findedElement);
         }
     };
 

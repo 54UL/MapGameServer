@@ -15,7 +15,7 @@ namespace MAP
         NetArray(std::vector<std::shared_ptr<MAP::INetworkType>> sequence, std::string name);
         virtual ~NetArray();
 
-        std::vector<uint8_t> TrySerialize() override;
+        std::vector<uint8_t> Serialize() override;
 
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override;
 

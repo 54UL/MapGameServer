@@ -46,20 +46,23 @@ namespace MAP
             return (test1 == 128 && test2 == 255 && test3 == 42);
         }
 
-        //Dynamic type array
         inline bool DynamicTypeArrayTest()
         {
             std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
-                std::make_shared<MAP::NetByte>(42, "abc"),
-                std::make_shared<MAP::NetByte>(128, "defg"),
-                std::make_shared<MAP::NetByte>(255, "hijklmnopqrst")};
+                std::make_shared<MAP::NetByte>(42, "byteVal"),
+                std::make_shared<MAP::NetFloat>(0.33f, "decimal"),
+                std::make_shared<MAP::NetString>("testing string lol", "someString")};
 
             auto arrayObj = std::make_shared<MAP::NetArray>(sequence, "arrayTest");
-            auto serializedArrayVector = arrayObj->TrySerialize();
+            auto serializedArrayVector = arrayObj->Serialize();
             auto objMap = testObj.DecodeAsMap(serializedArrayVector.data(), serializedArrayVector.size());
-            auto arr = std::dynamic_pointer_cast<MAP::NetArray>(objMap["arrayTest"]);
-            auto byte = std::dynamic_pointer_cast<MAP::NetByte>(arr->At(1));
-            return byte->GetValue() == 128;
+            auto arr = std::dynamic_pointer_cast<MAP::NetArray>(objMap["arrayTest"])->GetValues();
+
+            auto byte = BinaryObject::Get<MAP::NetByte>(arr,"byteVal")->GetValue();
+            auto floatVal = BinaryObject::Get<MAP::NetFloat>(arr,"decimal")->GetValue();
+            auto stringVal = BinaryObject::Get<MAP::NetString>(arr,"someString")->GetValue();
+
+            return byte == 42;
         }
 
         inline bool StringTypeTest()
@@ -122,7 +125,6 @@ namespace MAP
             allRight = StringTypeTest();
             allRight = FloatTypeTest();
             allRight = IntTypeTest();
-
             return allRight;
         }
 
