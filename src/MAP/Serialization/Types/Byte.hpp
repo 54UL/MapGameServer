@@ -23,7 +23,7 @@ namespace MAP
 
     private:
         uint8_t m_value;
-        MAP::MemoryTag instance_name_;
+        MAP::MemoryTag m_instance_name;
     };
 }
 

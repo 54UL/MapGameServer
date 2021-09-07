@@ -1,5 +1,6 @@
 #include "BinaryObject.hpp"
 
+//TODO: REFACTOR DECODES...
 namespace MAP
 {
 
@@ -26,10 +27,10 @@ namespace MAP
     std::map<std::string, std::shared_ptr<INetworkType>> BinaryObject::DecodeAsMap(uint8_t *bytes, std::size_t length)
     {
         std::map<std::string, std::shared_ptr<INetworkType>> objectStructure;
+
         for (uint32_t memPos = 0; memPos < length;)
         {
             auto currentDeserializedBytes = 0;
-
             auto commandValue = bytes[memPos];
             auto typeCode = static_cast<MAP::NetworkType>(commandValue);
 
@@ -46,7 +47,7 @@ namespace MAP
                 objectStructure.insert(std::make_pair(dtype->GetName(), dtype));
                 currentDeserializedBytes += dtype->GetSize();
             }
-            memPos += currentDeserializedBytes + 1;
+            memPos += currentDeserializedBytes;
         }
         return objectStructure;
     }
@@ -55,17 +56,13 @@ namespace MAP
     {
         std::vector<std::shared_ptr<INetworkType>> objectStructure;
         auto byteSequenceLength = bytes.size();
+
         for (uint32_t memPos = 0; memPos < byteSequenceLength;)
         {
-            auto currentDeserializedBytes = 0;
             auto commandValue = bytes.at(0);
             auto typeCode = static_cast<MAP::NetworkType>(commandValue);
+            auto currentDeserializedBytes = 0;
 
-            if (commandValue == 0)
-            {
-                std::cout << "Missing binary command" << std::endl;
-                return std::vector<std::shared_ptr<INetworkType>>();
-            }
             auto currentDeserializedType = SerializerTypes.Get()[typeCode]->Deserialize(&bytes.at(memPos));
             for (auto dtype : currentDeserializedType)
             {
@@ -76,5 +73,4 @@ namespace MAP
         }
         return objectStructure;
     }
-
 }

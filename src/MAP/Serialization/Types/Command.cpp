@@ -47,7 +47,7 @@ namespace MAP
 
     uint32_t NetCommand::GetSize()
     {
-        return sizeof(m_command_id) + sizeof(m_client_id);
+        return sizeof(m_command_id) + sizeof(m_client_id) + 1;//+1 for the type byte
     }
 
     uint8_t NetCommand::id()

@@ -10,6 +10,9 @@
 #include "./Types/Command.hpp"
 #include "./Types/Byte.hpp"
 #include "./Types/Array.hpp"
+#include "./Types/String.hpp"
+#include "./Types/Float.hpp"
+#include "./Types/Integer.hpp"
 
 namespace MAP
 {
@@ -33,6 +36,9 @@ namespace MAP
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::COMMAND, std::make_shared<MAP::NetCommand>()));
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::BYTE, std::make_shared<MAP::NetByte>()));
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::ARRAY, std::make_shared<MAP::NetArray>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::STRING, std::make_shared<MAP::NetString>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::FLOAT, std::make_shared<MAP::NetFloat>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::INT, std::make_shared<MAP::NetInt>()));
         }
 
         void Clean()
@@ -44,8 +50,6 @@ namespace MAP
         {
             return m_serializer_network_types;
         }
-
-
 
     private:
         std::map<MAP::NetworkType, std::shared_ptr<INetworkType>> m_serializer_network_types;

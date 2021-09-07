@@ -21,14 +21,14 @@ namespace MAP
         memoryVector.push_back((uint8_t)GetType()); //TYPE
         auto memoryTagVector = m_instance_name.TrySerialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end()); //MEMORY_TAG
-        auto arrayValuesVector = std::vector<uint8_t>();
-        for (auto arrayValue : m_values) //ARRAY_BINARY_VALUE/S
+        auto arrayValuesVector = std::vector<uint8_t>();//TEMP
+        for (auto arrayValue : m_values) 
         {
             auto memoryChunk = arrayValue->TrySerialize();
             arrayValuesVector.insert(arrayValuesVector.end(), memoryChunk.begin(), memoryChunk.end());
         }
         memoryVector.push_back(memoryVector.size() + arrayValuesVector.size() + 1); //LENGTH  IN BYTES
-        memoryVector.insert(memoryVector.end(), arrayValuesVector.begin(), arrayValuesVector.end());
+        memoryVector.insert(memoryVector.end(), arrayValuesVector.begin(), arrayValuesVector.end());//ARRAY_BINARY_VALUE/S
         return memoryVector;
     }
 
@@ -60,7 +60,7 @@ namespace MAP
         std::size_t partialSize = 0;
         for (auto arrayVal : m_values)
             partialSize += arrayVal->GetSize();
-        return m_instance_name.GetSize() + partialSize;
+        return m_instance_name.GetSize() + partialSize + 2;
     }
 
     std::vector<std::shared_ptr<MAP::INetworkType>> NetArray::GetValues()

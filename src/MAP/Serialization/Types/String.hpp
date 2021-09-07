@@ -1,30 +1,33 @@
 
-#ifndef MEMORY_TAG_H
-#define MEMORY_TAG_H
+#ifndef STRING_NET_TYPE
+#define STRING_NET_TYPE
 
+#include "../Types/MemoryTag.hpp"
 #include "../SerializerAPI.hpp"
 #include <string>
 
 namespace MAP
 {
     //Internal serializer class, don't use outside
-    class MemoryTag : public INetworkType
+    class NetString : public INetworkType
     {
     public:
-        MemoryTag();
+        NetString();
 
-        MemoryTag(const std::string &name);
+        NetString(const std::string &value,const std::string &name);
 
-        ~MemoryTag();
+        ~NetString();
 
         std::vector<uint8_t> TrySerialize() override;
         std::vector<std::shared_ptr<INetworkType>> Deserialize(const uint8_t *argsMemory) override;
         NetworkType GetType() override;
         const char *GetName() override;
         uint32_t GetSize() override;
-
+        std::string NetString::GetValue();
+    
     private:
-        std::string m_instance_name;
+        MAP::MemoryTag m_instance_name;
+        std::string m_string_value;
     };
 }
 

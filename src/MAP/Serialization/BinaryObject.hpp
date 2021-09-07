@@ -22,6 +22,12 @@ namespace MAP
         std::vector<uint8_t> Encode(std::vector<std::shared_ptr<INetworkType>> sequence);
         std::map<std::string, std::shared_ptr<INetworkType>> DecodeAsMap(uint8_t *bytes, std::size_t length);
         std::vector<std::shared_ptr<INetworkType>> Decode(std::vector<uint8_t> bytes);
+
+        template <class T>
+        static std::shared_ptr<T> Get(std::map<std::string, std::shared_ptr<MAP::INetworkType>> &sequence, std::string name)
+        {
+            return std::dynamic_pointer_cast<T>(sequence[name]);
+        }
     };
 
     static BinaryObject binaryParser;

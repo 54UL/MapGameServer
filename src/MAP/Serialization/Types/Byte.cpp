@@ -5,10 +5,10 @@ namespace MAP
     NetByte::NetByte() : m_value(0)
     {
     }
-    NetByte::NetByte(uint8_t value) : m_value(value), instance_name_("SYSTEM-BYTE")
+    NetByte::NetByte(uint8_t value) : m_value(value), m_instance_name("SYSTEM-BYTE")
     {
     }
-    NetByte::NetByte(uint8_t value, std::string name) : m_value(value), instance_name_(name)
+    NetByte::NetByte(uint8_t value, std::string name) : m_value(value), m_instance_name(name)
     {
     }
     NetByte::~NetByte()
@@ -19,7 +19,7 @@ namespace MAP
     {
         std::vector<uint8_t> memoryVector;
         memoryVector.push_back((uint8_t)GetType());
-        auto memoryTagVector = instance_name_.TrySerialize();
+        auto memoryTagVector = m_instance_name.TrySerialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end());
         memoryVector.push_back(m_value);
         return memoryVector;
@@ -28,7 +28,7 @@ namespace MAP
     std::vector<std::shared_ptr<INetworkType>> NetByte::Deserialize(const uint8_t *argsMemory)
     {
         std::vector<std::shared_ptr<INetworkType>> objectStructure;
-        auto memoryTag = instance_name_.Deserialize(argsMemory).at(0);
+        auto memoryTag = m_instance_name.Deserialize(argsMemory).at(0);
         objectStructure.push_back(std::make_shared<MAP::NetByte>(argsMemory[memoryTag->GetSize() + MEM_OFFSET_1], memoryTag->GetName()));
         return objectStructure;
     }
@@ -40,12 +40,12 @@ namespace MAP
 
     const char *NetByte::GetName()
     {
-        return instance_name_.GetName();
+        return m_instance_name.GetName();
     }
 
     uint32_t NetByte::GetSize()
     {
-        return instance_name_.GetSize() + sizeof(m_value); //
+        return m_instance_name.GetSize() + sizeof(m_value)+1;//+1 for length byte
     }
 
     uint8_t NetByte::GetValue()

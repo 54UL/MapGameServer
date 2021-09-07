@@ -1,7 +1,7 @@
-Add array type    
-Add string type 
-Add float type    
-Add int type       
+Add array type   DONE
+Add string type  DONE
+Add float type   DONE 
+Add int type     DONE
 
 Implement serialization in the server
 
@@ -29,5 +29,6 @@ Create single proyect demo(unity/c# and c++)
 
 Implement and expose mongo db features in the game server commands
 
+Implement endianness detection
 Add uint type     
 Add blob type     
