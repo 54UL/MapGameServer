@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 
-//C++ TO C# CONVERTER NOTE: The following #define macro was replaced in-line:
-//ORIGINAL LINE: #define DLLEXPORT __declspec(dllexport)
-
 namespace MAP
 {
     public class NetByte : INetworkType
@@ -36,15 +33,15 @@ namespace MAP
             var memoryTagVector = m_instance_name.Serialize();
             memoryVector.AddRange(memoryTagVector);
             memoryVector.Add(m_value);
-            return new List<byte>(memoryVector);
+            return memoryVector;
         }
 
         public override List<INetworkType> Deserialize(byte[] argsMemory)
         {
             List<INetworkType> objectStructure = new List<INetworkType>();
             var memoryTag = m_instance_name.Deserialize(argsMemory)[0];
-            objectStructure.Add(new MAP.NetByte(argsMemory[memoryTag.GetSize() + GlobalMembers.MEM_OFFSET_1], memoryTag.GetName()));
-            return new List<INetworkType>(objectStructure);
+            objectStructure.Add(new MAP.NetByte(argsMemory[memoryTag.GetSize() + MememoryOffset.OFFSET_1], memoryTag.GetName()));
+            return objectStructure;
         }
 
         public override NetworkType GetNetworkType()
@@ -59,7 +56,7 @@ namespace MAP
 
         public override int GetSize()
         {
-            return m_instance_name.GetSize() + sizeof(byte) + 1; //+1 for length byte
+            return m_instance_name.GetSize() + sizeof(byte) +1; //+1 for length byte
         }
 
         public byte GetValue()

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
-//C++ TO C# CONVERTER NOTE: The following #define macro was replaced in-line:
-//ORIGINAL LINE: #define DLLEXPORT __declspec(dllexport)
 
 namespace MAP
 {
@@ -18,34 +17,30 @@ namespace MAP
 			this.m_instance_name = name;
 		}
 
-		public new void Dispose()
-		{
-			base.Dispose();
-		}
-
 		public override List<byte> Serialize()
 		{
 			List<byte> memoryVector = new List<byte>(0);
 			//NOTE: MEMORY TAG DOES NOT HAVE TO PASS HIS TYPE ID (ASSUMPTION DUE TO COMPOSITION)
 			memoryVector.Add((byte)m_instance_name.Length); //CHANGE THIS CAST of size_t by byte
-			foreach (var stringIterator in m_instance_name)
+			foreach (var stringIterator in Encoding.ASCII.GetBytes(m_instance_name))
 			{
-				memoryVector.Add(((byte)stringIterator));
+				memoryVector.Add((stringIterator));
 			}
-			return new List<byte>(memoryVector);
+			return memoryVector;
 		}
 
 		public override List<INetworkType> Deserialize(byte[] argsMemory)
 		{
 			byte tagLength = argsMemory[MememoryOffset.OFFSET_1]; //lenght first pos
-			m_instance_name = "";
+			StringBuilder strBuilder = new StringBuilder();
 			for (byte i = 0; i < tagLength; i++)
 			{
-				m_instance_name. (argsMemory[MememoryOffset.OFFSET_2 + i]);
+				strBuilder.Append(argsMemory[MememoryOffset.OFFSET_2 + i]);
 			}
+			m_instance_name = strBuilder.ToString();
 			List<INetworkType> objectStructure = new List<INetworkType>();
 			objectStructure.Add(new MAP.MemoryTag(m_instance_name));
-			return new List<INetworkType>(objectStructure);
+			return objectStructure;
 		}
 
 		public override NetworkType GetNetworkType()

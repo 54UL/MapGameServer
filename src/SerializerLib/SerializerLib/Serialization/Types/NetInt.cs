@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-
-//C++ TO C# CONVERTER NOTE: The following #define macro was replaced in-line:
-//ORIGINAL LINE: #define DLLEXPORT __declspec(dllexport)
+using System;
 
 namespace MAP
 {
@@ -30,14 +28,14 @@ namespace MAP
 			memoryVector.Add((byte)GetNetworkType());
 			var memoryTagVector = m_instance_name.Serialize();
 			memoryVector.AddRange(memoryTagVector);
-			var intSize = sizeof(int);
-//C++ TO C# CONVERTER TODO TASK: There is no equivalent to 'reinterpret_cast' in C#:
-			var intBytePtr = reinterpret_cast<byte>(m_value);
-			for (byte findex = 0; findex < intSize; findex++)
+			
+			byte[] intByteArray = BitConverter.GetBytes(m_value);
+			foreach (var intByte in intByteArray)
 			{
-				memoryVector.Add(intBytePtr[findex]);
+				memoryVector.Add(intByte);
 			}
-			return new List<byte>(memoryVector);
+
+			return memoryVector;
 		}
 
 		public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -46,11 +44,10 @@ namespace MAP
 			var memoryTag = m_instance_name.Deserialize(argsMemory)[0];
 			var intStartPos = memoryTag.GetSize() + MememoryOffset.OFFSET_1;
 
-//C++ TO C# CONVERTER TODO TASK: There is no equivalent to 'reinterpret_cast' in C#:
-			m_value = *reinterpret_cast<const int>(argsMemory + intStartPos);
-
+			m_value = BitConverter.ToInt32(argsMemory, intStartPos);
+			
 			objectStructure.Add(new MAP.NetInt(m_value, memoryTag.GetName()));
-			return new List<INetworkType>(objectStructure);
+			return objectStructure;
 		}
 
 		public override NetworkType GetNetworkType()

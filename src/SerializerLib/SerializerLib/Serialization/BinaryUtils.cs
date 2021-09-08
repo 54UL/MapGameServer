@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MAP
 {
     using NetworkObject = List<INetworkType>;
     public static class BinaryUtils
     {
-
         public static List<byte> Encode(List<INetworkType> sequence)
         {
             List<byte> m_raw_memory_packet = new List<byte>();
@@ -28,8 +28,8 @@ namespace MAP
                 var currentDeserializedBytes = 0;
                 var commandValue = bytes[memPos];
                 var typeCode = (MAP.NetworkType)commandValue;
-
-                var currentDeserializedType = GlobalMembers.SerializerTypes.Get()[typeCode].Deserialize(bytes + memPos);
+                byte[] currentBytePayLoad = bytes.Skip(memPos).ToArray();
+                var currentDeserializedType = GlobalMembers.SerializerTypes.Get()[typeCode].Deserialize(currentBytePayLoad);
 
                 foreach (var dtype in currentDeserializedType)
                 {
@@ -44,15 +44,15 @@ namespace MAP
         public static List<INetworkType> Decode(List<byte> bytes)
         {
             List<INetworkType> objectStructure = new List<INetworkType>();
-            var byteSequenceLength = bytes.Count;
+            var byteSequenceLength = bytes.Count - 1;
 
             for (int memPos = 0; memPos < byteSequenceLength;)
             {
                 var commandValue = bytes[memPos];
                 var typeCode = (MAP.NetworkType)commandValue;
                 var currentDeserializedBytes = 0;
-
-                var currentDeserializedType = GlobalMembers.SerializerTypes.Get()[typeCode].Deserialize(bytes[memPos]);
+                byte[] currentBytePayLoad = bytes.Skip(memPos).ToArray();
+                var currentDeserializedType = GlobalMembers.SerializerTypes.Get()[typeCode].Deserialize(currentBytePayLoad);
                 foreach (var dtype in currentDeserializedType)
                 {
                     currentDeserializedBytes += dtype.GetSize();
@@ -61,21 +61,6 @@ namespace MAP
                 memPos += currentDeserializedBytes;
             }
             return new List<INetworkType>(objectStructure);
-        }
-
-        internal static T Get<T>(SortedDictionary<string, MAP.INetworkType> sequence, string name)
-        {
-            return (T)(sequence[name]);
-        }
-
-        internal static T Get<T>(NetworkObject sequence, string name)
-        {
-            //C++ TO C# CONVERTER TODO TASK: Lambda expressions cannot be assigned to 'var':
-           var findedElement =  sequence.Find((val)=>{
-                return val.GetName().CompareTo(name) == 0;
-            });
-
-            return (T)(findedElement);
         }
     }
 }

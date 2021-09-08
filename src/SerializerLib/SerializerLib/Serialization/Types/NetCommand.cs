@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 
-//C++ TO C# CONVERTER NOTE: The following #define macro was replaced in-line:
-//ORIGINAL LINE: #define DLLEXPORT __declspec(dllexport)
-
 namespace MAP
 {
     public class NetCommand : INetworkType
@@ -30,7 +27,7 @@ namespace MAP
             memoryVector.Add((byte)GetNetworkType());
             memoryVector.Add(m_command_id);
             memoryVector.Add(m_client_id);
-            return new List<byte>(memoryVector);
+            return memoryVector;
         }
 
         public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -39,7 +36,7 @@ namespace MAP
             var clientId = argsMemory[MememoryOffset.OFFSET_2];
             List<MAP.INetworkType> objectStructure = new List<MAP.INetworkType>();
             objectStructure.Add(new NetCommand(commandId, clientId));
-            return new List<MAP.INetworkType>(objectStructure);
+            return objectStructure;
         }
 
         public override string GetName()

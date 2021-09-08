@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "xYZCjQE9uplvjc8igvzato7JOiKtBUHEVw+MVsi3cfijQg8dShUelyaaBz0ZtAw9bwC894w/BxlWYjJOZhPclQ==",
+  "dgSpecHash": "brEgDdPlq11UHKhj4gkEqBafGZTVo4c8LVcrd2LCI+Bhw3s/6y8iSUnwTVAiZ5ib8RZ6coEjDF60sDe5J2RSSw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\saul\\source\\repos\\SerializerLib\\SerializerLib\\SerializerLib.csproj",
+  "projectFilePath": "C:\\repos\\MapGameServer\\src\\SerializerLib\\SerializerLib\\SerializerLib.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\saul\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.app\\2.0.0\\microsoft.netcore.app.2.0.0.nupkg.sha512",
+    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.dotnetapphost\\2.0.0\\microsoft.netcore.dotnetapphost.2.0.0.nupkg.sha512",
+    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.dotnethostpolicy\\2.0.0\\microsoft.netcore.dotnethostpolicy.2.0.0.nupkg.sha512",
+    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.dotnethostresolver\\2.0.0\\microsoft.netcore.dotnethostresolver.2.0.0.nupkg.sha512",
+    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "C:\\Users\\saul\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512"
   ],
   "logs": []
 }

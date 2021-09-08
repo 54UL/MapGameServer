@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
 
 namespace MAP
 {
@@ -9,7 +11,6 @@ namespace MAP
         public const int IEEE_754_FLOAT_MANTISSA_BITS = 23;
         public const int IEEE_754_FLOAT_EXPONENT_BITS = 8;
         public const int IEEE_754_FLOAT_SIGN_BITS = 1;
-
 
         public NetFloat()
         {
@@ -29,17 +30,14 @@ namespace MAP
             memoryVector.Add((byte)GetNetworkType());
             var memoryTagVector = m_instance_name.Serialize();
             memoryVector.AddRange(memoryTagVector);
-            //Float value serialization
-            var floatSize = sizeof(float);
-            //C++ TO C# CONVERTER TODO TASK: There is no equivalent to 'reinterpret_cast' in C#:
-            var floatBytePtr = reinterpret_cast<byte>(m_float);
-            for (byte findex = 0; findex < floatSize; findex++)
+
+            byte[] floatByteArray = BitConverter.GetBytes(m_float);
+            foreach (var floatByte in floatByteArray)
             {
-                memoryVector.Add(floatBytePtr[findex]);
+                memoryVector.Add(floatByte);
             }
 
-
-            return new List<byte>(memoryVector);
+            return memoryVector;
         }
 
         public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -48,11 +46,10 @@ namespace MAP
             var memoryTag = m_instance_name.Deserialize(argsMemory)[0];
             var floatValueStartPos = memoryTag.GetSize() + MememoryOffset.OFFSET_1;
 
-            //C++ TO C# CONVERTER TODO TASK: There is no equivalent to 'reinterpret_cast' in C#:
-            m_float.value = *reinterpret_cast <const float> (argsMemory + floatValueStartPos);
+            m_float = BitConverter.ToSingle(argsMemory, floatValueStartPos);
 
             objectStructure.Add(new MAP.NetFloat(m_float, memoryTag.GetName()));
-            return new List<INetworkType>(objectStructure);
+            return objectStructure;
         }
 
         public override NetworkType GetNetworkType()

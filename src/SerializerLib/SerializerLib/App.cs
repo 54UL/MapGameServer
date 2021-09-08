@@ -7,7 +7,15 @@ namespace SerializerLib
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("HELLO");
+            SerializerTest test = new SerializerTest();
+            if (test.Check())
+            {
+                Console.Out.WriteLine("Serilization tests succeded");
+            }
+            else
+            {
+                Console.Out.WriteLine("Serilization tests succeded");
+            }
         }
     }
 }

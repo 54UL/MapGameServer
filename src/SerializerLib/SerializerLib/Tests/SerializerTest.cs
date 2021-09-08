@@ -25,17 +25,14 @@ namespace MAP
                 new MAP.NetByte(255, "fullbyte")};
 
             var binaryData = BinaryUtils.Encode(sequence);
-            var deserialized = BinaryUtils.DecodeAsMap(binaryData.ToArray(), binaryData.Count);
+            var deserialized = BinaryUtils.DecodeAsMap(binaryData.ToArray(), binaryData.Count - 1);
 
-            var half = BinaryUtils.Get<MAP.NetByte>(deserialized, "halfbyte");
-            var full = BinaryUtils.Get<MAP.NetByte>(deserialized, "fullbyte");
-            var answer = BinaryUtils.Get<MAP.NetByte>(deserialized, "answer");
+            var half = ((MAP.NetByte)deserialized["halfbyte"]).GetValue();
+            var full = ((MAP.NetByte)deserialized["fullbyte"]).GetValue();
+            var answer = ((MAP.NetByte)deserialized["answer"]).GetValue();
 
-            var test1 = half.GetValue();
-            var test2 = full.GetValue();
-            var test3 = answer.GetValue();
 
-            return (test1 == 128 && test2 == 255 && test3 == 42);
+            return (half == 128 && full == 255 && answer == 42);
         }
 
         public bool DynamicTypeArrayTest()
@@ -47,13 +44,12 @@ namespace MAP
 
             var arrayObj = new MAP.NetArray(sequence, "arrayTest");
             var serializedArrayVector = arrayObj.Serialize();
-            var objMap = BinaryUtils.DecodeAsMap(serializedArrayVector.ToArray(), serializedArrayVector.Count);
+            var objMap = BinaryUtils.DecodeAsMap(serializedArrayVector.ToArray(), serializedArrayVector.Count - 1);
 
-            var arr = BinaryUtils.Get<MAP.NetArray>(objMap, "arrayTest").GetValues();
-
-            var testbyte = BinaryUtils.Get<MAP.NetByte>(arr, "byteVal").GetValue();
-            var floatVal = BinaryUtils.Get<MAP.NetFloat>(arr, "decimal").GetValue();
-            var stringVal = BinaryUtils.Get<MAP.NetString>(arr, "someString").GetValue();
+            var arr = ((MAP.NetArray)objMap["arrayTest"]).GetValues();
+            var testbyte = ((MAP.NetByte)arr[0]).GetValue();
+            var floatVal = ((MAP.NetFloat)arr[1]).GetValue();
+            var stringVal =((MAP.NetString)arr[2]).GetValue();
 
             return testbyte == 42;
         }
@@ -65,10 +61,12 @@ namespace MAP
                 new MAP.NetString("This is a large text, can contain 255 characters", "longText")
                 };
             var serializedStrings = BinaryUtils.Encode(sequence);
-            var deserialized = BinaryUtils.DecodeAsMap(serializedStrings.ToArray(), serializedStrings.Count);
-            var hello = BinaryUtils.Get<MAP.NetString>(deserialized, "hello");
-            var longText = BinaryUtils.Get<MAP.NetString>(deserialized, "longText");
-            return hello.GetValue().CompareTo("Hello world") == 0;
+            var deserialized = BinaryUtils.DecodeAsMap(serializedStrings.ToArray(), serializedStrings.Count - 1);
+
+            var hello = ((MAP.NetString)deserialized["hello"]).GetValue();
+            var longText = ((MAP.NetString)deserialized["longText"]).GetValue();
+
+            return hello.CompareTo("Hello world") == 0;
         }
 
         public bool FloatTypeTest()
@@ -80,14 +78,12 @@ namespace MAP
                 new MAP.NetFloat(255.0f, "full")};
 
             var serializedFloats = BinaryUtils.Encode(sequence);
-            var deserialized = BinaryUtils.DecodeAsMap(serializedFloats.ToArray(), serializedFloats.Count);
+            var deserialized = BinaryUtils.DecodeAsMap(serializedFloats.ToArray(), serializedFloats.Count - 1);
 
-            var tinyVal = BinaryUtils.Get<MAP.NetFloat>(deserialized, "tiny6");
-            var halfVal = BinaryUtils.Get<MAP.NetFloat>(deserialized, "half");
+            var tinyVal = ((MAP.NetFloat)deserialized["tiny6"]).GetValue();
+            var halfVal = ((MAP.NetFloat)deserialized["half"]).GetValue();
 
-            float val = tinyVal.GetValue();
-            float val2 = halfVal.GetValue();
-            return val == 0.006f;
+            return tinyVal == 0.006f && halfVal == 128.0f;
         }
 
         public bool IntTypeTest()
@@ -98,17 +94,12 @@ namespace MAP
                 new MAP.NetInt(12345678, "large")};
 
             var serializedInts = BinaryUtils.Encode(sequence);
-            var deserialized = BinaryUtils.DecodeAsMap(serializedInts.ToArray(), serializedInts.Count);
+            var deserialized = BinaryUtils.DecodeAsMap(serializedInts.ToArray(), serializedInts.Count - 1);
+            var luck = ((MAP.NetInt)deserialized["luck"]).GetValue();
+            var hell = ((MAP.NetInt)deserialized["hell"]).GetValue();
+            var large = ((MAP.NetInt)deserialized["large"]).GetValue();
 
-            var luck = BinaryUtils.Get<MAP.NetInt>(deserialized, "luck");
-            var hell = BinaryUtils.Get<MAP.NetInt>(deserialized, "hell");
-            var large = BinaryUtils.Get<MAP.NetInt>(deserialized, "large");
-
-            int val = luck.GetValue();
-            int val2 = hell.GetValue();
-            int val3 = large.GetValue();
-
-            return val == 777 && val2 == 666 && val3 == 12345678;
+            return luck == 777 && hell == 666 && large == 12345678;
         }
 
         public bool ComplexArrayObjectTest()
@@ -124,11 +115,12 @@ namespace MAP
              new MAP.NetArray(poolData, "PoolObj4")};
 
             var serializedObject = BinaryUtils.Encode(commandPayload);
-            var deserializedObjectMap = BinaryUtils.DecodeAsMap(serializedObject.ToArray(), serializedObject.Count);
+            var deserializedObjectMap = BinaryUtils.DecodeAsMap(serializedObject.ToArray(), serializedObject.Count - 1);
             //Get pool obj3
-            var poolDataArr = BinaryUtils.Get<MAP.NetArray>(deserializedObjectMap, "PoolObj3").GetValues();
-            var poolId = BinaryUtils.Get<MAP.NetInt>(poolDataArr, "PoolId").GetValue();
-            var poolName = BinaryUtils.Get<MAP.NetString>(poolDataArr, "PoolName").GetValue();
+           
+            var poolDataArr = ((MAP.NetArray)deserializedObjectMap["PoolObj3"]).GetValues();
+            var poolId = ((MAP.NetInt)poolDataArr[0]).GetValue();
+            var poolName = ((MAP.NetInt)poolDataArr[1]).GetValue();
             return true;
         }
 

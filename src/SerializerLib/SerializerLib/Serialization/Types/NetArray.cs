@@ -1,5 +1,5 @@
-﻿using MAP;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace MAP
 {
@@ -30,11 +30,11 @@ namespace MAP
             foreach (var arrayValue in m_values)
             {
                 var memoryChunk = arrayValue.Serialize();
-                arrayValuesVector.insert(arrayValuesVector.end(), memoryChunk.begin(), memoryChunk.end());
+                arrayValuesVector.InsertRange(arrayValuesVector.Count - 1,memoryChunk);
             }
-            memoryVector.Add(memoryVector.Count + arrayValuesVector.size() + 1); //LENGTH  IN BYTES
+            memoryVector.Add((byte)(memoryVector.Count - 1 + arrayValuesVector.Count - 1 + 1)); //LENGTH  IN BYTES
             memoryVector.AddRange(arrayValuesVector); //ARRAY_BINARY_VALUE/S
-            return new List<byte>(memoryVector);
+            return memoryVector;
         }
 
         public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -44,11 +44,11 @@ namespace MAP
             var memoryTagOffset = memoryTag.GetSize();
             var arrayLength = argsMemory[memoryTagOffset + memoryTagOffset + MememoryOffset.OFFSET_1];
             var startOffset = memoryTagOffset + memoryTagOffset + MememoryOffset.OFFSET_2;
-            var valuesMemoryVector = new List<byte>(argsMemory + startOffset, (argsMemory + arrayLength));
+            var valuesMemoryVector = argsMemory.Skip(startOffset).Take(arrayLength).ToList();
 
             var decodedArrayVal = BinaryUtils.Decode(valuesMemoryVector);
             objectStructure.Add(new MAP.NetArray(decodedArrayVal, memoryTag.GetName()));
-            return new List<INetworkType>(objectStructure);
+            return objectStructure;
         }
 
         public override NetworkType GetNetworkType()
