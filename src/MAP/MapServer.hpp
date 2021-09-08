@@ -62,7 +62,7 @@ namespace MAP
         uint64_t lastClientIndex;
         uint8_t data_[MAX_DATA_PAYLOAD];
         std::mutex commandMutex_; // protects all command and data operations
-        std::map<std::string, std::string> testingPool_;
+        std::map<std::string,MAP::NetworkField> testingPool_;
         std::mutex consumedTickMutex; // protects all command and data operations
         MAP::Vector<udp::endpoint> alreadyCosumedTickTime_;
         udp::endpoint receiverEndpoint_;

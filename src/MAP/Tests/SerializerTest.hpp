@@ -27,7 +27,7 @@ namespace MAP
 
         inline bool ByteTypeTest()
         {
-            std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
+            NetworkObject sequence = {
                 std::make_shared<MAP::NetCommand>(static_cast<uint8_t>(MAP::ServerCommandType::SUBSCRIBE), 102),
                 std::make_shared<MAP::NetByte>(42, "answer"),
                 std::make_shared<MAP::NetByte>(128, "halfbyte"),
@@ -49,7 +49,7 @@ namespace MAP
 
         inline bool DynamicTypeArrayTest()
         {
-            std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
+            NetworkObject sequence = {
                 std::make_shared<MAP::NetByte>(42, "byteVal"),
                 std::make_shared<MAP::NetFloat>(0.33f, "decimal"),
                 std::make_shared<MAP::NetString>("testing string lol", "someString")};
@@ -59,16 +59,16 @@ namespace MAP
             auto objMap = testObj.DecodeAsMap(serializedArrayVector.data(), serializedArrayVector.size());
             auto arr = std::dynamic_pointer_cast<MAP::NetArray>(objMap["arrayTest"])->GetValues();
 
-            auto byte = BinaryObject::Get<MAP::NetByte>(arr,"byteVal")->GetValue();
-            auto floatVal = BinaryObject::Get<MAP::NetFloat>(arr,"decimal")->GetValue();
-            auto stringVal = BinaryObject::Get<MAP::NetString>(arr,"someString")->GetValue();
+            auto byte = BinaryObject::Get<MAP::NetByte>(arr, "byteVal")->GetValue();
+            auto floatVal = BinaryObject::Get<MAP::NetFloat>(arr, "decimal")->GetValue();
+            auto stringVal = BinaryObject::Get<MAP::NetString>(arr, "someString")->GetValue();
 
             return byte == 42;
         }
 
         inline bool StringTypeTest()
         {
-            std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
+            NetworkObject sequence = {
                 std::make_shared<MAP::NetString>("Hello world", "hello"),
                 std::make_shared<MAP::NetString>("This is a large text, can contain 255 characters", "longText")};
             auto serializedStrings = binaryParser.Encode(sequence);
@@ -80,7 +80,7 @@ namespace MAP
 
         inline bool FloatTypeTest()
         {
-            std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
+            NetworkObject sequence = {
                 std::make_shared<MAP::NetFloat>(0.006f, "tiny6"),
                 std::make_shared<MAP::NetFloat>(42.0f, "abc"),
                 std::make_shared<MAP::NetFloat>(128.0f, "half"),
@@ -99,7 +99,7 @@ namespace MAP
 
         inline bool IntTypeTest()
         {
-            std::vector<std::shared_ptr<MAP::INetworkType>> sequence = {
+            NetworkObject sequence = {
                 std::make_shared<MAP::NetInt>(777, "luck"),
                 std::make_shared<MAP::NetInt>(666, "hell"),
                 std::make_shared<MAP::NetInt>(12345678, "large")};
@@ -118,6 +118,40 @@ namespace MAP
             return val == 777 && val2 == 666 && val3 == 12345678;
         }
 
+        inline bool ComplexArrayObjectTest()
+        {
+            NetworkObject poolData{
+                std::make_shared<MAP::NetInt>(666, "PoolId"),
+                std::make_shared<MAP::NetString>("DEFAULT POOL", "PoolName")};
+
+            NetworkObject
+                commandPayload{
+                    std::make_shared<MAP::NetArray>(poolData, "PoolObj1"),
+                    std::make_shared<MAP::NetArray>(poolData, "PoolObj2"),
+                    std::make_shared<MAP::NetArray>(poolData, "PoolObj3"),
+                    std::make_shared<MAP::NetArray>(poolData, "PoolObj4")};
+
+            auto serializedObject = binaryParser.Encode(commandPayload);
+            auto deserializedObjectMap = binaryParser.DecodeAsMap(serializedObject.data(), serializedObject.size());
+            //Get pool obj3
+            auto poolDataArr = BinaryObject::Get<MAP::NetArray>(deserializedObjectMap, "PoolObj3")->GetValues();
+            auto poolId = BinaryObject::Get<MAP::NetInt>(poolDataArr, "PoolId")->GetValue();
+            auto poolName = BinaryObject::Get<MAP::NetString>(poolDataArr, "PoolName")->GetValue();
+            return true;
+        }
+
+        inline bool AssigmentTest(){
+            //THIS IS A ASSIGMENT TEST WITHOUT OPERATOR OVERLOAD IN THE INTERFACE(TODO!!!)
+            std::map<const char*,std::shared_ptr<MAP::INetworkType>> testMap{
+                std::make_pair("element1",std::make_shared<MAP::NetInt>(666, "PoolId")),
+                std::make_pair("element2",std::make_shared<MAP::NetInt>(666, "PoolId"))
+            };
+            auto someExternalNetworkType = std::make_shared<MAP::NetInt>(33333,"PoolId");
+            testMap["element1"] = someExternalNetworkType;
+            int testMapVal = std::dynamic_pointer_cast<MAP::NetInt>(testMap["element1"])->GetValue();
+            return testMapVal == 33333;
+        }
+
         bool Check() override
         {
             bool allRight = false;
@@ -126,6 +160,8 @@ namespace MAP
             allRight = StringTypeTest();
             allRight = FloatTypeTest();
             allRight = IntTypeTest();
+            allRight = ComplexArrayObjectTest();
+            allRight = AssigmentTest();
             return allRight;
         }
 

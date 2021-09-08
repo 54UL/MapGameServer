@@ -31,7 +31,7 @@ namespace MAP
         }
 
         template <class T>
-        static std::shared_ptr<T> Get(std::vector<std::shared_ptr<MAP::INetworkType>> &sequence, std::string name)
+        static std::shared_ptr<T> Get(NetworkObject &sequence, std::string name)
         {
             auto findedElement = std::find_if(sequence.begin(),sequence.end(),[&](std::shared_ptr<MAP::INetworkType> typeIt){
                 return std::strcmp(typeIt->GetName(),name.c_str()) == 0 ;

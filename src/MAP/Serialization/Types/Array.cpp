@@ -6,7 +6,7 @@ namespace MAP
     {
     }
 
-    NetArray::NetArray(std::vector<std::shared_ptr<MAP::INetworkType>> sequence, std::string name) : m_instance_name(name), m_values(sequence)
+    NetArray::NetArray(NetworkObject sequence, std::string name) : m_instance_name(name), m_values(sequence)
     {
     }
 
@@ -62,7 +62,7 @@ namespace MAP
         return m_instance_name.GetSize() + partialSize + 2;
     }
 
-    std::vector<std::shared_ptr<MAP::INetworkType>> NetArray::GetValues()
+    NetworkObject NetArray::GetValues()
     {
         return m_values;
     }

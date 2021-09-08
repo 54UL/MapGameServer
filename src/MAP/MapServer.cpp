@@ -12,7 +12,7 @@
 namespace MAP
 {
     using asio::ip::udp;
-    //TODO: REFACTOR AL CONSTRUCTOR
+  
     MapServer::MapServer(asio::io_context &io_context, short port) : socket_(io_context, udp::endpoint(udp::v4(), port)),
                                                                      serverTicks_(0),
                                                                      lastClientIndex(32)
@@ -83,9 +83,6 @@ namespace MAP
     void MapServer::Initialize()
     {
         RegisterCommands();
-        // json defaultPoolObj;
-        // defaultPoolObj["PoolName"] = "DEFAULT POOL,WELCOME";
-        //StartPool(MAP::CommandArgs(std::make_shared<MAP::Client>(), defaultPoolObj));
     }
 
     void MapServer::RegisterCommands()
@@ -214,7 +211,7 @@ namespace MAP
 
     void MapServer::SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client)
     {
-        std::vector<std::shared_ptr<MAP::INetworkType>> objStructure;
+        NetworkObject objStructure;
         objStructure.push_back(std::make_shared<MAP::NetCommand>(command.Code, client->UserId));
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
         std::vector<uint8_t> memoryBuffer = binaryParser.Encode(objStructure);
@@ -251,14 +248,14 @@ namespace MAP
             auto clientEndpoint = udp::endpoint(ipAddrr, port);
             auto newClient = std::make_shared<MAP::Client>(userId, playerName, hostName, clientEndpoint, port);
             connectedClients_.emplace_back(newClient);
-            
+
             //SEND REPLY
-            std::vector<std::shared_ptr<MAP::INetworkType>> commandPayload;
-            std::vector<std::shared_ptr<MAP::INetworkType>> spawnedObjs;
+            NetworkObject commandPayload;
+            NetworkObject spawnedObjs;
 
             for (const auto &entity : spawnedObjects_)
             {
-                std::vector<std::shared_ptr<MAP::INetworkType>> entityStructure{
+                NetworkObject entityStructure{
                     std::make_shared<MAP::NetString>(entity.PrefabName, "PrefabName"),
                     std::make_shared<MAP::NetInt>(entity.PlayerOwner, "PlayerId"),
                 };
@@ -278,18 +275,21 @@ namespace MAP
 
     void MapServer::GetActivePools(MAP::CommandArgs &args)
     {
-        // json commandPayload;
-        // // for(const auto & pools,)
-        // // commandQueue_.push_back(MAP::Command("GET_POOLS", commandPayload, false, std::move(lastClient)));
-        // json PoolPair;
-        // PoolPair["PoolId"] = "666";
-        // PoolPair["PoolName"] = "DEFAULT POOL";
-        // commandPayload["pools"].push_back(PoolPair);
-        // commandPayload["pools"].push_back(PoolPair);
-        // commandPayload["pools"].push_back(PoolPair);
-        // commandMutex_.lock();
-        // commandQueue_.push_back(MAP::Command("GET_POOLS", commandPayload, false, args.Owner));
-        // commandMutex_.unlock();
+        //test elements
+        NetworkObject poolData{
+            std::make_shared<MAP::NetInt>(666, "PoolId"),
+            std::make_shared<MAP::NetString>("DEFAULT POOL", "PoolName")};
+
+        NetworkObject
+            commandPayload{
+                std::make_shared<MAP::NetArray>(poolData, "PoolObj1"),
+                std::make_shared<MAP::NetArray>(poolData, "PoolObj2"),
+                std::make_shared<MAP::NetArray>(poolData, "PoolObj3"),
+                std::make_shared<MAP::NetArray>(poolData, "PoolObj4")};
+
+        commandMutex_.lock();
+        commandQueue_.push_back(MAP::Command(static_cast<uint8_t>(ServerCommandType::GET_ACTIVE_POOLS), commandPayload, false, args.Owner));
+        commandMutex_.unlock();
     }
 
     void MapServer::Unsubscribe(MAP::CommandArgs &args)
@@ -306,13 +306,18 @@ namespace MAP
 
     void MapServer::UpssertProperty(MAP::CommandArgs &args)
     {
-        // json commandPayload;
-        // testingPool_[args.data["Key"]] = args.data["Value"].get<std::string>();
-        // commandPayload["Key"] = args.data["Key"];
-        // commandPayload["Value"] = args.data["Value"].get<std::string>();
-        // commandMutex_.lock();
-        // commandQueue_.push_back(MAP::Command("UPPSERT", commandPayload, true, args.Owner));
-        // commandMutex_.unlock();
+        std::string payloadKey = BinaryObject::Get<MAP::NetString>(args.Payload, "Key")->GetValue();
+        auto payloadValue = args.Payload["Value"];
+        //Set internal data
+        testingPool_[payloadKey] = payloadValue;
+        //Broadcast payload
+        NetworkObject commandPayload{
+            std::make_shared<MAP::NetString>(payloadKey, "Key"),
+            payloadValue};
+
+        commandMutex_.lock();
+        commandQueue_.push_back(MAP::Command(static_cast<uint8_t>(ServerCommandType::UPSERT), commandPayload, true, args.Owner));
+        commandMutex_.unlock();
     }
 
     void MapServer::RemoveProperty(MAP::CommandArgs &args)
@@ -321,15 +326,16 @@ namespace MAP
 
     void MapServer::SpawnObject(MAP::CommandArgs &args)
     {
-        // json commandPayload;
-        // commandPayload["PrefabName"] = args.data["PrefabName"];
-        // commandPayload["PlayerId"] = args.data["PlayerId"];
-        // auto owner = args.data["PlayerId"].get<uint64_t>();
-        // auto prefabName = args.data["PrefabName"].get<std::string>();
-        // MAP::SpawnedEntity spawnedEntity(prefabName,owner);
-        // commandMutex_.lock();
-        // spawnedObjects_.push_back(spawnedEntity);
-        // commandQueue_.push_back(MAP::Command("SPAWN", commandPayload, true, args.Owner));
-        // commandMutex_.unlock();
+        int playerId = BinaryObject::Get<MAP::NetInt>(args.Payload, "PlayerId")->GetValue();
+        std::string prefabName = BinaryObject::Get<MAP::NetString>(args.Payload, "PrefabName")->GetValue();
+        MAP::SpawnedEntity spawnedEntity(prefabName, playerId);
+        NetworkObject commandPayload{
+            args.Payload["PlayerId"],
+            args.Payload["PrefabName"]
+            };
+        commandMutex_.lock();
+        spawnedObjects_.push_back(spawnedEntity);
+        commandQueue_.push_back(MAP::Command(static_cast<uint8_t>(ServerCommandType::SPAWN), commandPayload, true, args.Owner));
+        commandMutex_.unlock();
     }
 }

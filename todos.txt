@@ -3,9 +3,10 @@ Add string type  DONE
 Add float type   DONE 
 Add int type     DONE
 
-Implement serialization in the server
+Implement serialization in the server DONE
 
 Implement serialization in the c# client
+    * Implement as external c# dll module (Map logic and serialization)
     * BinaryObject and typeInterface in c#
     * Implement all types interfaces
     * Implement serialization in c# client

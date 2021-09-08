@@ -13,7 +13,6 @@ namespace MAP
     constexpr uint8_t MEM_OFFSET_2 = 2;
     constexpr uint8_t MEM_OFFSET_3 = 3;
     constexpr uint8_t MEM_OFFSET_4 = 4;
- 
     enum class NetworkType : uint8_t
     {
         TAG = 0x01,
@@ -38,6 +37,10 @@ namespace MAP
         virtual NetworkType GetType() = 0;
         virtual uint32_t GetSize() = 0;
     };
+
+    using NetworkObject = std::vector<std::shared_ptr<MAP::INetworkType>>; 
+    using NetworkField = std::shared_ptr<MAP::INetworkType>; 
+
 }
 
 #endif

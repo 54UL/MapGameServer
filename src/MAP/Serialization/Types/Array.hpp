@@ -12,7 +12,7 @@ namespace MAP
     {
     public:
         NetArray();
-        NetArray(std::vector<std::shared_ptr<MAP::INetworkType>> sequence, std::string name);
+        NetArray(NetworkObject sequence, std::string name);
         virtual ~NetArray();
 
         std::vector<uint8_t> Serialize() override;
@@ -24,10 +24,10 @@ namespace MAP
         const char *GetName() override;
 
         uint32_t GetSize() override;
-        std::vector<std::shared_ptr<MAP::INetworkType>> GetValues();
+        NetworkObject GetValues();
         std::shared_ptr<MAP::INetworkType> At(std::size_t pos);
     private:
-        std::vector<std::shared_ptr<MAP::INetworkType>> m_values;
+        NetworkObject m_values;
         MAP::MemoryTag m_instance_name;
     };
 }

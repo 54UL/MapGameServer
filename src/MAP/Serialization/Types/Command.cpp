@@ -30,7 +30,7 @@ namespace MAP
     {
         auto commandId = argsMemory[MEM_OFFSET_1];
         auto clientId = argsMemory[MEM_OFFSET_2];
-        std::vector<std::shared_ptr<MAP::INetworkType>> objectStructure;
+        NetworkObject objectStructure;
         objectStructure.push_back(std::make_shared<NetCommand>(commandId, clientId));
         return objectStructure;
     }
