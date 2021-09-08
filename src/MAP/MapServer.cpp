@@ -251,6 +251,7 @@ namespace MAP
             auto clientEndpoint = udp::endpoint(ipAddrr, port);
             auto newClient = std::make_shared<MAP::Client>(userId, playerName, hostName, clientEndpoint, port);
             connectedClients_.emplace_back(newClient);
+            
             //SEND REPLY
             std::vector<std::shared_ptr<MAP::INetworkType>> commandPayload;
             std::vector<std::shared_ptr<MAP::INetworkType>> spawnedObjs;
@@ -267,7 +268,7 @@ namespace MAP
 
             commandPayload.push_back(std::make_shared<MAP::NetInt>(userId, "ClientId"));
             commandPayload.push_back(std::make_shared<MAP::NetString>("null", "AccesToken"));
-            commandPayload.push_back(std::make_shared<MAP::NetArray>(spawnedObjs, "AccesToken"));
+            commandPayload.push_back(std::make_shared<MAP::NetArray>(spawnedObjs, "SpawnedEntities"));
             std::cout << "user conected" << std::endl;
             commandMutex_.lock();
             commandQueue_.push_back(MAP::Command(static_cast<uint8_t>(ServerCommandType::SUBSCRIBE), commandPayload, false, connectedClients_.back()));
