@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "xYZCjQE9uplvjc8igvzato7JOiKtBUHEVw+MVsi3cfijQg8dShUelyaaBz0ZtAw9bwC894w/BxlWYjJOZhPclQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\saul\\source\\repos\\SerializerLib\\SerializerLib\\SerializerLib.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\saul\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\saul\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
