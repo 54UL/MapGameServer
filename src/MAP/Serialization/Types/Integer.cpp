@@ -34,9 +34,8 @@ namespace MAP
         auto memoryTag = m_instance_name.Deserialize(argsMemory).at(0);
         auto intStartPos = memoryTag->GetSize() + MEM_OFFSET_1;
 
-        const uint8_t *intPtr = argsMemory + intStartPos;
-        m_value = *reinterpret_cast<const int *>(intPtr);
-
+        m_value = *reinterpret_cast<const int *>(argsMemory + intStartPos);
+        
         objectStructure.push_back(std::make_shared<MAP::NetInt>(m_value, memoryTag->GetName()));
         return objectStructure;
     }

@@ -19,18 +19,6 @@ using asio::ip::udp;
 
 namespace MAP
 {
-    enum class ServerCommandType : uint8_t
-    {
-        SUBSCRIBE = 0x01,
-        UNSUBSCRIBE = 0x02,
-        START_POOL = 0x03,
-        END_POOL = 04,
-        UPSERT = 0x05,
-        REMOVE = 0x06,
-        SPAWN = 0x07,
-        GET_ACTIVE_POOLS = 0x08
-    };
-
     class MapServer
     {
     public:
@@ -51,6 +39,8 @@ namespace MAP
         void SendData(uint8_t *charArrayData, std::size_t length, asio::ip::udp::endpoint to);
         bool ShouldSendData(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         void SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
+
+        void OnRecive(const uint8_t *data, std::size_t length);
 
         //SERVER COMMANDS
         void Subscribe(MAP::CommandArgs &args);

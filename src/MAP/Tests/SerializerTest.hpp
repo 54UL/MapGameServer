@@ -1,5 +1,6 @@
 #ifndef SERIALIZER_TEST
 #define SERIALIZER_TEST
+
 #include <memory>
 #include <vector>
 #include "../UnitTesting.hpp"

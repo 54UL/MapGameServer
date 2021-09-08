@@ -37,8 +37,7 @@ namespace MAP
         auto memoryTag = m_instance_name.Deserialize(argsMemory).at(0);
         auto floatValueStartPos = memoryTag->GetSize() + MEM_OFFSET_1;
         
-        const uint8_t *floatPtr = argsMemory + floatValueStartPos;
-        m_float.value = *reinterpret_cast<const float *>(floatPtr);
+        m_float.value = *reinterpret_cast<const float *>( argsMemory + floatValueStartPos);
         
         objectStructure.push_back(std::make_shared<MAP::NetFloat>(m_float.value, memoryTag->GetName()));
         return objectStructure;

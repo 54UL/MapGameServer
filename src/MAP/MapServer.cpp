@@ -167,6 +167,18 @@ namespace MAP
         return *client;
     }
 
+    void MapServer::OnRecive(const uint8_t *data, std::size_t length)
+    {
+        std::cout << "[INCOMIG DATA: " << length << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
+        std::cout << std::hex << data << std::endl; //BINARY ???
+
+        auto dataSequence = binaryParser.DecodeAsMap(data_, length);
+        auto decodedCommand = std::dynamic_pointer_cast<MAP::NetCommand>((dataSequence.at(0)));
+        dataSequence.erase(dataSequence.begin()); //OJO
+        MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), dataSequence);
+        DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
+    }
+
     void MapServer::ReciveData()
     {
         socket_.async_receive_from(
@@ -177,23 +189,11 @@ namespace MAP
                 {
                     try
                     {
-                        std::cout << "[INCOMIG DATA: " << bytes_recvd << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
-                        std::cout << data_ << std::endl;
-                        //DESERIALIZE A command
-                        auto decodedPacket = binaryParser.DecodeAsMap(data_,bytes_recvd);
-                        auto decodedCommand = std::dynamic_pointer_cast<MAP::NetCommand>((decodedPacket.at(0)));
-                        MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), decodedPacket);
-                        DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
-                        //TODO:CONSEGUIR EL DUEÑO PARA CONSTRUIR UN OBJETO LLAMADO COMMAND ARGS
-                        //PAYLOAD EJ: []
-                        //DECODE
-                        //    auto clientId = conseguir el client id del comando
-                        //
-                        // DecodeCommand(header, commandArg);
+                        OnRecive(data_, bytes_recvd);
                     }
                     catch (std::exception &e)
                     {
-                         std::cerr << "[COMMAND LOST DUE:  :" << e.what() << "]\n";
+                        std::cerr << "[COMMAND LOST DUE:  :" << e.what() << "]\n";
                     }
                 }
             });
@@ -215,14 +215,14 @@ namespace MAP
     void MapServer::SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client)
     {
         std::vector<std::shared_ptr<MAP::INetworkType>> objStructure;
-        objStructure.push_back(std::make_shared<MAP::NetCommand>(command.Code,client->UserId));
+        objStructure.push_back(std::make_shared<MAP::NetCommand>(command.Code, client->UserId));
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
         std::vector<uint8_t> memoryBuffer = binaryParser.Encode(objStructure);
         SendData(memoryBuffer.data(), memoryBuffer.size(), client->ClientEndpoint);
     }
 
     //TODO: VERIFICAR ENVIOS DE CADA CLIENTE (ASEGURAR TICKS SINCRONIZADOS)
-    void MapServer::SendData(uint8_t * charArrayData, std::size_t length, asio::ip::udp::endpoint to)
+    void MapServer::SendData(uint8_t *charArrayData, std::size_t length, asio::ip::udp::endpoint to)
     {
         socket_.async_send_to(
             asio::buffer(charArrayData, length), to,
@@ -236,40 +236,43 @@ namespace MAP
     //COMAND IMPLEMENTATION
     void MapServer::Subscribe(MAP::CommandArgs &args)
     {
-        // json commandArg;
-        //auto args.Payload["IpAddress"]; TODO:DESPUES DE IMPLEMENTAR LOS TIPOS CONTINUAR AQUI
+        std::string IpAddress = BinaryObject::Get<MAP::NetString>(args.Payload, "IpAddress")->GetValue();
+        std::string playerName = BinaryObject::Get<MAP::NetString>(args.Payload, "PlayerName")->GetValue();
+        std::string hostName = BinaryObject::Get<MAP::NetString>(args.Payload, "HostName")->GetValue();
+        int port = BinaryObject::Get<MAP::NetInt>(args.Payload, "Port")->GetValue();
 
-        // if (args.data["IpAddress"] == "")
-        //     return;
+        if (IpAddress.compare("") == 0)
+            return;
 
-        // if (connectedClients_.size() < MAX_CLIENTS)
-        // {
-        //     auto userId = lastClientIndex++;
-        //     auto ipAdrres = asio::ip::address::from_string(args.data["IpAddress"].get<std::string>());
-        //     auto clientEndpoint = udp::endpoint(ipAdrres, args.data["Port"]);
-        //     auto playerName = args.data["PlayerName"].get<std::string>();
-        //     auto hostName = args.data["HostName"].get<std::string>();
-        //     auto port = args.data["Port"].get<uint32_t>();
-        //     auto newClient = std::make_shared<MAP::Client>(userId, playerName, hostName, clientEndpoint, port);
-        //     connectedClients_.emplace_back(newClient);
-        //     //SEND REPLY
-        //     json commandPayload;
-        //     json spawnedObjs;
-        //     for (const auto &entity : spawnedObjects_)
-        //     {
-        //         json entityJson;
-        //         entityJson["PrefabName"] = entity.PrefabName;
-        //         entityJson["PlayerId"] = entity.PlayerOwner;
-        //         spawnedObjs.push_back(entityJson);
-        //     }
-        //     commandPayload["ClientId"] = userId;
-        //     commandPayload["AccesToken"] = "null";
-        //     commandPayload["SpawnedEntities"] = spawnedObjs;
-        //     std::cout<<"user conected"<<std::endl;
-        //     commandMutex_.lock();
-        //     commandQueue_.push_back(MAP::Command("CLIENT_INFO", commandPayload, false, connectedClients_.back()));
-        //     commandMutex_.unlock();
-        // }
+        if (connectedClients_.size() < MAX_CLIENTS)
+        {
+            auto userId = lastClientIndex++;
+            auto ipAddrr = asio::ip::address::from_string(IpAddress);
+            auto clientEndpoint = udp::endpoint(ipAddrr, port);
+            auto newClient = std::make_shared<MAP::Client>(userId, playerName, hostName, clientEndpoint, port);
+            connectedClients_.emplace_back(newClient);
+            //SEND REPLY
+            std::vector<std::shared_ptr<MAP::INetworkType>> commandPayload;
+            std::vector<std::shared_ptr<MAP::INetworkType>> spawnedObjs;
+
+            for (const auto &entity : spawnedObjects_)
+            {
+                std::vector<std::shared_ptr<MAP::INetworkType>> entityStructure{
+                    std::make_shared<MAP::NetString>(entity.PrefabName, "PrefabName"),
+                    std::make_shared<MAP::NetInt>(entity.PlayerOwner, "PlayerId"),
+                };
+
+                spawnedObjs.insert(spawnedObjs.end(), entityStructure.begin(), entityStructure.end());
+            }
+
+            commandPayload.push_back(std::make_shared<MAP::NetInt>(userId, "ClientId"));
+            commandPayload.push_back(std::make_shared<MAP::NetString>("null", "AccesToken"));
+            commandPayload.push_back(std::make_shared<MAP::NetArray>(spawnedObjs, "AccesToken"));
+            std::cout << "user conected" << std::endl;
+            commandMutex_.lock();
+            commandQueue_.push_back(MAP::Command(static_cast<uint8_t>(ServerCommandType::SUBSCRIBE), commandPayload, false, connectedClients_.back()));
+            commandMutex_.unlock();
+        }
     }
 
     void MapServer::GetActivePools(MAP::CommandArgs &args)
