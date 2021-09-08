@@ -1,5 +1,5 @@
 #include "Array.hpp"
-#include "../BinaryObject.hpp"
+#include "../BinaryUtils.hpp"
 namespace MAP
 {
     NetArray::NetArray() : m_instance_name("SYSTEM-ARRAY")
@@ -39,7 +39,7 @@ namespace MAP
         auto arrayLength = argsMemory[memoryTagOffset + MEM_OFFSET_1];
         auto startOffset = memoryTagOffset + MEM_OFFSET_2;
         auto valuesMemoryVector = std::vector<uint8_t>(argsMemory + startOffset, (argsMemory + arrayLength));
-        auto decodedArrayVal = binaryParser.Decode(valuesMemoryVector);
+        auto decodedArrayVal = BinaryUtils::Decode(valuesMemoryVector);
         objectStructure.push_back(std::make_shared<MAP::NetArray>(decodedArrayVal, memoryTag->GetName()));
         return objectStructure;
     }

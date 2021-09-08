@@ -7,7 +7,7 @@ Implement serialization in the server DONE
 
 Implement serialization in the c# client
     * Implement as external c# dll module (Map logic and serialization)
-    * BinaryObject and typeInterface in c#
+    * BinaryUtils and typeInterface in c#
     * Implement all types interfaces
     * Implement serialization in c# client
 

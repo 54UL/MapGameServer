@@ -3,12 +3,11 @@
 #include <asio.hpp>
 
 #include "./MapServer.hpp"
-#include "./Serialization/BinaryObject.hpp"
+#include "./Serialization/BinaryUtils.hpp"
 #include "./Serialization/SerializerAPI.hpp"
 #include "./Serialization/Types/Command.hpp"
 
 // #define SINGLE_THREAD
-
 namespace MAP
 {
     using asio::ip::udp;
@@ -18,17 +17,17 @@ namespace MAP
                                                                      lastClientIndex(32)
     {
         auto serverStartTime = std::chrono::high_resolution_clock::now();
-        // serializer_ = std::make_shared<MAP::BinaryObject>();
+        // serializer_ = std::make_shared<MAP::BinaryUtils>();
 
 #ifndef SINGLE_THREAD
         MultiThread(io_context);
 #else
         SingleThread(io_context);
 #endif
-
         Initialize();
         std::cout << "SERVER RUNNING..." << std::endl;
     }
+
     MapServer::~MapServer()
     {
         receiverThread_.join();
@@ -169,7 +168,7 @@ namespace MAP
         std::cout << "[INCOMIG DATA: " << length << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
         std::cout << std::hex << data << std::endl; //BINARY ???
 
-        auto dataSequence = binaryParser.DecodeAsMap(data_, length);
+        auto dataSequence = BinaryUtils::DecodeAsMap(data_, length);
         auto decodedCommand = std::dynamic_pointer_cast<MAP::NetCommand>((dataSequence.at(0)));
         dataSequence.erase(dataSequence.begin()); //OJO
         MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), dataSequence);
@@ -214,7 +213,7 @@ namespace MAP
         NetworkObject objStructure;
         objStructure.push_back(std::make_shared<MAP::NetCommand>(command.Code, client->UserId));
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
-        std::vector<uint8_t> memoryBuffer = binaryParser.Encode(objStructure);
+        std::vector<uint8_t> memoryBuffer = BinaryUtils::Encode(objStructure);
         SendData(memoryBuffer.data(), memoryBuffer.size(), client->ClientEndpoint);
     }
 
@@ -233,10 +232,10 @@ namespace MAP
     //COMAND IMPLEMENTATION
     void MapServer::Subscribe(MAP::CommandArgs &args)
     {
-        std::string IpAddress = BinaryObject::Get<MAP::NetString>(args.Payload, "IpAddress")->GetValue();
-        std::string playerName = BinaryObject::Get<MAP::NetString>(args.Payload, "PlayerName")->GetValue();
-        std::string hostName = BinaryObject::Get<MAP::NetString>(args.Payload, "HostName")->GetValue();
-        int port = BinaryObject::Get<MAP::NetInt>(args.Payload, "Port")->GetValue();
+        std::string IpAddress = BinaryUtils::Get<MAP::NetString>(args.Payload, "IpAddress")->GetValue();
+        std::string playerName = BinaryUtils::Get<MAP::NetString>(args.Payload, "PlayerName")->GetValue();
+        std::string hostName = BinaryUtils::Get<MAP::NetString>(args.Payload, "HostName")->GetValue();
+        int port = BinaryUtils::Get<MAP::NetInt>(args.Payload, "Port")->GetValue();
 
         if (IpAddress.compare("") == 0)
             return;
@@ -306,7 +305,7 @@ namespace MAP
 
     void MapServer::UpssertProperty(MAP::CommandArgs &args)
     {
-        std::string payloadKey = BinaryObject::Get<MAP::NetString>(args.Payload, "Key")->GetValue();
+        std::string payloadKey = BinaryUtils::Get<MAP::NetString>(args.Payload, "Key")->GetValue();
         auto payloadValue = args.Payload["Value"];
         //Set internal data
         testingPool_[payloadKey] = payloadValue;
@@ -326,8 +325,8 @@ namespace MAP
 
     void MapServer::SpawnObject(MAP::CommandArgs &args)
     {
-        int playerId = BinaryObject::Get<MAP::NetInt>(args.Payload, "PlayerId")->GetValue();
-        std::string prefabName = BinaryObject::Get<MAP::NetString>(args.Payload, "PrefabName")->GetValue();
+        int playerId = BinaryUtils::Get<MAP::NetInt>(args.Payload, "PlayerId")->GetValue();
+        std::string prefabName = BinaryUtils::Get<MAP::NetString>(args.Payload, "PrefabName")->GetValue();
         MAP::SpawnedEntity spawnedEntity(prefabName, playerId);
         NetworkObject commandPayload{
             args.Payload["PlayerId"],

@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include "../UnitTesting.hpp"
-#include "../Serialization/BinaryObject.hpp"
+#include "../Serialization/BinaryUtils.hpp"
 #include "../Serialization/Types/Array.hpp"
 #include <iomanip>
 
@@ -33,8 +33,8 @@ namespace MAP
                 std::make_shared<MAP::NetByte>(128, "halfbyte"),
                 std::make_shared<MAP::NetByte>(255, "fullbyte")};
 
-            auto binaryData = testObj.Encode(sequence);
-            auto deserialized = testObj.DecodeAsMap(binaryData.data(), binaryData.size());
+            auto binaryData = BinaryUtils::Encode(sequence);
+            auto deserialized = BinaryUtils::DecodeAsMap(binaryData.data(), binaryData.size());
 
             auto half = std::dynamic_pointer_cast<MAP::NetByte>(deserialized["halfbyte"]);
             auto full = std::dynamic_pointer_cast<MAP::NetByte>(deserialized["fullbyte"]);
@@ -56,12 +56,12 @@ namespace MAP
 
             auto arrayObj = std::make_shared<MAP::NetArray>(sequence, "arrayTest");
             auto serializedArrayVector = arrayObj->Serialize();
-            auto objMap = testObj.DecodeAsMap(serializedArrayVector.data(), serializedArrayVector.size());
+            auto objMap = BinaryUtils::DecodeAsMap(serializedArrayVector.data(), serializedArrayVector.size());
             auto arr = std::dynamic_pointer_cast<MAP::NetArray>(objMap["arrayTest"])->GetValues();
 
-            auto byte = BinaryObject::Get<MAP::NetByte>(arr, "byteVal")->GetValue();
-            auto floatVal = BinaryObject::Get<MAP::NetFloat>(arr, "decimal")->GetValue();
-            auto stringVal = BinaryObject::Get<MAP::NetString>(arr, "someString")->GetValue();
+            auto byte = BinaryUtils::Get<MAP::NetByte>(arr, "byteVal")->GetValue();
+            auto floatVal = BinaryUtils::Get<MAP::NetFloat>(arr, "decimal")->GetValue();
+            auto stringVal = BinaryUtils::Get<MAP::NetString>(arr, "someString")->GetValue();
 
             return byte == 42;
         }
@@ -71,8 +71,8 @@ namespace MAP
             NetworkObject sequence = {
                 std::make_shared<MAP::NetString>("Hello world", "hello"),
                 std::make_shared<MAP::NetString>("This is a large text, can contain 255 characters", "longText")};
-            auto serializedStrings = binaryParser.Encode(sequence);
-            auto deserialized = testObj.DecodeAsMap(serializedStrings.data(), serializedStrings.size());
+            auto serializedStrings = BinaryUtils::Encode(sequence);
+            auto deserialized = BinaryUtils::DecodeAsMap(serializedStrings.data(), serializedStrings.size());
             auto hello = std::dynamic_pointer_cast<MAP::NetString>(deserialized["hello"]);
             auto longText = std::dynamic_pointer_cast<MAP::NetString>(deserialized["longText"]);
             return hello->GetValue().compare("Hello world") == 0;
@@ -86,11 +86,11 @@ namespace MAP
                 std::make_shared<MAP::NetFloat>(128.0f, "half"),
                 std::make_shared<MAP::NetFloat>(255.0f, "full")};
 
-            auto serializedFloats = binaryParser.Encode(sequence);
-            auto deserialized = testObj.DecodeAsMap(serializedFloats.data(), serializedFloats.size());
+            auto serializedFloats = BinaryUtils::Encode(sequence);
+            auto deserialized = BinaryUtils::DecodeAsMap(serializedFloats.data(), serializedFloats.size());
 
-            auto tinyVal = BinaryObject::Get<MAP::NetFloat>(deserialized, "tiny6");
-            auto halfVal = BinaryObject::Get<MAP::NetFloat>(deserialized, "half");
+            auto tinyVal = BinaryUtils::Get<MAP::NetFloat>(deserialized, "tiny6");
+            auto halfVal = BinaryUtils::Get<MAP::NetFloat>(deserialized, "half");
 
             float val = tinyVal->GetValue();
             float val2 = halfVal->GetValue();
@@ -104,12 +104,12 @@ namespace MAP
                 std::make_shared<MAP::NetInt>(666, "hell"),
                 std::make_shared<MAP::NetInt>(12345678, "large")};
 
-            auto serializedInts = binaryParser.Encode(sequence);
-            auto deserialized = testObj.DecodeAsMap(serializedInts.data(), serializedInts.size());
+            auto serializedInts = BinaryUtils::Encode(sequence);
+            auto deserialized = BinaryUtils::DecodeAsMap(serializedInts.data(), serializedInts.size());
 
-            auto luck = BinaryObject::Get<MAP::NetInt>(deserialized, "luck");
-            auto hell = BinaryObject::Get<MAP::NetInt>(deserialized, "hell");
-            auto large = BinaryObject::Get<MAP::NetInt>(deserialized, "large");
+            auto luck = BinaryUtils::Get<MAP::NetInt>(deserialized, "luck");
+            auto hell = BinaryUtils::Get<MAP::NetInt>(deserialized, "hell");
+            auto large = BinaryUtils::Get<MAP::NetInt>(deserialized, "large");
 
             int val = luck->GetValue();
             int val2 = hell->GetValue();
@@ -131,12 +131,12 @@ namespace MAP
                     std::make_shared<MAP::NetArray>(poolData, "PoolObj3"),
                     std::make_shared<MAP::NetArray>(poolData, "PoolObj4")};
 
-            auto serializedObject = binaryParser.Encode(commandPayload);
-            auto deserializedObjectMap = binaryParser.DecodeAsMap(serializedObject.data(), serializedObject.size());
+            auto serializedObject = BinaryUtils::Encode(commandPayload);
+            auto deserializedObjectMap = BinaryUtils::DecodeAsMap(serializedObject.data(), serializedObject.size());
             //Get pool obj3
-            auto poolDataArr = BinaryObject::Get<MAP::NetArray>(deserializedObjectMap, "PoolObj3")->GetValues();
-            auto poolId = BinaryObject::Get<MAP::NetInt>(poolDataArr, "PoolId")->GetValue();
-            auto poolName = BinaryObject::Get<MAP::NetString>(poolDataArr, "PoolName")->GetValue();
+            auto poolDataArr = BinaryUtils::Get<MAP::NetArray>(deserializedObjectMap, "PoolObj3")->GetValues();
+            auto poolId = BinaryUtils::Get<MAP::NetInt>(poolDataArr, "PoolId")->GetValue();
+            auto poolName = BinaryUtils::Get<MAP::NetString>(poolDataArr, "PoolName")->GetValue();
             return true;
         }
 
@@ -164,9 +164,6 @@ namespace MAP
             allRight = AssigmentTest();
             return allRight;
         }
-
-    private:
-        BinaryObject testObj;
     };
 
 }

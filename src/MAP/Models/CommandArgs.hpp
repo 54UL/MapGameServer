@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include "./Client.hpp"
-#include "../Serialization/BinaryObject.hpp"
+#include "../Serialization/BinaryUtils.hpp"
 #include "../Serialization/SerializerAPI.hpp"
 
 namespace MAP

@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include "../Serialization/BinaryObject.hpp"
+#include "../Serialization/BinaryUtils.hpp"
 #include "../Serialization/SerializerAPI.hpp"
 
 namespace MAP

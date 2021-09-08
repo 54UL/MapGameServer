@@ -9,6 +9,8 @@
 
 namespace MAP
 {
+    #define DLLEXPORT __declspec(dllexport)
+
     constexpr uint8_t MEM_OFFSET_1 = 1;
     constexpr uint8_t MEM_OFFSET_2 = 2;
     constexpr uint8_t MEM_OFFSET_3 = 3;

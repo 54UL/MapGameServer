@@ -16,7 +16,6 @@
 
 namespace MAP
 {
-    class BinaryObject;
     class TypesManager
     {
     public:

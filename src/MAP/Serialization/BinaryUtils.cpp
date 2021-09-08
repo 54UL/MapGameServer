@@ -1,18 +1,9 @@
-#include "BinaryObject.hpp"
+#include "BinaryUtils.hpp"
 
 //TODO: REFACTOR DECODES...
-namespace MAP
+namespace MAP::BinaryUtils
 {
-
-    BinaryObject::BinaryObject()
-    {
-    }
-
-    BinaryObject::~BinaryObject()
-    {
-    }
-
-    std::vector<uint8_t> BinaryObject::Encode(std::vector<std::shared_ptr<INetworkType>> sequence)
+    std::vector<uint8_t> Encode(std::vector<std::shared_ptr<INetworkType>> sequence)
     {
         std::vector<uint8_t> m_raw_memory_packet;
         //Evalua toda la sequencia y retorna el valor de memoria puro.
@@ -24,7 +15,7 @@ namespace MAP
         return m_raw_memory_packet;
     }
 
-    std::map<std::string, std::shared_ptr<INetworkType>> BinaryObject::DecodeAsMap(uint8_t *bytes, std::size_t length)
+    std::map<std::string, std::shared_ptr<INetworkType>> DecodeAsMap(uint8_t *bytes, std::size_t length)
     {
         std::map<std::string, std::shared_ptr<INetworkType>> objectStructure;
 
@@ -46,7 +37,7 @@ namespace MAP
         return objectStructure;
     }
 
-    std::vector<std::shared_ptr<INetworkType>> BinaryObject::Decode(std::vector<uint8_t> bytes)
+    std::vector<std::shared_ptr<INetworkType>> Decode(std::vector<uint8_t> bytes)
     {
         std::vector<std::shared_ptr<INetworkType>> objectStructure;
         auto byteSequenceLength = bytes.size();
