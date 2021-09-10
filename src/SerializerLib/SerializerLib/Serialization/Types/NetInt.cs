@@ -62,7 +62,7 @@ namespace MAP
 
 		public override int GetSize()
 		{
-			return m_instance_name.GetSize() + sizeof(int) + 1; //+1 for length byte
+			return m_instance_name.GetSize() + sizeof(int) + 1; //+1 for type byte
 		}
 
 		public int GetValue()

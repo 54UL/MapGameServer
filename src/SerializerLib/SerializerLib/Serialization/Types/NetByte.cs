@@ -7,12 +7,8 @@ namespace MAP
         public NetByte()
         {
             this.m_value = 0;
-        }
-
-        public NetByte(byte value)
-        {
-            this.m_value = value;
             this.m_instance_name = new MAP.MemoryTag("SYSTEM-BYTE");
+
         }
 
         public NetByte(byte value, string name)
@@ -40,7 +36,8 @@ namespace MAP
         {
             List<INetworkType> objectStructure = new List<INetworkType>();
             var memoryTag = m_instance_name.Deserialize(argsMemory)[0];
-            objectStructure.Add(new MAP.NetByte(argsMemory[memoryTag.GetSize() + MememoryOffset.OFFSET_1], memoryTag.GetName()));
+            var index = memoryTag.GetSize() + MememoryOffset.OFFSET_1;
+            objectStructure.Add(new MAP.NetByte(argsMemory[index], memoryTag.GetName()));
             return objectStructure;
         }
 
@@ -56,7 +53,7 @@ namespace MAP
 
         public override int GetSize()
         {
-            return m_instance_name.GetSize() + sizeof(byte) +1; //+1 for length byte
+            return m_instance_name.GetSize() + sizeof(byte) +1; //+1 for the type
         }
 
         public byte GetValue()
@@ -65,7 +62,7 @@ namespace MAP
         }
 
         private byte m_value = new byte();
-        private MAP.MemoryTag m_instance_name = new MAP.MemoryTag();
+        private MAP.MemoryTag m_instance_name;
     }
 }
 

@@ -39,8 +39,8 @@ namespace MAP
         {
             NetworkObject sequence = new NetworkObject(){
                 new MAP.NetByte(42, "byteVal"),
-                new MAP.NetFloat(0.33f, "decimal"),
-                new MAP.NetString("testing string lol","someString")};
+                 new MAP.NetString("some string lol", "testStr"),
+                new MAP.NetFloat(0.33f, "floating")};
 
             var arrayObj = new MAP.NetArray(sequence, "arrayTest");
             var serializedArrayVector = arrayObj.Serialize();
@@ -48,8 +48,8 @@ namespace MAP
 
             var arr = ((MAP.NetArray)objMap["arrayTest"]).GetValues();
             var testbyte = ((MAP.NetByte)arr[0]).GetValue();
-            var floatVal = ((MAP.NetFloat)arr[1]).GetValue();
-            var stringVal =((MAP.NetString)arr[2]).GetValue();
+            var str = ((MAP.NetString)arr[1]).GetValue();
+            var flt =((MAP.NetFloat)arr[2]).GetValue();
 
             return testbyte == 42;
         }
@@ -105,14 +105,12 @@ namespace MAP
         public bool ComplexArrayObjectTest()
         {
             NetworkObject poolData = new NetworkObject(){
-                new MAP.NetInt(666, "PoolId"),
-                new MAP.NetString("DEFAULT POOL", "PoolName")};
-
+                new MAP.NetInt(666, "P"),
+                new MAP.NetString("DEFAULT POOL", "N")};
+       
             NetworkObject commandPayload = new NetworkObject(){
-            new MAP.NetArray(poolData, "PoolObj1"),
-             new MAP.NetArray(poolData, "PoolObj2"),
-             new MAP.NetArray(poolData, "PoolObj3"),
-             new MAP.NetArray(poolData, "PoolObj4")};
+            new MAP.NetArray(poolData, "AAAA"),
+            new MAP.NetArray(poolData, "BBBB")};
 
             var serializedObject = BinaryUtils.Encode(commandPayload);
             var deserializedObjectMap = BinaryUtils.DecodeAsMap(serializedObject.ToArray(), serializedObject.Count - 1);
@@ -138,11 +136,11 @@ namespace MAP
         public bool Check()
         {
             bool allRight = false;
-            allRight = ByteTypeTest();
-            allRight = DynamicTypeArrayTest();
-            allRight = StringTypeTest();
-            allRight = FloatTypeTest();
-            allRight = IntTypeTest();
+           // allRight = ByteTypeTest();
+           // allRight = DynamicTypeArrayTest();
+            //allRight = StringTypeTest();
+            //allRight = FloatTypeTest();
+            //allRight = IntTypeTest();
             allRight = ComplexArrayObjectTest();
             allRight = AssigmentTest();
             return allRight;

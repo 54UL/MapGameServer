@@ -30,9 +30,9 @@ namespace MAP
             foreach (var arrayValue in m_values)
             {
                 var memoryChunk = arrayValue.Serialize();
-                arrayValuesVector.InsertRange(arrayValuesVector.Count - 1,memoryChunk);
+                arrayValuesVector.InsertRange(arrayValuesVector.Count,memoryChunk);
             }
-            memoryVector.Add((byte)(memoryVector.Count - 1 + arrayValuesVector.Count - 1 + 1)); //LENGTH  IN BYTES
+            memoryVector.Add((byte)(memoryVector.Count + arrayValuesVector.Count )); //LENGTH  IN BYTES
             memoryVector.AddRange(arrayValuesVector); //ARRAY_BINARY_VALUE/S
             return memoryVector;
         }
@@ -42,9 +42,10 @@ namespace MAP
             List<INetworkType> objectStructure = new List<INetworkType>();
             var memoryTag = m_instance_name.Deserialize(argsMemory)[0];
             var memoryTagOffset = memoryTag.GetSize();
-            var arrayLength = argsMemory[memoryTagOffset + memoryTagOffset + MememoryOffset.OFFSET_1];
-            var startOffset = memoryTagOffset + memoryTagOffset + MememoryOffset.OFFSET_2;
-            var valuesMemoryVector = argsMemory.Skip(startOffset).Take(arrayLength).ToList();
+            var arrayLength = argsMemory[memoryTagOffset  + MememoryOffset.OFFSET_1];
+            var startOffset = memoryTagOffset  + MememoryOffset.OFFSET_2;
+            var diff = arrayLength - startOffset;
+            var valuesMemoryVector = argsMemory.Skip(startOffset).Take(diff).ToList();
 
             var decodedArrayVal = BinaryUtils.Decode(valuesMemoryVector);
             objectStructure.Add(new MAP.NetArray(decodedArrayVal, memoryTag.GetName()));

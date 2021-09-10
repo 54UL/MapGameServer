@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 
@@ -9,20 +10,20 @@ namespace MAP
 	{
 		public MemoryTag()
 		{
-			this.m_instance_name = "MEMORY-TAG-SYSTEM";
+			this.m_instance_name = new List<byte>(Encoding.UTF8.GetBytes("MEMORY-TAG-SYSTEM"));
 		}
 
 		public MemoryTag(string name)
 		{
-			this.m_instance_name = name;
+			this.m_instance_name = new List<byte>(Encoding.UTF8.GetBytes(name));
 		}
 
 		public override List<byte> Serialize()
 		{
-			List<byte> memoryVector = new List<byte>(0);
+			List<byte> memoryVector = new List<byte>();
 			//NOTE: MEMORY TAG DOES NOT HAVE TO PASS HIS TYPE ID (ASSUMPTION DUE TO COMPOSITION)
-			memoryVector.Add((byte)m_instance_name.Length); //CHANGE THIS CAST of size_t by byte
-			foreach (var stringIterator in Encoding.ASCII.GetBytes(m_instance_name))
+			memoryVector.Add((byte)(m_instance_name.Count)); //CHANGE THIS CAST of size_t by byte
+			foreach (var stringIterator in m_instance_name)
 			{
 				memoryVector.Add((stringIterator));
 			}
@@ -32,15 +33,17 @@ namespace MAP
 		public override List<INetworkType> Deserialize(byte[] argsMemory)
 		{
 			byte tagLength = argsMemory[MememoryOffset.OFFSET_1]; //lenght first pos
-			StringBuilder strBuilder = new StringBuilder();
+			m_instance_name = new List<byte>();
 			for (byte i = 0; i < tagLength; i++)
 			{
-				strBuilder.Append(argsMemory[MememoryOffset.OFFSET_2 + i]);
+				m_instance_name.Add(argsMemory[MememoryOffset.OFFSET_2 + i]);
 			}
-			m_instance_name = strBuilder.ToString();
-			List<INetworkType> objectStructure = new List<INetworkType>();
-			objectStructure.Add(new MAP.MemoryTag(m_instance_name));
-			return objectStructure;
+
+			List<INetworkType> objectStructure = new List<INetworkType>
+			{
+				new MemoryTag(Encoding.ASCII.GetString(m_instance_name.ToArray()))
+            };
+            return objectStructure;
 		}
 
 		public override NetworkType GetNetworkType()
@@ -50,15 +53,15 @@ namespace MAP
 
 		public override string GetName()
 		{
-			return m_instance_name;
+			return Encoding.ASCII.GetString(m_instance_name.ToArray());
 		}
 
 		public override int GetSize()
 		{
-			return m_instance_name.Length + 1; //1 byte extra for the size byte
+			return m_instance_name.Count+1; //1 byte extra for the size byte
 		}
 
-		private string m_instance_name = "";
+		private List<byte> m_instance_name;
 	}
 }
 
