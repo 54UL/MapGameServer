@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-//C++ TO C# CONVERTER NOTE: The following #define macro was replaced in-line:
-//ORIGINAL LINE: #define DLLEXPORT __declspec(dllexport)
-//C++ TO C# CONVERTER NOTE: The following #define macro was replaced in-line:
-//ORIGINAL LINE: #define DLLEXPORT __declspec(dllexport)
-
+    
 namespace MAP
 {
     using NetworkObject = List<INetworkType>;
@@ -105,20 +101,20 @@ namespace MAP
         public bool ComplexArrayObjectTest()
         {
             NetworkObject poolData = new NetworkObject(){
-                new MAP.NetInt(666, "P"),
-                new MAP.NetString("DEFAULT POOL", "N")};
+                new MAP.NetInt(666, "1111"),
+                new MAP.NetString("Y", "0000")};
        
             NetworkObject commandPayload = new NetworkObject(){
-            new MAP.NetArray(poolData, "AAAA"),
+            new MAP.NetArray(poolData, "AAAAA"),
             new MAP.NetArray(poolData, "BBBB")};
 
             var serializedObject = BinaryUtils.Encode(commandPayload);
             var deserializedObjectMap = BinaryUtils.DecodeAsMap(serializedObject.ToArray(), serializedObject.Count - 1);
             //Get pool obj3
            
-            var poolDataArr = ((MAP.NetArray)deserializedObjectMap["PoolObj3"]).GetValues();
+            var poolDataArr = ((MAP.NetArray)deserializedObjectMap["BBBB"]).GetValues();
             var poolId = ((MAP.NetInt)poolDataArr[0]).GetValue();
-            var poolName = ((MAP.NetInt)poolDataArr[1]).GetValue();
+            var poolName = ((MAP.NetString)poolDataArr[1]).GetValue();
             return true;
         }
 
@@ -136,11 +132,11 @@ namespace MAP
         public bool Check()
         {
             bool allRight = false;
-           // allRight = ByteTypeTest();
-           // allRight = DynamicTypeArrayTest();
-            //allRight = StringTypeTest();
-            //allRight = FloatTypeTest();
-            //allRight = IntTypeTest();
+            allRight = ByteTypeTest();
+            allRight = DynamicTypeArrayTest();
+            allRight = StringTypeTest();
+            allRight = FloatTypeTest();
+            allRight = IntTypeTest();
             allRight = ComplexArrayObjectTest();
             allRight = AssigmentTest();
             return allRight;

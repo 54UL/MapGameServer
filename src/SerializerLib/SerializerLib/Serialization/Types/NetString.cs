@@ -25,7 +25,7 @@ namespace MAP
             var memoryTagVector = m_instance_name.Serialize();
             memoryVector.AddRange(memoryTagVector);
             //INSERT STRING VALUE
-            memoryVector.Add((byte)m_string_value.Count); //Length string
+            memoryVector.Add((byte)(m_string_value.Count)); //Length string
             foreach (var stringIterator in m_string_value) //String data
             {
                 memoryVector.Add(stringIterator);

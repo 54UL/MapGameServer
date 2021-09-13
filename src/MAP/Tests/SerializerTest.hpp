@@ -121,22 +121,20 @@ namespace MAP
         inline bool ComplexArrayObjectTest()
         {
             NetworkObject poolData{
-                std::make_shared<MAP::NetInt>(666, "PoolId"),
-                std::make_shared<MAP::NetString>("DEFAULT POOL", "PoolName")};
+                std::make_shared<MAP::NetInt>(666, "1111"),
+                std::make_shared<MAP::NetString>("Y", "0000")};
 
             NetworkObject
                 commandPayload{
-                    std::make_shared<MAP::NetArray>(poolData, "PoolObj1"),
-                    std::make_shared<MAP::NetArray>(poolData, "PoolObj2"),
-                    std::make_shared<MAP::NetArray>(poolData, "PoolObj3"),
-                    std::make_shared<MAP::NetArray>(poolData, "PoolObj4")};
+                    std::make_shared<MAP::NetArray>(poolData, "AAAAA"),
+                    std::make_shared<MAP::NetArray>(poolData, "BBBB")};
 
             auto serializedObject = BinaryUtils::Encode(commandPayload);
             auto deserializedObjectMap = BinaryUtils::DecodeAsMap(serializedObject.data(), serializedObject.size());
             //Get pool obj3
-            auto poolDataArr = BinaryUtils::Get<MAP::NetArray>(deserializedObjectMap, "PoolObj3")->GetValues();
-            auto poolId = BinaryUtils::Get<MAP::NetInt>(poolDataArr, "PoolId")->GetValue();
-            auto poolName = BinaryUtils::Get<MAP::NetString>(poolDataArr, "PoolName")->GetValue();
+            auto poolDataArr = BinaryUtils::Get<MAP::NetArray>(deserializedObjectMap, "BBBB")->GetValues();
+            auto poolId = BinaryUtils::Get<MAP::NetInt>(poolDataArr, "1111")->GetValue();
+            auto poolName = BinaryUtils::Get<MAP::NetString>(poolDataArr, "0000")->GetValue();
             return true;
         }
 
@@ -155,11 +153,11 @@ namespace MAP
         bool Check() override
         {
             bool allRight = false;
-            allRight = ByteTypeTest();
-            allRight = DynamicTypeArrayTest();
-            allRight = StringTypeTest();
-            allRight = FloatTypeTest();
-            allRight = IntTypeTest();
+            // allRight = ByteTypeTest();
+            // allRight = DynamicTypeArrayTest();
+            // allRight = StringTypeTest();
+            // allRight = FloatTypeTest();
+            // allRight = IntTypeTest();
             allRight = ComplexArrayObjectTest();
             allRight = AssigmentTest();
             return allRight;

@@ -16,7 +16,7 @@ namespace MAP
         public NetArray(NetworkObject sequence, string name)
         {
             this.m_instance_name = new MemoryTag(name);
-            this.m_values = sequence;
+            this.m_values = new NetworkObject(sequence);
         }
 
 
@@ -44,11 +44,11 @@ namespace MAP
             var memoryTagOffset = memoryTag.GetSize();
             var arrayLength = argsMemory[memoryTagOffset  + MememoryOffset.OFFSET_1];
             var startOffset = memoryTagOffset  + MememoryOffset.OFFSET_2;
-            var diff = arrayLength - startOffset;
-            var valuesMemoryVector = argsMemory.Skip(startOffset).Take(diff).ToList();
+            var valuesMemoryVector = argsMemory.Skip(startOffset).Take(arrayLength - startOffset + 1 ).ToList();
 
             var decodedArrayVal = BinaryUtils.Decode(valuesMemoryVector);
-            objectStructure.Add(new MAP.NetArray(decodedArrayVal, memoryTag.GetName()));
+            m_values = decodedArrayVal;
+            objectStructure.Add(new MAP.NetArray(m_values, memoryTag.GetName()));
             return objectStructure;
         }
 
@@ -79,7 +79,7 @@ namespace MAP
         {
             return m_values[(int)pos];
         }
-        private NetworkObject m_values = new NetworkObject();
+        private NetworkObject m_values;
         private MAP.MemoryTag m_instance_name;
     }
 }
