@@ -20,19 +20,27 @@ namespace SerializerLib
                 this.m_string_value = new List<byte>(Encoding.UTF8.GetBytes(value));
             }
 
+            public override List<byte> RawSerialization()
+            {
+                List<byte> memoryVector = new List<byte>();
+                memoryVector.Add((byte)(m_string_value.Count)); //Length string
+                memoryVector.AddRange(m_string_value);          //CharacterValues
+                return memoryVector;
+            }
+
             public override List<byte> Serialize()
             {
                 List<byte> memoryVector = new List<byte>();
                 memoryVector.Add((byte)GetNetworkType());
                 var memoryTagVector = m_instance_name.Serialize();
                 memoryVector.AddRange(memoryTagVector);
-                //INSERT STRING VALUE
-                memoryVector.Add((byte)(m_string_value.Count)); //Length string
-                foreach (var stringIterator in m_string_value) //String data
-                {
-                    memoryVector.Add(stringIterator);
-                }
+                memoryVector.AddRange(RawSerialization());
                 return memoryVector;
+            }
+
+            public override List<INetworkType> RawDeserialization(byte[] argsMemory)
+            {
+                throw new NotImplementedException();
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -61,9 +69,14 @@ namespace SerializerLib
                 return m_instance_name.GetName();
             }
 
+            public override int GetRawSize()
+            {
+               return m_string_value.Count + 1;//+1 for the length 
+            }
+
             public override int GetSize()
             {
-                return m_instance_name.GetSize() + m_string_value.Count + 2; //+2 is for type byte and length byte
+                return m_instance_name.GetSize() + GetRawSize() + 1; //1 is for type byte
             }
 
             public string GetValue()

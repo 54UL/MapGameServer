@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 namespace SerializerLib
 {
     namespace MAP
@@ -23,6 +24,15 @@ namespace SerializerLib
                 base.Dispose();
             }
 
+
+            public override List<byte> RawSerialization()
+            {
+                return new List<byte>()
+                {
+                    m_value
+                };
+            }
+
             public override List<byte> Serialize()
             {
                 List<byte> memoryVector = new List<byte>();
@@ -31,6 +41,13 @@ namespace SerializerLib
                 memoryVector.AddRange(memoryTagVector);
                 memoryVector.Add(m_value);
                 return memoryVector;
+            }
+
+            public override List<INetworkType> RawDeserialization(byte[] argsMemory)
+            {
+                return new List<INetworkType>(){
+                    new MAP.NetByte(argsMemory[0],"NULL")
+                };
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -52,9 +69,14 @@ namespace SerializerLib
                 return m_instance_name.GetName();
             }
 
+            public override int GetRawSize()
+            {
+                return sizeof(byte);
+            }
+
             public override int GetSize()
             {
-                return m_instance_name.GetSize() + sizeof(byte) + 1; //+1 for the type
+                return m_instance_name.GetSize() + GetRawSize() + 1; //+1 for the type
             }
 
             public byte GetValue()

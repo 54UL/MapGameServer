@@ -16,14 +16,18 @@ namespace SerializerLib
             public NetFloat()
             {
                 this.m_instance_name = new MAP.MemoryTag("SYSTEM-FLOAT");
-
             }
+
             public NetFloat(float value, string name)
             {
                 this.m_instance_name = new MAP.MemoryTag(name);
                 m_float = value;
             }
 
+            public override List<byte> RawSerialization()
+            {
+                return BitConverter.GetBytes(m_float).ToList();
+            }
 
             public override List<byte> Serialize()
             {
@@ -31,14 +35,13 @@ namespace SerializerLib
                 memoryVector.Add((byte)GetNetworkType());
                 var memoryTagVector = m_instance_name.Serialize();
                 memoryVector.AddRange(memoryTagVector);
-
-                byte[] floatByteArray = BitConverter.GetBytes(m_float);
-                foreach (var floatByte in floatByteArray)
-                {
-                    memoryVector.Add(floatByte);
-                }
-
+                memoryVector.AddRange(RawSerialization());
                 return memoryVector;
+            }
+
+            public override List<INetworkType> RawDeserialization(byte[] argsMemory)
+            {
+                throw new NotImplementedException();
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -63,9 +66,14 @@ namespace SerializerLib
                 return m_instance_name.GetName();
             }
 
+            public override int GetRawSize()
+            {
+                return sizeof(float);
+            }
+
             public override int GetSize()
             {
-                return m_instance_name.GetSize() + sizeof(float) + 1; //+1 for length byte
+                return m_instance_name.GetSize() + GetRawSize() + 1; //+1 for type byte
             }
 
             public float GetValue()
@@ -73,8 +81,8 @@ namespace SerializerLib
                 return m_float;
             }
 
-            private float m_float = new float();
-            private MAP.MemoryTag m_instance_name = new MAP.MemoryTag();
+            private float m_float;
+            private MAP.MemoryTag m_instance_name;
         }
     }
 }

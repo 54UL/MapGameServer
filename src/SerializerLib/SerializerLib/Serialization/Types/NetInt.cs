@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.Linq;
+
 namespace SerializerLib
 {
 	namespace MAP
@@ -22,6 +24,11 @@ namespace SerializerLib
 			{
 				base.Dispose();
 			}
+			
+			public override List<byte> RawSerialization()
+			{
+				return BitConverter.GetBytes(m_value).ToList();
+			}
 
 			public override List<byte> Serialize()
 			{
@@ -29,14 +36,13 @@ namespace SerializerLib
 				memoryVector.Add((byte)GetNetworkType());
 				var memoryTagVector = m_instance_name.Serialize();
 				memoryVector.AddRange(memoryTagVector);
-
-				byte[] intByteArray = BitConverter.GetBytes(m_value);
-				foreach (var intByte in intByteArray)
-				{
-					memoryVector.Add(intByte);
-				}
-
+				memoryVector.AddRange(RawSerialization());
 				return memoryVector;
+			}
+
+			public override List<INetworkType> RawDeserialization(byte[] argsMemory)
+			{
+				throw new NotImplementedException();
 			}
 
 			public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -61,9 +67,14 @@ namespace SerializerLib
 				return m_instance_name.GetName();
 			}
 
+			public override int GetRawSize()
+            {
+				return sizeof(int);
+			}
+
 			public override int GetSize()
 			{
-				return m_instance_name.GetSize() + sizeof(int) + 1; //+1 for type byte
+				return m_instance_name.GetSize() + GetRawSize() + 1; //+1 for type byte
 			}
 
 			public int GetValue()
@@ -71,7 +82,7 @@ namespace SerializerLib
 				return m_value;
 			}
 
-			private int m_value;
+            private int m_value;
 			private MAP.MemoryTag m_instance_name = new MAP.MemoryTag();
 		}
 	}

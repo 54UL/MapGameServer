@@ -36,7 +36,7 @@ namespace SerializerLib
             {
                 NetworkObject sequence = new NetworkObject(){
                 new MAP.NetByte(42, "byteVal"),
-                 new MAP.NetString("some string lol", "testStr"),
+                new MAP.NetString("some string lol", "testStr"),
                 new MAP.NetFloat(0.33f, "floating")};
 
                 var arrayObj = new MAP.NetArray(sequence, "arrayTest");
@@ -102,31 +102,43 @@ namespace SerializerLib
             public bool ComplexArrayObjectTest()
             {
                 NetworkObject poolData = new NetworkObject(){
-                new MAP.NetInt(666, "1111"),
-                new MAP.NetString("Y", "0000")};
+                new MAP.NetInt(666, "PoolId"),
+                new MAP.NetString("TESTING_POOL", "PoolName")};
 
                 NetworkObject commandPayload = new NetworkObject(){
-            new MAP.NetArray(poolData, "AAAAA"),
-            new MAP.NetArray(poolData, "BBBB")};
+                new MAP.NetArray(poolData, "pool"),
+                new MAP.NetArray(poolData, "pool2"),
+                new MAP.NetArray(poolData, "pool3")
+                };
 
                 var serializedObject = BinaryUtils.Encode(commandPayload);
                 var deserializedObjectMap = BinaryUtils.DecodeAsMap(serializedObject.ToArray(), serializedObject.Count - 1);
                 //Get pool obj3
 
-                var poolDataArr = ((MAP.NetArray)deserializedObjectMap["BBBB"]).GetValues();
+                var poolDataArr = ((MAP.NetArray)deserializedObjectMap["pool2"]).GetValues();
                 var poolId = ((MAP.NetInt)poolDataArr[0]).GetValue();
                 var poolName = ((MAP.NetString)poolDataArr[1]).GetValue();
-                return true;
+
+                return poolId == 666 && poolName.CompareTo("TESTING_POOL") == 0;
             }
 
-            public bool AssigmentTest()
+            public bool StaticTypeArrayTest()
             {
-                // //THIS IS A ASSIGMENT TEST WITHOUT OPERATOR OVERLOAD IN THE INTERFACE(TODO!!!)
-                // SortedDictionary<char, MAP.INetworkType> testMap = new SortedDictionary<char, MAP.INetworkType>() { Tuple.Create("element1", new MAP.NetInt(666, "PoolId")), Tuple.Create("element2", new MAP.NetInt(666, "PoolId")) };
-                // var someExternalNetworkType = new MAP.NetInt(33333, "PoolId");
-                // testMap["element1"] = someExternalNetworkType;
-                // int testMapVal = std::dynamic_pointer_cast<MAP.NetInt>(testMap["element1"]).GetValue();
-                // return testMapVal == 33333;
+                NetworkObject sequence = new NetworkObject(){
+                    new MAP.NetByte(42, "byteVal"),
+                    new MAP.NetString("some string lol", "testStr"),
+                    new MAP.NetFloat(0.33f, "floating")
+                    };
+                    
+                var arrayObj = new MAP.NetArray(sequence, "arrayTest");
+                var serializedArrayVector = arrayObj.Serialize();
+                var objMap = BinaryUtils.DecodeAsMap(serializedArrayVector.ToArray(), serializedArrayVector.Count - 1);
+
+                var arr = ((MAP.NetArray)objMap["arrayTest"]).GetValues();
+                var testbyte = ((MAP.NetByte)arr[0]).GetValue();
+                var str = ((MAP.NetString)arr[1]).GetValue();
+                var flt = ((MAP.NetFloat)arr[2]).GetValue();
+
                 return true;
             }
 
@@ -139,7 +151,7 @@ namespace SerializerLib
                 allRight = FloatTypeTest();
                 allRight = IntTypeTest();
                 allRight = ComplexArrayObjectTest();
-                allRight = AssigmentTest();
+                allRight = StaticTypeArrayTest();
                 return allRight;
             }
         }

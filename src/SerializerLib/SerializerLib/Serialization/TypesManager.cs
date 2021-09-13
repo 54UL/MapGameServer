@@ -24,6 +24,7 @@ namespace SerializerLib
 				m_serializer_network_types.Add(MAP.NetworkType.STRING, new MAP.NetString());
 				m_serializer_network_types.Add(MAP.NetworkType.FLOAT, new MAP.NetFloat());
 				m_serializer_network_types.Add(MAP.NetworkType.INT, new MAP.NetInt());
+				m_serializer_network_types.Add(MAP.NetworkType.STARRAY, new MAP.NetStaticArray());
 			}
 
 			public void Clean()

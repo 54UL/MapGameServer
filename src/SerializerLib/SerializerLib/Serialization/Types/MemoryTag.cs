@@ -19,8 +19,8 @@ namespace SerializerLib
 				this.m_instance_name = new List<byte>(Encoding.UTF8.GetBytes(name));
 			}
 
-			public override List<byte> Serialize()
-			{
+			public override List<byte> RawSerialization()
+            {
 				List<byte> memoryVector = new List<byte>();
 				//NOTE: MEMORY TAG DOES NOT HAVE TO PASS HIS TYPE ID (ASSUMPTION DUE TO COMPOSITION)
 				memoryVector.Add((byte)(m_instance_name.Count)); //CHANGE THIS CAST of size_t by byte
@@ -30,8 +30,14 @@ namespace SerializerLib
 				}
 				return memoryVector;
 			}
-
-			public override List<INetworkType> Deserialize(byte[] argsMemory)
+			
+			public override List<byte> Serialize()
+			{
+				return RawSerialization();//just the same due to memory tag desing...
+			}
+			
+			
+			public override NetworkObject RawDeserialization(byte[] argsMemory)
 			{
 				byte tagLength = argsMemory[MememoryOffset.OFFSET_1]; //lenght first pos
 				m_instance_name = new List<byte>();
@@ -41,10 +47,15 @@ namespace SerializerLib
 				}
 
 				List<INetworkType> objectStructure = new List<INetworkType>
-			{
-				new MemoryTag(Encoding.ASCII.GetString(m_instance_name.ToArray()))
-			};
+				{
+					new MemoryTag(Encoding.ASCII.GetString(m_instance_name.ToArray()))
+				};
 				return objectStructure;
+			}
+
+			public override List<INetworkType> Deserialize(byte[] argsMemory)
+			{
+				return RawSerialization(argsMemory);
 			}
 
 			public override NetworkType GetNetworkType()
@@ -57,10 +68,15 @@ namespace SerializerLib
 				return Encoding.ASCII.GetString(m_instance_name.ToArray());
 			}
 
-			public override int GetSize()
-			{
-				return m_instance_name.Count + 1; //1 byte extra for the size byte
-			}
+            public override int GetRawSize()
+            {
+                return m_instance_name.Count + 1;//1 byte extra for the size byte
+            }
+
+            public override int GetSize()
+            {
+                return GetRawSize();
+            }
 
 			private List<byte> m_instance_name;
 		}

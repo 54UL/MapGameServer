@@ -20,10 +20,11 @@ namespace SerializerLib
             STRING = 0x03,
             FLOAT = 0x04,
             ARRAY = 0x05,
-            BYTE = 0x06,
-            INT = 0x07,
-            UINT = 0x08,
-            BLOB = 0x09
+            STARRAY = 0x06,
+            BYTE = 0x07,
+            INT = 0x08,
+            UINT = 0x09,
+            BLOB = 0x0A
         }
 
         public abstract class INetworkType : System.IDisposable
@@ -34,11 +35,15 @@ namespace SerializerLib
             public virtual void Dispose()
             {
             }
+            public abstract List<byte> RawSerialization();
             public abstract List<byte> Serialize();
+            public abstract List<INetworkType> RawDeserialization(byte[] argsMemory);
             public abstract List<INetworkType> Deserialize(byte[] argsMemory);
             public abstract string GetName();
             public abstract NetworkType GetNetworkType();
+            public abstract int GetRawSize();
             public abstract int GetSize();
+
         }
 
     }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System;
+
 namespace SerializerLib
 {
     namespace MAP
@@ -22,13 +24,26 @@ namespace SerializerLib
                 base.Dispose();
             }
 
+            public override List<byte> RawSerialization()
+            {
+                return new List<byte>()
+                {
+                    m_command_id,
+                    m_client_id
+                };
+            }
+
             public override List<byte> Serialize()
             {
                 List<byte> memoryVector = new List<byte>(0);
                 memoryVector.Add((byte)GetNetworkType());
-                memoryVector.Add(m_command_id);
-                memoryVector.Add(m_client_id);
+                memoryVector.InsertRange(memoryVector.Count, RawSerialization());
                 return memoryVector;
+            }
+
+            public override List<INetworkType> RawDeserialization(byte[] argsMemory)
+            {
+                throw new NotImplementedException();
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)
@@ -50,23 +65,28 @@ namespace SerializerLib
                 return NetworkType.COMMAND;
             }
 
-            public override int GetSize()
+            public override int GetRawSize()
             {
-                return sizeof(byte) + sizeof(byte) + 1; //+1 for the type byte
+                return sizeof(byte) + sizeof(byte);
             }
 
-            public byte id()
+            public override int GetSize()
+            {
+                return GetRawSize() + 1; //+1 for the type byte
+            }
+
+            public byte Id()
             {
                 return m_command_id;
             }
 
-            public byte clientId()
+            public byte ClientId()
             {
                 return m_client_id;
             }
 
-            private byte m_command_id = new byte();
-            private byte m_client_id = new byte();
+            private byte m_command_id;
+            private byte m_client_id;
         }
     }
 }
