@@ -1,0 +1,9 @@
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\bin\Debug\netcoreapp1.1\SerializerLib.deps.json
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\bin\Debug\netcoreapp1.1\SerializerLib.dll
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\bin\Debug\netcoreapp1.1\SerializerLib.pdb
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netcoreapp1.1\SerializerLib.csprojAssemblyReference.cache
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netcoreapp1.1\SerializerLib.AssemblyInfoInputs.cache
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netcoreapp1.1\SerializerLib.AssemblyInfo.cs
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netcoreapp1.1\SerializerLib.csproj.CoreCompileInputs.cache
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netcoreapp1.1\SerializerLib.dll
+C:\Repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netcoreapp1.1\SerializerLib.pdb

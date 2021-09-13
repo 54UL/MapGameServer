@@ -1,7 +1,10 @@
-
-namespace MAP{
-    public static class GlobalMembers
+namespace SerializerLib
+{
+    namespace MAP
     {
-        internal static TypesManager SerializerTypes = new TypesManager();
+        public static class GlobalMembers
+        {
+            internal static TypesManager SerializerTypes = new TypesManager();
+        }
     }
 }

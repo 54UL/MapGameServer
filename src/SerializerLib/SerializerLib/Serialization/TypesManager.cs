@@ -1,40 +1,42 @@
 ﻿using System.Collections.Generic;
-
-namespace MAP
+namespace SerializerLib
 {
-	public class TypesManager : System.IDisposable
+	namespace MAP
 	{
-		public TypesManager()
+		public class TypesManager : System.IDisposable
 		{
-			Initialize();
-		}
-		
-		public void Dispose()
-		{
-			Clean();
-		}
+			public TypesManager()
+			{
+				Initialize();
+			}
 
-		public void Initialize()
-		{
-			m_serializer_network_types.Add(MAP.NetworkType.TAG, new MAP.MemoryTag());
-			m_serializer_network_types.Add(MAP.NetworkType.COMMAND, new MAP.NetCommand());
-			m_serializer_network_types.Add(MAP.NetworkType.BYTE, new MAP.NetByte());
-			m_serializer_network_types.Add(MAP.NetworkType.ARRAY, new MAP.NetArray());
-			m_serializer_network_types.Add(MAP.NetworkType.STRING, new MAP.NetString());
-			m_serializer_network_types.Add(MAP.NetworkType.FLOAT, new MAP.NetFloat());
-			m_serializer_network_types.Add(MAP.NetworkType.INT, new MAP.NetInt());
-		}
+			public void Dispose()
+			{
+				Clean();
+			}
 
-		public void Clean()
-		{
-			m_serializer_network_types.Clear();
-		}
+			public void Initialize()
+			{
+				m_serializer_network_types.Add(MAP.NetworkType.TAG, new MAP.MemoryTag());
+				m_serializer_network_types.Add(MAP.NetworkType.COMMAND, new MAP.NetCommand());
+				m_serializer_network_types.Add(MAP.NetworkType.BYTE, new MAP.NetByte());
+				m_serializer_network_types.Add(MAP.NetworkType.ARRAY, new MAP.NetArray());
+				m_serializer_network_types.Add(MAP.NetworkType.STRING, new MAP.NetString());
+				m_serializer_network_types.Add(MAP.NetworkType.FLOAT, new MAP.NetFloat());
+				m_serializer_network_types.Add(MAP.NetworkType.INT, new MAP.NetInt());
+			}
 
-		public SortedDictionary<MAP.NetworkType, INetworkType> Get()
-		{
-			return new SortedDictionary<MAP.NetworkType, INetworkType>(m_serializer_network_types);
-		}
+			public void Clean()
+			{
+				m_serializer_network_types.Clear();
+			}
 
-		private SortedDictionary<MAP.NetworkType, INetworkType> m_serializer_network_types = new SortedDictionary<MAP.NetworkType, INetworkType>();
+			public SortedDictionary<MAP.NetworkType, INetworkType> Get()
+			{
+				return new SortedDictionary<MAP.NetworkType, INetworkType>(m_serializer_network_types);
+			}
+
+			private SortedDictionary<MAP.NetworkType, INetworkType> m_serializer_network_types = new SortedDictionary<MAP.NetworkType, INetworkType>();
+		}
 	}
 }
