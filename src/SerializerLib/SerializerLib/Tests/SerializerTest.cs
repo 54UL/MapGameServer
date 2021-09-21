@@ -125,19 +125,19 @@ namespace SerializerLib
             public bool StaticTypeArrayTest()
             {
                 NetworkObject sequence = new NetworkObject(){
-                    new MAP.NetByte(42, "byteVal"),
-                    new MAP.NetString("some string lol", "testStr"),
-                    new MAP.NetFloat(0.33f, "floating")
+                    new MAP.NetFloat(0.42f, "answer"),
+                    new MAP.NetFloat(1.33f, "three"),
+                    new MAP.NetFloat(10.33f, "tenthree")
                     };
                     
-                var arrayObj = new MAP.NetArray(sequence, "arrayTest");
+                var arrayObj = new MAP.NetStaticArray(sequence,NetworkType.FLOAT, "arrayTest");
                 var serializedArrayVector = arrayObj.Serialize();
                 var objMap = BinaryUtils.DecodeAsMap(serializedArrayVector.ToArray(), serializedArrayVector.Count - 1);
 
-                var arr = ((MAP.NetArray)objMap["arrayTest"]).GetValues();
-                var testbyte = ((MAP.NetByte)arr[0]).GetValue();
-                var str = ((MAP.NetString)arr[1]).GetValue();
-                var flt = ((MAP.NetFloat)arr[2]).GetValue();
+                var arr = ((MAP.NetStaticArray)objMap["arrayTest"]).GetValues();
+                var f1 = ((MAP.NetFloat)arr[0]).GetValue();
+                var f2 = ((MAP.NetFloat)arr[1]).GetValue();
+                var f3 = ((MAP.NetFloat)arr[2]).GetValue();
 
                 return true;
             }
@@ -145,12 +145,12 @@ namespace SerializerLib
             public bool Check()
             {
                 bool allRight = false;
-                allRight = ByteTypeTest();
-                allRight = DynamicTypeArrayTest();
-                allRight = StringTypeTest();
-                allRight = FloatTypeTest();
-                allRight = IntTypeTest();
-                allRight = ComplexArrayObjectTest();
+                // allRight = ByteTypeTest();
+                // allRight = DynamicTypeArrayTest();
+                // allRight = StringTypeTest();
+                // allRight = FloatTypeTest();
+                // allRight = IntTypeTest();
+                // allRight = ComplexArrayObjectTest();
                 allRight = StaticTypeArrayTest();
                 return allRight;
             }

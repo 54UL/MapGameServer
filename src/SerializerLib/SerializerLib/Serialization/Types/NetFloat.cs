@@ -41,7 +41,10 @@ namespace SerializerLib
 
             public override List<INetworkType> RawDeserialization(byte[] argsMemory)
             {
-                throw new NotImplementedException();
+                m_float = BitConverter.ToSingle(argsMemory, 0);
+                return new List<INetworkType>(){
+                    new MAP.NetFloat(m_float, "")
+                };
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)

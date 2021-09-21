@@ -48,8 +48,9 @@ namespace SerializerLib
             public override List<INetworkType> RawDeserialization(byte[] argsMemory)
             {
                 NetworkObject objectStructure = new NetworkObject(){
-                    new MAP.NetArray(BinaryUtils.Decode(argsMemory),"NULL")
+                    new MAP.NetArray(BinaryUtils.Decode(argsMemory.ToList()),"NULL")
                 };
+                return objectStructure;
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)

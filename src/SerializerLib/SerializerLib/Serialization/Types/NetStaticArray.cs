@@ -43,7 +43,7 @@ namespace SerializerLib
                 memoryVector.AddRange(arrayValuesVector); //ARRAY_BINARY_VALUE/S with no type
                 return memoryVector;
             }
-
+            //TODO:IS ALMOST IDENTICAL TO DECODE IN BINARY UTILS
             public List<INetworkType> StaticDeserialization(List<byte> memorySequence)
             {
                 List<INetworkType> objectStructure = new List<INetworkType>();
@@ -64,7 +64,7 @@ namespace SerializerLib
 
             public override NetworkObject RawDeserialization(byte[] argsMemory)
             {
-                throw new System.NotImplementedException();
+               return StaticDeserialization(argsMemory.ToList());
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)

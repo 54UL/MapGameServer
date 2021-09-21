@@ -7,6 +7,8 @@ namespace SerializerLib
 	namespace MAP
 	{
 		//Internal serializer class, don't use outside
+		using NetworkObject = List<INetworkType>;
+		
 		public class MemoryTag : INetworkType
 		{
 			public MemoryTag()
@@ -39,7 +41,7 @@ namespace SerializerLib
 			
 			public override NetworkObject RawDeserialization(byte[] argsMemory)
 			{
-				byte tagLength = argsMemory[MememoryOffset.OFFSET_1]; //lenght first pos
+				byte tagLength = argsMemory[MememoryOffset.OFFSET_1]; //length first pos
 				m_instance_name = new List<byte>();
 				for (byte i = 0; i < tagLength; i++)
 				{
@@ -55,7 +57,7 @@ namespace SerializerLib
 
 			public override List<INetworkType> Deserialize(byte[] argsMemory)
 			{
-				return RawSerialization(argsMemory);
+				return RawDeserialization(argsMemory);
 			}
 
 			public override NetworkType GetNetworkType()

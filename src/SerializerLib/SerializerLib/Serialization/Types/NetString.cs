@@ -40,7 +40,15 @@ namespace SerializerLib
 
             public override List<INetworkType> RawDeserialization(byte[] argsMemory)
             {
-                throw new NotImplementedException();
+                byte stringLength = argsMemory[0];
+                for (byte i = 0; i < stringLength; i++)
+                {
+                    m_string_value.Add(argsMemory[i + MememoryOffset.OFFSET_1]);
+                }
+
+                return new List<INetworkType>(){
+                    new MAP.NetString(Encoding.ASCII.GetString(m_string_value.ToArray()), "")
+                };
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)
