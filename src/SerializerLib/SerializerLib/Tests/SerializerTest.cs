@@ -113,7 +113,7 @@ namespace SerializerLib
 
                 var serializedObject = BinaryUtils.Encode(commandPayload);
                 var deserializedObjectMap = BinaryUtils.DecodeAsMap(serializedObject.ToArray(), serializedObject.Count - 1);
-                //Get pool obj3
+            
 
                 var poolDataArr = ((MAP.NetArray)deserializedObjectMap["pool2"]).GetValues();
                 var poolId = ((MAP.NetInt)poolDataArr[0]).GetValue();
@@ -125,32 +125,32 @@ namespace SerializerLib
             public bool StaticTypeArrayTest()
             {
                 NetworkObject sequence = new NetworkObject(){
-                    new MAP.NetFloat(0.42f, "answer"),
-                    new MAP.NetFloat(1.33f, "three"),
-                    new MAP.NetFloat(10.33f, "tenthree")
+                    new MAP.NetFloat(0.42f, ""),
+                    new MAP.NetFloat(1.42f, ""),
+                    new MAP.NetFloat(2.42f, "")
                     };
                     
-                var arrayObj = new MAP.NetStaticArray(sequence,NetworkType.FLOAT, "arrayTest");
+                var arrayObj = new MAP.NetStaticArray(sequence,NetworkType.FLOAT, "vector3f");
                 var serializedArrayVector = arrayObj.Serialize();
                 var objMap = BinaryUtils.DecodeAsMap(serializedArrayVector.ToArray(), serializedArrayVector.Count - 1);
 
-                var arr = ((MAP.NetStaticArray)objMap["arrayTest"]).GetValues();
+                var arr = ((MAP.NetStaticArray)objMap["vector3f"]).GetValues();
                 var f1 = ((MAP.NetFloat)arr[0]).GetValue();
                 var f2 = ((MAP.NetFloat)arr[1]).GetValue();
                 var f3 = ((MAP.NetFloat)arr[2]).GetValue();
 
-                return true;
+                return f1 == 0.42f && f2 == 1.42f && f3 == 2.42f;
             }
 
             public bool Check()
             {
                 bool allRight = false;
-                // allRight = ByteTypeTest();
-                // allRight = DynamicTypeArrayTest();
-                // allRight = StringTypeTest();
-                // allRight = FloatTypeTest();
-                // allRight = IntTypeTest();
-                // allRight = ComplexArrayObjectTest();
+                allRight = ByteTypeTest();
+                allRight = DynamicTypeArrayTest();
+                allRight = StringTypeTest();
+                allRight = FloatTypeTest();
+                allRight = IntTypeTest();
+                allRight = ComplexArrayObjectTest();
                 allRight = StaticTypeArrayTest();
                 return allRight;
             }

@@ -35,9 +35,10 @@ namespace SerializerLib
             public override List<byte> Serialize()
             {
                 List<byte> memoryVector = new List<byte>();
-                var memoryTagVector = m_instance_name.Serialize();
                 memoryVector.Add((byte)GetNetworkType()); //TYPE
+                var memoryTagVector = m_instance_name.Serialize();
                 memoryVector.AddRange(memoryTagVector); //MEMORY_TAG
+                memoryVector.Add((byte)m_array_content_type); //ARRAY TYPE
                 var arrayValuesVector = RawSerialization();
                 memoryVector.Add((byte)(memoryVector.Count + arrayValuesVector.Count)); //LENGTH  IN BYTES
                 memoryVector.AddRange(arrayValuesVector); //ARRAY_BINARY_VALUE/S with no type
@@ -72,12 +73,13 @@ namespace SerializerLib
                 List<INetworkType> objectStructure = new List<INetworkType>();
                 var memoryTag = m_instance_name.Deserialize(argsMemory)[0];
                 var memoryTagOffset = memoryTag.GetSize();
-                var arrayLength = argsMemory[memoryTagOffset + MememoryOffset.OFFSET_1];
-                var startOffset = memoryTagOffset + MememoryOffset.OFFSET_2;
+                m_array_content_type = (NetworkType) argsMemory[memoryTagOffset + MememoryOffset.OFFSET_1];
+                var arrayLength = argsMemory[memoryTagOffset + MememoryOffset.OFFSET_2];
+                var startOffset = memoryTagOffset + MememoryOffset.OFFSET_3;
                 var valuesMemoryVector = argsMemory.Skip(startOffset).Take(arrayLength - startOffset + 1).ToList();
                 var decodedArrayVal = StaticDeserialization(valuesMemoryVector);
                 m_values = decodedArrayVal;
-                objectStructure.Add(new MAP.NetArray(m_values, memoryTag.GetName()));
+                objectStructure.Add(new MAP.NetStaticArray(m_values,m_array_content_type,memoryTag.GetName()));
                 return objectStructure;
             }
 
