@@ -48,7 +48,7 @@ namespace SerializerLib
             public List<INetworkType> StaticDeserialization(List<byte> memorySequence)
             {
                 List<INetworkType> objectStructure = new List<INetworkType>();
-                for (int memPos = 0; memPos < memorySequence.Count-1;)
+                for (int memPos = 0; memPos < memorySequence.Count;)
                 {
                     var currentDeserializedBytes = 0;
                     byte[] currentBytePayLoad = memorySequence.Skip(memPos).ToArray();

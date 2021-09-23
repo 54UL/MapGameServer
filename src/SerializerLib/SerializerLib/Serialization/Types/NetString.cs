@@ -41,6 +41,7 @@ namespace SerializerLib
             public override List<INetworkType> RawDeserialization(byte[] argsMemory)
             {
                 byte stringLength = argsMemory[0];
+                m_string_value = new List<byte>();
                 for (byte i = 0; i < stringLength; i++)
                 {
                     m_string_value.Add(argsMemory[i + MememoryOffset.OFFSET_1]);
