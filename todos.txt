@@ -9,18 +9,20 @@ Implement serialization in the c# client
     * Implement as external c# dll module (Map logic and serialization) DONE
     * BinaryUtils and typeInterface in c# DONE
     * Implement all types interfaces DONE
-    * Implement static array for c# and cpp     TODO
+    * Implement static array for c# and cpp     DONE
     * Implement serialization in c# server client TODO
 
 Improve testing lib (add stages and verbose info for tests) c# and c++
 
-Implement c++ client 
+Decouple networking scripts from DAC (c#)
+
+
 
 Implement benchmarking with juicy logs(also implement a logger)
     *Cpp proyect (ping,packet loss,etc)
     *Unity proyect (ping,packet loss,etc)
 
--Implement syncronization.interpolation and rollback mechanisms
+-Implement syncronization interpolation and rollback mechanisms
 
 -Implement all remaining server commands with clustered map pools
     *Implement in c# and c++
@@ -29,6 +31,8 @@ Implement benchmarking with juicy logs(also implement a logger)
     * Car demo (already made)
 
 -Implement assertions and error handling in all sides
+
+Implement c++ client 
 
 -Optional modules
     *Implement chat system
