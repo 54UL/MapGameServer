@@ -44,7 +44,6 @@ namespace MAP
                                               ReciveData();
                                               // std::this_thread::sleep_for(std::chrono::milliseconds(1));
                                               io_context.run();
-
                                               io_context.reset();
                                               // std::this_thread::sleep_for(std::chrono::milliseconds(14));
                                           }

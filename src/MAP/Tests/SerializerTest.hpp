@@ -6,6 +6,8 @@
 #include "../UnitTesting.hpp"
 #include "../Serialization/BinaryUtils.hpp"
 #include "../Serialization/Types/Array.hpp"
+#include "../Serialization/Types/StaticArray.hpp"
+
 #include <iomanip>
 
 namespace MAP
@@ -138,6 +140,70 @@ namespace MAP
             return true;
         }
 
+        inline bool StaticTypeArrayTest(){
+            //Float testing (emulates a vector 3)
+            NetworkObject sequence = {
+                std::make_shared<MAP::NetFloat>(0.42f, ""),
+                std::make_shared<MAP::NetFloat>(0.33f, ""),
+                std::make_shared<MAP::NetFloat>(0.42069f, "")};
+
+            auto arrayObj = std::make_shared<MAP::NetStaticArray>(sequence, NetworkType::FLOAT, "sarrayTest");
+            auto serializedArrayVector = arrayObj->Serialize();
+            auto objMap = BinaryUtils::DecodeAsMap(serializedArrayVector.data(), serializedArrayVector.size());
+            auto arr = std::dynamic_pointer_cast<MAP::NetStaticArray>(objMap["sarrayTest"])->GetValues();
+
+            auto first = std::dynamic_pointer_cast<MAP::NetFloat>(arr.at(0))->GetValue();
+            auto second = std::dynamic_pointer_cast<MAP::NetFloat>(arr.at(1))->GetValue();
+            auto third = std::dynamic_pointer_cast<MAP::NetFloat>(arr.at(2))->GetValue();
+
+            //String type test
+                       NetworkObject sequence2 = {
+                std::make_shared<MAP::NetString>("HELLO", ""),
+                std::make_shared<MAP::NetString>("wOrLd", ""),
+                std::make_shared<MAP::NetString>("my fren :>", "")};
+
+            auto arrayObj2 = std::make_shared<MAP::NetStaticArray>(sequence2, NetworkType::STRING, "sarrayTest2");
+            auto serializedArrayVector2 = arrayObj2->Serialize();
+            auto objMap2 = BinaryUtils::DecodeAsMap(serializedArrayVector2.data(), serializedArrayVector2.size());
+            auto arr2 = std::dynamic_pointer_cast<MAP::NetStaticArray>(objMap2["sarrayTest2"])->GetValues();
+
+            auto firstString = std::dynamic_pointer_cast<MAP::NetString>(arr2.at(0))->GetValue();
+            auto secondString = std::dynamic_pointer_cast<MAP::NetString>(arr2.at(1))->GetValue();
+            auto thirdString = std::dynamic_pointer_cast<MAP::NetString>(arr2.at(2))->GetValue();
+            //Int type test
+                       NetworkObject sequence3 = {
+                std::make_shared<MAP::NetInt>(111, ""),
+                std::make_shared<MAP::NetInt>(222, ""),
+                std::make_shared<MAP::NetInt>(333, "")};
+
+            auto arrayObj3 = std::make_shared<MAP::NetStaticArray>(sequence3, NetworkType::INT, "sarrayTest3");
+            auto serializedArrayVector3 = arrayObj3->Serialize();
+            auto objMap3 = BinaryUtils::DecodeAsMap(serializedArrayVector3.data(), serializedArrayVector3.size());
+            auto arr3 = std::dynamic_pointer_cast<MAP::NetStaticArray>(objMap3["sarrayTest3"])->GetValues();
+
+            auto firstInt = std::dynamic_pointer_cast<MAP::NetInt>(arr3.at(0))->GetValue();
+            auto secondInt = std::dynamic_pointer_cast<MAP::NetInt>(arr3.at(1))->GetValue();
+            auto thirdInt = std::dynamic_pointer_cast<MAP::NetInt>(arr3.at(2))->GetValue();
+
+            //Byte type test
+NetworkObject sequence4 = {
+                std::make_shared<MAP::NetByte>(1, ""),
+                std::make_shared<MAP::NetByte>(128, ""),
+                std::make_shared<MAP::NetByte>(255, "")};
+
+            auto arrayObj4 = std::make_shared<MAP::NetStaticArray>(sequence4, NetworkType::BYTE, "sarrayTest4");
+            auto serializedArrayVector4 = arrayObj4->Serialize();
+            auto objMap4 = BinaryUtils::DecodeAsMap(serializedArrayVector4.data(), serializedArrayVector4.size());
+            auto arr4 = std::dynamic_pointer_cast<MAP::NetStaticArray>(objMap4["sarrayTest4"])->GetValues();
+
+            auto firstByte = std::dynamic_pointer_cast<MAP::NetByte>(arr4.at(0))->GetValue();
+            auto secondByte = std::dynamic_pointer_cast<MAP::NetByte>(arr4.at(1))->GetValue();
+            auto thirdByte = std::dynamic_pointer_cast<MAP::NetByte>(arr4.at(2))->GetValue();
+
+
+            return true;      
+        }
+
         inline bool AssigmentTest(){
             //THIS IS A ASSIGMENT TEST WITHOUT OPERATOR OVERLOAD IN THE INTERFACE(TODO!!!)
             std::map<const char*,std::shared_ptr<MAP::INetworkType>> testMap{
@@ -153,13 +219,14 @@ namespace MAP
         bool Check() override
         {
             bool allRight = false;
-            // allRight = ByteTypeTest();
-            // allRight = DynamicTypeArrayTest();
-            // allRight = StringTypeTest();
-            // allRight = FloatTypeTest();
-            // allRight = IntTypeTest();
+            allRight = ByteTypeTest();
+            allRight = DynamicTypeArrayTest();
+            allRight = StringTypeTest();
+            allRight = FloatTypeTest();
+            allRight = IntTypeTest();
             allRight = ComplexArrayObjectTest();
-            allRight = AssigmentTest();
+            allRight = StaticTypeArrayTest();
+            // allRight = AssigmentTest();
             return allRight;
         }
     };

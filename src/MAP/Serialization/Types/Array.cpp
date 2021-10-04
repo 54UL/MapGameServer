@@ -14,21 +14,34 @@ namespace MAP
     {
     }
 
+    std::vector<uint8_t> NetArray::RawSerialization()
+    {
+        auto arrayValuesVector = std::vector<uint8_t>();
+        for (auto arrayValue : m_values)
+        {
+            auto memoryChunk = arrayValue->Serialize();
+            arrayValuesVector.insert(arrayValuesVector.end(), memoryChunk.begin(), memoryChunk.end());
+        }
+        return arrayValuesVector;
+    }
+
     std::vector<uint8_t> NetArray::Serialize()
     {
         std::vector<uint8_t> memoryVector;
         memoryVector.push_back((uint8_t)GetType()); //TYPE
         auto memoryTagVector = m_instance_name.Serialize();
         memoryVector.insert(memoryVector.end(), memoryTagVector.begin(), memoryTagVector.end()); //MEMORY_TAG
-        auto arrayValuesVector = std::vector<uint8_t>();//TEMP
-        for (auto arrayValue : m_values) 
-        {
-            auto memoryChunk = arrayValue->Serialize();
-            arrayValuesVector.insert(arrayValuesVector.end(), memoryChunk.begin(), memoryChunk.end());
-        }
-        memoryVector.push_back(memoryVector.size() + arrayValuesVector.size()+1); //LENGTH  IN BYTES
-        memoryVector.insert(memoryVector.end(), arrayValuesVector.begin(), arrayValuesVector.end());//ARRAY_BINARY_VALUE/S
+        auto arrayValuesVector = RawSerialization();
+        memoryVector.push_back(memoryVector.size() + arrayValuesVector.size() + 1);                  //LENGTH  IN BYTES
+        memoryVector.insert(memoryVector.end(), arrayValuesVector.begin(), arrayValuesVector.end()); //ARRAY_BINARY_VALUE/S
         return memoryVector;
+    }
+
+    std::vector<std::shared_ptr<INetworkType>> NetArray::RawDeserialization(std::vector<uint8_t> argsMemory)
+    {
+        return std::vector<std::shared_ptr<INetworkType>>()={
+            std::make_shared<MAP::NetArray>(BinaryUtils::Decode(argsMemory),"NULL")
+        };
     }
 
     std::vector<std::shared_ptr<INetworkType>> NetArray::Deserialize(const uint8_t *argsMemory)
@@ -54,12 +67,17 @@ namespace MAP
         return m_instance_name.GetName();
     }
 
-    uint32_t NetArray::GetSize()
+    uint32_t NetArray::GetRawSize()
     {
         std::size_t partialSize = 0;
         for (auto arrayVal : m_values)
             partialSize += arrayVal->GetSize();
-        return m_instance_name.GetSize() + partialSize + 2;
+        return partialSize;
+    }
+
+    uint32_t NetArray::GetSize()
+    {
+        return m_instance_name.GetSize() + GetRawSize() + 2;
     }
 
     NetworkObject NetArray::GetValues()

@@ -6,30 +6,36 @@ Add int type     DONE
 Implement serialization in the server DONE
 
 Implement serialization in the c# client
-    * Implement as external c# dll module (Map logic and serialization)
-    * BinaryUtils and typeInterface in c#
-    * Implement all types interfaces
-    * Implement serialization in c# client
+    * Implement as external c# dll module (Map logic and serialization) DONE
+    * BinaryUtils and typeInterface in c# DONE
+    * Implement all types interfaces DONE
+    * Implement static array for c# and cpp     TODO
+    * Implement serialization in c# server client TODO
+
+Improve testing lib (add stages and verbose info for tests) c# and c++
+
+Implement c++ client 
 
 Implement benchmarking with juicy logs(also implement a logger)
     *Cpp proyect (ping,packet loss,etc)
     *Unity proyect (ping,packet loss,etc)
 
-Implement syncronization and rollback mechanisms
-Implement assertions and error handling in all sides
+-Implement syncronization.interpolation and rollback mechanisms
 
+-Implement all remaining server commands with clustered map pools
+    *Implement in c# and c++
 
-Implement the chat system
-Implement all remaining server commands with clustered map pools
-    *Implement in c#
-
-
-Create single proyect demo(unity/c# and c++)
+-Create single proyect demo(unity/c# and c++)
     * Car demo (already made)
 
+-Implement assertions and error handling in all sides
 
-Implement and expose mongo db features in the game server commands
-
-Implement endianness detection
-Add uint type     
-Add blob type     
+-Optional modules
+    *Implement chat system
+    *Implement basic mongo db features in the game server commands
+    *Implement audio streaming
+    
+-Implement endianness detection
+-Add uint type     
+-Add blob type
+-Ensure complex object serialization(static and dynamic)     

@@ -13,6 +13,7 @@
 #include "./Types/String.hpp"
 #include "./Types/Float.hpp"
 #include "./Types/Integer.hpp"
+#include "./Types/StaticArray.hpp"
 
 namespace MAP
 {
@@ -38,6 +39,7 @@ namespace MAP
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::STRING, std::make_shared<MAP::NetString>()));
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::FLOAT, std::make_shared<MAP::NetFloat>()));
             m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::INT, std::make_shared<MAP::NetInt>()));
+            m_serializer_network_types.insert(std::make_pair(MAP::NetworkType::SARRAY, std::make_shared<MAP::NetStaticArray>()));
         }
 
         void Clean()

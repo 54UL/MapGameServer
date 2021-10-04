@@ -43,7 +43,10 @@ namespace SerializerLib
 
             public override List<INetworkType> RawDeserialization(byte[] argsMemory)
             {
-                throw new NotImplementedException();
+                var objStructure = new List<INetworkType>(){
+                    new NetCommand(argsMemory[0], argsMemory[0])
+                };
+                return objStructure;
             }
 
             public override List<INetworkType> Deserialize(byte[] argsMemory)
