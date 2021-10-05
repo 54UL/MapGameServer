@@ -1,0 +1,5 @@
+C:\repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netstandard1.0\SerializerLib.csproj.AssemblyReference.cache
+C:\repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netstandard1.0\SerializerLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netstandard1.0\SerializerLib.AssemblyInfoInputs.cache
+C:\repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netstandard1.0\SerializerLib.AssemblyInfo.cs
+C:\repos\MapGameServer\src\SerializerLib\SerializerLib\obj\Debug\netstandard1.0\SerializerLib.csproj.CoreCompileInputs.cache
