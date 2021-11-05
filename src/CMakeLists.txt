@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.0.0)
 set(CMAKE_CXX_STANDARD 17)	
 project(MAP_SERVER VERSION 0.1.0)
 
-include_directories(
-    C:/repos/MapGameServer/3rd/asio-1.18.0/include)
+include_directories(${PROJECT_SOURCE_DIR}/../3rd/asio-1.18.0/include)
+    
 
-message("Compiling server.....")  
 add_subdirectory(./Serializer)
 add_subdirectory(./Server)
 
