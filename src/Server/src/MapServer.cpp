@@ -1,11 +1,10 @@
 #include <mutex>
 #include <thread>
 #include <asio.hpp>
-
 #include "./MapServer.hpp"
-#include "./Serialization/BinaryUtils.hpp"
-#include "./Serialization/SerializerAPI.hpp"
-#include "./Serialization/Types/Command.hpp"
+#include <BinaryUtils.hpp>
+#include <SerializerAPI.hpp>
+#include <Types/Command.hpp>
 
 // #define SINGLE_THREAD
 namespace MAP

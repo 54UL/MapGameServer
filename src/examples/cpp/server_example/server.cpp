@@ -2,7 +2,7 @@
 #include <iostream>
 #include <future>
 #include <thread>
-#include "./MAP/MapServer.hpp"
+#include <MapServer.hpp>
 
 #define SERVER_PORT 5140
 

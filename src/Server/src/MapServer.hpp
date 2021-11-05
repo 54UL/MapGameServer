@@ -1,7 +1,7 @@
-#ifndef MAP_CLIENT_H
-#define MAP_CLIENT_H
-
+#ifndef MAP_SERVER_H
+#define MAP_SERVER_H
 #include <asio.hpp>
+
 #include <cstdlib>
 #include <iostream>
 #include "Api.hpp"
@@ -9,7 +9,6 @@
 #include <map>
 #include <string>
 #include <chrono>
-
 #include "./Models/Client.hpp"
 #include "./Models/Command.hpp"
 #include "./Models/CommandArgs.hpp"
