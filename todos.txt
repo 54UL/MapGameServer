@@ -42,6 +42,11 @@
         *delay
         *interpolation
 
+
+-Serializer lib todos:
+    * Implement endianness detection 
+    * Server
+
 -------------------------------------------------------------- V0.9B
 -Implement all remaining server commands with clustered map pools
     *Implement in c# and c++
@@ -50,7 +55,6 @@
     *Implement chat system
     *Implement basic mongo db features in the game server commands
 
--Implement endianness detection
 -------------------------------------------------------------- V1.0B
 -Server auth token(non specific algorithm)
 -Server ACL
