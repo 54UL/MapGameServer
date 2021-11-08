@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.0.0)
 set(CMAKE_CXX_STANDARD 17)	
-project(MAP_ECO VERSION 0.1.0)
+project(MAP VERSION 0.1.0)
 
 #ENV CONFIGS 
 set(LIB_TESTS ON)
-set(BUILD_TYPE "SERVER_EXAMPLE")//VALUES: SERVER_EXAMPLE,LIB_SERVER.
+set(BUILD_ENV "DEBUG")#BUILD_ENV = {DEBUG,PROD}
+set(BUILD_TYPE "SERVER_EXAMPLE")#BUILD_TYPE = {LIB,SERVER_EXAMPLE}
+
 #3rd 
 include_directories(${PROJECT_SOURCE_DIR}/../3rd/asio-1.18.0/include)
+find_package(Threads REQUIRED)
 
-#GTEST BEGIN ->MOVE TO A CONIFIG FILE
+#GTEST BEGIN ->  TODO:MOVE TO A CONIFIG FILE
 #g tests
 include(FetchContent)
 FetchContent_Declare(
@@ -21,28 +24,26 @@ FetchContent_MakeAvailable(googletest)
 #GTEST END 
 
 #Lib folders
-add_subdirectory("./Serializer")
-add_subdirectory("./Server")
+add_subdirectory(./Serializer)
+add_subdirectory(./Server)
 
 list(APPEND SERVER_LIBS MAP_SERIALIZER)
 list(APPEND SERVER_LIBS MAP_SERVER)
 
-#CREAR EJECUTABLE PARA LAS PRUEBAS UNITARIAS
+#EXECUTABLE FOR UNIT TESTING
 if (LIB_TESTS)
-message("MAP SERVER TESTS ENABLED")
-include(CTest)
-enable_testing()
-add_subdirectory("./Tests")
-add_dependencies(MAP_UNIT_TEST MAP_SERIALIZER)
-add_dependencies(MAP_UNIT_TEST MAP_SERVER)
+  message("MAP SERVER TESTS ENABLED")
+  add_subdirectory(./Tests)
+  add_dependencies(MAP_UNIT_TEST ${SERVER_LIBS})
 endif()
 
-#CREAR EJECUTABLE DEL SERVIDOR
-#CREAR COMO LIBRERIA (OPCIONAL)
+#BUILD DEFINITIONS
+#LIB(default): does nothing because the proyect itself is already a lib
+#SERVER_EXAMPLE : simple entry point instancing a basic map server in port 5140
+message("MAP BUILD TYPE:")
 if (${BUILD_TYPE} STREQUAL "SERVER_EXAMPLE")
+  message("EXECUTABLE SERVER EXAMPLE")
   add_executable(${PROJECT_NAME} ./Examples/cpp/server_example/server.cpp)
   target_link_libraries(${PROJECT_NAME} PUBLIC ${SERVER_LIBS})
 endif()
-
-
 
