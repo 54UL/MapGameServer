@@ -25,7 +25,7 @@ namespace MAP
     public:
         MapServer(asio::io_context &io_context, short port);
         ~MapServer();
-
+    
     private:
         void MultiThread(asio::io_context &io_context);
         void SingleThread(asio::io_context &io_context);
@@ -36,11 +36,10 @@ namespace MAP
         void RegisterCommand(MAP::ServerCommandType code, std::function<void(MAP::CommandArgs &payload)> callback);
         void RegisterCommands();
         std::shared_ptr<MAP::Client> GetCommandInfo(int clientId);
-        void ReciveData();
+        void ReceiveData();
         void SendData(uint8_t *charArrayData, std::size_t length, asio::ip::udp::endpoint to);
         bool ShouldSendData(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         void SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
-
         void OnRecive(const uint8_t *data, std::size_t length);
 
         //SERVER COMMANDS
@@ -54,20 +53,22 @@ namespace MAP
         void GetActivePools(MAP::CommandArgs &args);
 
     private:
-        MAP::Vector<std::shared_ptr<MAP::Client>> connectedClients_;
-        std::map<MAP::ServerCommandType, std::function<void(MAP::CommandArgs &args)>> commands_;
-        MAP::Vector<MAP::Command> commandQueue_;
-        MAP::Vector<MAP::SpawnedEntity> spawnedObjects_; //TESTING MUST BE INSIDE OF THE POOL
-        udp::socket socket_;
         uint64_t serverTicks_;
         uint64_t lastClientIndex;
         uint8_t data_[MAX_DATA_PAYLOAD];
-        std::mutex commandMutex_; // protects all command and data operations
-        std::map<std::string,MAP::NetworkField> testingPool_;
-        std::mutex consumedTickMutex; // protects all command and data operations
-        MAP::Vector<udp::endpoint> alreadyCosumedTickTime_;
+
+        udp::socket socket_;
         udp::endpoint receiverEndpoint_;
         udp::endpoint lastCommandOwnerEndpoint_;
+        
+        MAP::Vector<MAP::Command> commandQueue_;
+        MAP::Vector<MAP::SpawnedEntity> spawnedObjects_; 
+        MAP::Vector<std::shared_ptr<MAP::Client>> connectedClients_;
+            
+        std::map<std::string, MAP::NetworkField> testingPool_;
+        std::map<MAP::ServerCommandType, std::function<void(MAP::CommandArgs &args)>> commands_;
+        
+        std::mutex commandMutex_; //guards commandQueue_ 
         std::thread receiverThread_, dispatcherThread_;
     };
 }

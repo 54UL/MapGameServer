@@ -23,27 +23,29 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 #GTEST END 
 
-#Lib folders
+#MAP Lib folders
 add_subdirectory(./Serializer)
 add_subdirectory(./Server)
 
-list(APPEND SERVER_LIBS MAP_SERIALIZER)
-list(APPEND SERVER_LIBS MAP_SERVER)
+list(APPEND MAP_LIBS MAP_SERIALIZER)
+list(APPEND MAP_LIBS MAP_SERVER)
 
 #EXECUTABLE FOR UNIT TESTING
 if (LIB_TESTS)
   message("MAP SERVER TESTS ENABLED")
   add_subdirectory(./Tests)
-  add_dependencies(MAP_UNIT_TEST ${SERVER_LIBS})
+  add_dependencies(MAP_UNIT_TEST ${MAP_LIBS})
 endif()
 
 #BUILD DEFINITIONS
-#LIB(default): does nothing because the proyect itself is already a lib
-#SERVER_EXAMPLE : simple entry point instancing a basic map server in port 5140
+#LIB(default): does nothing because the proyect itself is already compiled as a lib
+#SERVER_EXAMPLE: simple entry point instancing a basic map server 
+#CLIENT_EXAMPLE: simple entry point instancing a basic map client
+
 message("MAP BUILD TYPE:")
 if (${BUILD_TYPE} STREQUAL "SERVER_EXAMPLE")
   message("EXECUTABLE SERVER EXAMPLE")
   add_executable(${PROJECT_NAME} ./Examples/cpp/server_example/server.cpp)
-  target_link_libraries(${PROJECT_NAME} PUBLIC ${SERVER_LIBS})
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${MAP_LIBS})
 endif()
 

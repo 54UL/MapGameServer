@@ -3,7 +3,6 @@
 #include <string>
 #include "Client.hpp"
 #include "../Api.hpp"
-using json = nlohmann::json;
 
 namespace MAP
 {

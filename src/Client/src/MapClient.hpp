@@ -37,7 +37,7 @@
 //         void RegisterCommand(MAP::ServerCommandType code, std::function<void(MAP::CommandArgs &payload)> callback);
 //         void RegisterCommands();
 //         std::shared_ptr<MAP::Client> GetCommandInfo(int clientId);
-//         void ReciveData();
+//         void ReceiveData();
 //         void SendData(uint8_t *charArrayData, std::size_t length, asio::ip::udp::endpoint to);
 //         bool ShouldSendData(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
 //         void SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client);

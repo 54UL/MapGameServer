@@ -9,7 +9,7 @@ enable_testing()
 file(GLOB_RECURSE TEST_SOURCES "*.cpp")
 
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC gtest_main Threads::Threads ${SERVER_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC gtest_main Threads::Threads ${MAP_LIBS})
 gtest_discover_tests(${PROJECT_NAME})
 
 

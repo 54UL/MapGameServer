@@ -41,7 +41,7 @@
 //                                       {
 //                                           while (1)
 //                                           {
-//                                               ReciveData();
+//                                               ReceiveData();
 //                                               // std::this_thread::sleep_for(std::chrono::milliseconds(1));
 //                                               io_context.run();
 //                                               io_context.reset();
@@ -69,7 +69,7 @@
 //         while (1)
 //         {
 //             io_context.reset();
-//             ReciveData();
+//             ReceiveData();
 //             io_context.run();
 //             TickServer();
 //             // auto thread1ServerTime = std::chrono::high_resolution_clock::now();
@@ -174,7 +174,7 @@
 //         DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
 //     }
 
-//     void MapServer::ReciveData()
+//     void MapServer::ReceiveData()
 //     {
 //         socket_.async_receive_from(
 //             asio::buffer(data_, MAX_DATA_PAYLOAD), receiverEndpoint_,

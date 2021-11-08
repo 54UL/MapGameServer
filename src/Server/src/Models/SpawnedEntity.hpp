@@ -12,8 +12,8 @@ namespace MAP
         }
         ~SpawnedEntity() {}
         uint64_t id;
-        std::string PrefabName;
         uint32_t PlayerOwner;
+        std::string PrefabName;
     };
 } // namespace MAP
 

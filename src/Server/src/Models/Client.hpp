@@ -3,10 +3,10 @@
 #include "../Api.hpp"
 #include "./SpawnedEntity.hpp"
 
-using asio::ip::udp;
 #include <string>
 #include <asio.hpp>
 
+using asio::ip::udp;
 namespace MAP
 {
     class Client
