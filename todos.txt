@@ -15,10 +15,35 @@
 
 -Improve testing lib (add stages and verbose info for tests) c# and c++ DONE
 
+-rework c++ server code <------------------------------------------------------------ ON PROGRESS
+    *Consolidate MAP architecture design (partial implementation of SOLID)
+        *Command api 
+            * MAP default commands (v1.0 command spec)
+            * DB commands
+            * Chat commands
+            * Auth commands
+        *Serialization api 
+            *Binary serialization
+            *Json serialization
+        *NetworkTransport api(this to use asio or steamNetworking)
+            *ASIO upd sockets
+            *Steam networking sockets
+        *Server API
+            *Event hooks
+                *server state
+                *custom hooks
+
+    *Implement c++ client 
+    *Implement benchmarking,logger and config utils
+        *Cpp (ping,packet loss,etc)
+
+
 -Create networking tests in c# client and c++ in his actual state
     * (FIX SERIALIZATION LIB BUG IN C#)
     *C#  map client unit tests(own test system)
     *C++ map server unit tests(gtests)
+
+-rework c# client to meet cpp server specs.
 
 -Unity 3D project:
     *Decouple networking scripts from DAC (c#)
@@ -27,22 +52,15 @@
     *Network physics demo (TODO)  
     *FPS demo (OPTIONAL)
 
-
 -Implement benchmarking and logger
-    *Cpp (ping,packet loss,etc)
     *c#(Unity3D) (ping,packet loss,etc)
 
--refactor to c++ server code
-    *Consolidate MAP command design (partial implementation of SOLID)
-
--Implement p2p broadcast algorithm
--Implement client synchronization:
-    *timeline 
-        *rollback
-        *delay
-        *interpolation
-
-
+-Implement client/server synchronization:
+    *timeline
+        *dead reckoning (priority)
+        *delay    (default)
+        *rollback (optional)
+            
 -Serializer lib todos:
     * Implement endianness detection 
     * Server
@@ -61,5 +79,4 @@
 -Data encryption (non specific algorithm)
 -------------------------------------------------------------- V1.1B
 -Implement godot client
--Implement c++ client 
 -Implement unreal client

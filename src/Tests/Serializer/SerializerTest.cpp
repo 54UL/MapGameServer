@@ -148,11 +148,15 @@ TEST(MapSerializer, StaticArrayTest)
     auto second = std::dynamic_pointer_cast<MAP::NetFloat>(arr.at(1))->GetValue();
     auto third = std::dynamic_pointer_cast<MAP::NetFloat>(arr.at(2))->GetValue();
 
+    EXPECT_EQ(first, 0.42f);
+    EXPECT_EQ(second, 0.33f);
+    EXPECT_EQ(third, 0.42069f);
+
     //String type test
     NetworkObject sequence2 = {
         std::make_shared<MAP::NetString>("HELLO", ""),
-        std::make_shared<MAP::NetString>("wOrLd", ""),
-        std::make_shared<MAP::NetString>("my fren :>", "")};
+        std::make_shared<MAP::NetString>("world", ""),
+        std::make_shared<MAP::NetString>("XxXx  XxXxXx", "")};
 
     auto arrayObj2 = std::make_shared<MAP::NetStaticArray>(sequence2, NetworkType::STRING, "sarrayTest2");
     auto serializedArrayVector2 = arrayObj2->Serialize();
@@ -162,11 +166,16 @@ TEST(MapSerializer, StaticArrayTest)
     auto firstString = std::dynamic_pointer_cast<MAP::NetString>(arr2.at(0))->GetValue();
     auto secondString = std::dynamic_pointer_cast<MAP::NetString>(arr2.at(1))->GetValue();
     auto thirdString = std::dynamic_pointer_cast<MAP::NetString>(arr2.at(2))->GetValue();
+
+    EXPECT_TRUE(firstString.compare("HELLO") == 0);
+    EXPECT_TRUE(secondString.compare("world") == 0);
+    EXPECT_TRUE(thirdString.compare("XxXx  XxXxXx") == 0);
+
     //Int type test
     NetworkObject sequence3 = {
-        std::make_shared<MAP::NetInt>(111, ""),
-        std::make_shared<MAP::NetInt>(222, ""),
-        std::make_shared<MAP::NetInt>(333, "")};
+        std::make_shared<MAP::NetInt>(111111, ""),
+        std::make_shared<MAP::NetInt>(222222, ""),
+        std::make_shared<MAP::NetInt>(333333, "")};
 
     auto arrayObj3 = std::make_shared<MAP::NetStaticArray>(sequence3, NetworkType::INT, "sarrayTest3");
     auto serializedArrayVector3 = arrayObj3->Serialize();
@@ -176,6 +185,9 @@ TEST(MapSerializer, StaticArrayTest)
     auto firstInt = std::dynamic_pointer_cast<MAP::NetInt>(arr3.at(0))->GetValue();
     auto secondInt = std::dynamic_pointer_cast<MAP::NetInt>(arr3.at(1))->GetValue();
     auto thirdInt = std::dynamic_pointer_cast<MAP::NetInt>(arr3.at(2))->GetValue();
+    EXPECT_EQ(firstInt, 111111);
+    EXPECT_EQ(secondInt, 222222);
+    EXPECT_EQ(thirdInt, 333333);
 
     //Byte type test
     NetworkObject sequence4 = {
@@ -192,7 +204,9 @@ TEST(MapSerializer, StaticArrayTest)
     auto secondByte = std::dynamic_pointer_cast<MAP::NetByte>(arr4.at(1))->GetValue();
     auto thirdByte = std::dynamic_pointer_cast<MAP::NetByte>(arr4.at(2))->GetValue();
 
-    EXPECT_EQ(true, true);//TODO DO THE PROOPER ASSERTIONS
+    EXPECT_EQ(firstByte, 1);
+    EXPECT_EQ(secondByte, 128);
+    EXPECT_EQ(thirdByte, 255);
 }
 
 TEST(MapSerializer, TypeAssignmentTest)
@@ -203,7 +217,6 @@ TEST(MapSerializer, TypeAssignmentTest)
         std::make_pair("element2", std::make_shared<MAP::NetInt>(666, "PoolId"))};
 
     auto someExternalNetworkType = std::make_shared<MAP::NetInt>(33333, "PoolId");
-
     testMap["element1"] = someExternalNetworkType;
     int testMapVal = std::dynamic_pointer_cast<MAP::NetInt>(testMap["element1"])->GetValue();
     EXPECT_EQ(testMapVal, 33333);
