@@ -1,6 +1,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
-#include "../Api.hpp"
+#include "../include/MapApi.hpp"
 #include "./SpawnedEntity.hpp"
 
 #include <string>

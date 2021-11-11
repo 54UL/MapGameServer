@@ -2,7 +2,7 @@
 #define POOL_H
 #include <string>
 #include "Client.hpp"
-#include "../Api.hpp"
+#include "../include/MapApi.hpp"
 
 namespace MAP
 {

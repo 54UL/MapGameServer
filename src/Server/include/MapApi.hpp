@@ -1,8 +1,6 @@
 #ifndef MAP_API
 #define MAP_API
 
-//ALL INCLUDES
-//STD CONTAINERS
 #include <map>
 #include <vector>
 #include <array>
@@ -16,7 +14,7 @@
 
 namespace MAP
 {
-    //Containers
+    //collections and utils alias
     template <class T>
     using Vector = std::vector<T>;
     template <class T, class T1>
@@ -26,10 +24,9 @@ namespace MAP
     template <class T>
     using Queue = std::queue<T>;
     using String = std::string;
-    //SmartPointers
     template <class T>
     using SharedPtr = std::shared_ptr<T>;
-
+    //API
     enum class ServerCommandType : uint8_t
     {
         SUBSCRIBE = 0x01,

@@ -17,6 +17,14 @@
 
 -rework c++ server code <------------------------------------------------------------ ON PROGRESS
     *Consolidate MAP architecture design (partial implementation of SOLID)
+        *NetworkTransport api(this to use asio or steamNetworking)
+            *Handshake feature
+            *Client pool
+            *NET AUTH(TO BE IMPLEMENTED)
+            *Reliable message or unreliable modes
+                *ASIO upd sockets
+                *Steam networking sockets (OPTIONAL DUE COMPLEXITY)
+
         *Command api 
             * MAP default commands (v1.0 command spec)
             * DB commands
@@ -25,13 +33,11 @@
         *Serialization api 
             *Binary serialization
             *Json serialization
-        *NetworkTransport api(this to use asio or steamNetworking)
-            *ASIO upd sockets
-            *Steam networking sockets
+        
         *Server API
             *Event hooks
-                *server state
-                *custom hooks
+                *server state 
+                *custom hooks (optional)
 
     *Implement c++ client 
     *Implement benchmarking,logger and config utils

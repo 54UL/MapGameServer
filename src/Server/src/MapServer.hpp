@@ -4,7 +4,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include "Api.hpp"
+#include "../include/MapApi.hpp"
 #include <functional>
 #include <map>
 #include <string>
@@ -27,21 +27,24 @@ namespace MAP
         ~MapServer();
     
     private:
+        //Server API
         void MultiThread(asio::io_context &io_context);
         void SingleThread(asio::io_context &io_context);
         void Initialize();
-        void TickServer();
         void DispatchClientComands();
-        void DecodeCommand(MAP::ServerCommandType header, MAP::CommandArgs &payload);
-        void RegisterCommand(MAP::ServerCommandType code, std::function<void(MAP::CommandArgs &payload)> callback);
-        void RegisterCommands();
         std::shared_ptr<MAP::Client> GetCommandInfo(int clientId);
+        //Transport API
+        void TickServer();
         void ReceiveData();
+        void DecodeCommand(MAP::ServerCommandType header, MAP::CommandArgs &payload);
         void SendData(uint8_t *charArrayData, std::size_t length, asio::ip::udp::endpoint to);
         bool ShouldSendData(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         void SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         void OnRecive(const uint8_t *data, std::size_t length);
-
+        
+        //COMAND API
+        void RegisterCommand(MAP::ServerCommandType code, std::function<void(MAP::CommandArgs &payload)> callback);
+        void RegisterCommands();
         //SERVER COMMANDS
         void Subscribe(MAP::CommandArgs &args);
         void Unsubscribe(MAP::CommandArgs &args);
@@ -70,6 +73,7 @@ namespace MAP
         
         std::mutex commandMutex_; //guards commandQueue_ 
         std::thread receiverThread_, dispatcherThread_;
+
     };
 }
 
