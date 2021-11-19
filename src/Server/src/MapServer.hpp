@@ -33,6 +33,9 @@ namespace MAP
         void Initialize();
         void DispatchClientComands();
         std::shared_ptr<MAP::Client> GetCommandInfo(int clientId);
+        void PushCommand();
+        void PopCommand();
+
         //Transport API
         void TickServer();
         void ReceiveData();
@@ -50,7 +53,7 @@ namespace MAP
         void Unsubscribe(MAP::CommandArgs &args);
         void StartPool(MAP::CommandArgs &args);
         void EndPool(MAP::CommandArgs &args);
-        void UpssertProperty(MAP::CommandArgs &args);
+        void UpsertProperty(MAP::CommandArgs &args);
         void RemoveProperty(MAP::CommandArgs &args);
         void SpawnObject(MAP::CommandArgs &args);
         void GetActivePools(MAP::CommandArgs &args);
@@ -71,9 +74,9 @@ namespace MAP
         std::map<std::string, MAP::NetworkField> testingPool_;
         std::map<MAP::ServerCommandType, std::function<void(MAP::CommandArgs &args)>> commands_;
         
-        std::mutex commandMutex_; //guards commandQueue_ 
+        //Threading...
+        std::mutex commandMutex_;  
         std::thread receiverThread_, dispatcherThread_;
-
     };
 }
 

@@ -17,6 +17,10 @@
 
 -rework c++ server code <------------------------------------------------------------ ON PROGRESS
     *Consolidate MAP architecture design (partial implementation of SOLID)
+        *Serialization api           -- ON PROGRESS
+                *Binary serialization
+                *Json serialization
+
         *NetworkTransport api(this to use asio or steamNetworking)
             *Handshake feature
             *Client pool
@@ -30,10 +34,7 @@
             * DB commands
             * Chat commands
             * Auth commands
-        *Serialization api 
-            *Binary serialization
-            *Json serialization
-        
+
         *Server API
             *Event hooks
                 *server state 

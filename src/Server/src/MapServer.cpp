@@ -88,7 +88,7 @@ namespace MAP
         RegisterCommand(MAP::ServerCommandType::UNSUBSCRIBE, std::bind(&MapServer::Unsubscribe, this, std::placeholders::_1));
         RegisterCommand(MAP::ServerCommandType::START_POOL, std::bind(&MapServer::StartPool, this, std::placeholders::_1));
         RegisterCommand(MAP::ServerCommandType::END_POOL, std::bind(&MapServer::EndPool, this, std::placeholders::_1));
-        RegisterCommand(MAP::ServerCommandType::UPSERT, std::bind(&MapServer::UpssertProperty, this, std::placeholders::_1));
+        RegisterCommand(MAP::ServerCommandType::UPSERT, std::bind(&MapServer::UpsertProperty, this, std::placeholders::_1));
         RegisterCommand(MAP::ServerCommandType::REMOVE, std::bind(&MapServer::RemoveProperty, this, std::placeholders::_1));
         RegisterCommand(MAP::ServerCommandType::SPAWN, std::bind(&MapServer::SpawnObject, this, std::placeholders::_1));
         RegisterCommand(MAP::ServerCommandType::GET_ACTIVE_POOLS, std::bind(&MapServer::GetActivePools, this, std::placeholders::_1));
@@ -166,9 +166,28 @@ namespace MAP
         std::cout << "[INCOMIG DATA: " << length << " bytes from " << receiverEndpoint_.address() << "] " << std::endl;
         std::cout << std::hex << data << std::endl; //BINARY ???
 
+        /*
+
+            //From format manager!!!
+            std::vector<std::shared_ptr<IMapObject>> Decode(bytes,length){
+                    currentFormat->
+            }            
+
+            //End format manager draft
+
+            DRAFT FOR NEW MAP API
+            std::vector<std::shared_ptr<IMapObject>> dataSequence = formatManager->Decode(data_,length);
+            std::shared_ptr<IMapObject> command = dataSequence.at(0);
+            auto clientId = command.getInt32("clientId");
+            auto commandId = command.getByte("id");
+            dataSequence.erase(dataSequence.begin()); //OJO
+            MAP::CommandArgs commandArg(GetCommandInfo(clientId), dataSequence);
+            DecodeCommand(static_cast<MAP::ServerCommandType>(commandId), commandArg);
+        */
+
         auto dataSequence = BinaryUtils::DecodeAsMap(data_, length);
         auto decodedCommand = std::dynamic_pointer_cast<MAP::NetCommand>((dataSequence.at(0)));
-        dataSequence.erase(dataSequence.begin()); //OJO
+        dataSequence.erase(dataSequence.begin()); 
         MAP::CommandArgs commandArg(GetCommandInfo(decodedCommand->clientId()), dataSequence);
         DecodeCommand(static_cast<MAP::ServerCommandType>(decodedCommand->id()), commandArg);
     }
@@ -230,6 +249,11 @@ namespace MAP
     //COMAND IMPLEMENTATION
     void MapServer::Subscribe(MAP::CommandArgs &args)
     {
+        /*TYPE INTERFACE DRAFT
+        std::string IpAddress = args.payload.getString("IpAddress")
+        int someInt = args.payload.getInt("someInt")
+        std::vector<std::shared_ptr<void>> IpAddress = args.payload.getArray("array")
+        */
         std::string IpAddress = BinaryUtils::Get<MAP::NetString>(args.Payload, "IpAddress")->GetValue();
         std::string playerName = BinaryUtils::Get<MAP::NetString>(args.Payload, "PlayerName")->GetValue();
         std::string hostName = BinaryUtils::Get<MAP::NetString>(args.Payload, "HostName")->GetValue();
@@ -301,7 +325,7 @@ namespace MAP
     {
     }
 
-    void MapServer::UpssertProperty(MAP::CommandArgs &args)
+    void MapServer::UpsertProperty(MAP::CommandArgs &args)
     {
         std::string payloadKey = BinaryUtils::Get<MAP::NetString>(args.Payload, "Key")->GetValue();
         auto payloadValue = args.Payload["Value"];

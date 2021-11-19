@@ -26,6 +26,7 @@ namespace MAP
     using String = std::string;
     template <class T>
     using SharedPtr = std::shared_ptr<T>;
+
     //API
     enum class ServerCommandType : uint8_t
     {
@@ -37,6 +38,14 @@ namespace MAP
         REMOVE = 0x06,
         SPAWN = 0x07,
         GET_ACTIVE_POOLS = 0x08
+    };
+
+    enum class EncodingMethod : uint8_t
+    {
+        NOT_DEFINED = 0X00,
+        MAP_BINARY = 0X01,
+        NLOHMANN_JSON = 0x02,
+        GOOGLE_PROTOBUFF = 0X03
     };
 
 } // namespace MAP
