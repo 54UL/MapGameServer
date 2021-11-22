@@ -48,6 +48,13 @@ namespace MAP
         GOOGLE_PROTOBUFF = 0X03
     };
 
+    enum class TransportMethod : uint8_t
+    {
+        NOT_DEFINED = 0X00,
+        ASIO_SOCKETS = 0X01,
+        STEAM_NETWORKING_SOCKETS = 0x02
+    };
+
 } // namespace MAP
 
 #endif

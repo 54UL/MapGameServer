@@ -12,12 +12,12 @@ namespace MAP
     class CommandArgs
     {
     public:
-        CommandArgs(std::shared_ptr<MAP::Client> owner, std::map<std::string, std::shared_ptr<MAP::INetworkType>>  payload) : Owner(owner), Payload(payload)
+        CommandArgs(std::shared_ptr<MAP::Client> owner, std::map<std::string, std::shared_ptr<MAP::IMapObject>>  payload) : Owner(owner), Payload(payload)
         {
 
         }
         std::shared_ptr<MAP::Client> Owner;
-        std::map<std::string, std::shared_ptr<MAP::INetworkType>> Payload;
+        std::map<std::string, std::shared_ptr<MAP::IMapObject>> Payload;
     };
 
 } // namespace MAP

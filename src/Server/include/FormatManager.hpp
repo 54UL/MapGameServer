@@ -1,9 +1,9 @@
 #ifndef FORMAT_MANAGER_H
 #define FORMAT_MANAGER_H
 
-#include "../../include/IMapDataFormat.hpp"
-#include "../../include/MapApi.hpp"
-#include "../../include/IMapObject.hpp"
+#include "./IMapDataFormat.hpp"
+#include "./MapApi.hpp"
+#include "./IMapObject.hpp"
 
 namespace MAP
 {
@@ -22,6 +22,7 @@ namespace MAP
         {
 
         }
+        
         //use this if u want to reload the encoding method
         bool LoadMethod(EncodingMethod method){
             //Clean up to re-initilize the formating method (if equals to actual formating method does nothing)

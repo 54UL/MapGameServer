@@ -8,7 +8,12 @@ set(BUILD_ENV "DEBUG")#BUILD_ENV = {DEBUG,PROD}
 set(BUILD_TYPE "SERVER_EXAMPLE")#BUILD_TYPE = {LIB,SERVER_EXAMPLE}
 
 #3rd 
-include_directories(${PROJECT_SOURCE_DIR}/../3rd/asio-1.18.0/include)
+#TODO: MAKE ALL 3RD INCLUDE PATHS ENV VARS...
+
+include_directories(
+  ${PROJECT_SOURCE_DIR}/../3rd/asio-1.18.0/include
+  ${PROJECT_SOURCE_DIR}/../3rd/spdlg-1.x/include)
+
 find_package(Threads REQUIRED)
 
 #GTEST BEGIN ->  TODO:MOVE TO A CONIFIG FILE

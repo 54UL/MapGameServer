@@ -10,4 +10,4 @@ file(GLOB_RECURSE  MGS_SOURCES
         src/*.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${MGS_SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
