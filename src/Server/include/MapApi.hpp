@@ -39,7 +39,7 @@ namespace MAP
         SPAWN = 0x07,
         GET_ACTIVE_POOLS = 0x08
     };
-
+    
     enum class EncodingMethod : uint8_t
     {
         NOT_DEFINED = 0X00,

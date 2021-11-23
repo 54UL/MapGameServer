@@ -12,7 +12,7 @@ namespace MAP
     class Command
     {
     public:
-        Command(const uint8_t code, std::vector<MAP::IMapObject> payLoad, bool broadcast, std::shared_ptr<MAP::Client> owner)
+        Command(const uint8_t code, std::vector<std::shared_ptr<MAP::IMapObject>> payLoad, bool broadcast, std::shared_ptr<MAP::Client> owner)
             : Code(code), PayLoad(payLoad), IsBroadCast(broadcast), Owner(owner)
         {
         }
@@ -21,7 +21,7 @@ namespace MAP
         }
         uint32_t Code;
         bool IsBroadCast;
-        std::vector<MAP::IMapObject> PayLoad;
+        std::vector<std::shared_ptr<MAP::IMapObject>> PayLoad;
         std::shared_ptr<MAP::Client> Owner;
     };
 

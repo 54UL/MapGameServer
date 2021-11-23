@@ -17,6 +17,8 @@ namespace MAP
     public:
         AsioSocket()
         {
+            // auto ipAddrr = asio::ip::address::from_string(IpAddress);
+            // auto clientEndpoint = udp::endpoint(ipAddrr, port);
         }
 
         virtual ~AsioSocket()
@@ -32,8 +34,9 @@ namespace MAP
         {
         }
 
-        void PollMessages(std::function<void(const uint8_t *bytes, std::size_t length)> callback) override
+        void PollMessages(std::function<void(uint8_t *bytes, std::size_t length)> callback) override
         {
+
             //NO POLLING ALGORITHM (just for the test case)
             m_socket->async_receive_from(
                 asio::buffer(m_data, MAX_DATA_PAYLOAD), m_receiver_endpoint,
@@ -50,13 +53,14 @@ namespace MAP
                         spdlog::error("ERROR SENDING DATA...");
                     }
                 });
-            m_io_context.run();
             m_io_context.reset();
+            m_io_context.run();
         }
 
-        void Send(const uint8_t *bytes, std::size_t length, uint32_t clientId) override
+        void Send(uint8_t *bytes, std::size_t length, uint32_t clientId) override
         {
             asio::ip::udp::endpoint to; //find connection by clientId
+
             m_socket->async_send_to(
                 asio::buffer(bytes, length), to,
                 [this](std::error_code err, std::size_t sended)
@@ -65,8 +69,8 @@ namespace MAP
                     //  std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
                     spdlog::info("[DATA SENDED{}]", sended);
                 });
-            m_io_context.run();
             m_io_context.reset();
+            m_io_context.run();
         }
 
     private:

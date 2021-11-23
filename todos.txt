@@ -17,11 +17,11 @@
 
 -rework c++ server code <------------------------------------------------------------ ON PROGRESS
     *Consolidate MAP architecture design (partial implementation of SOLID)
-        *Serialization api           -- ON PROGRESS
-                *Binary serialization
-                *Json serialization
+        *Serialization api             -- DONE
+                *Binary serialization  -- PARTIAL
+                *Json serialization    -- PARTIAL
 
-        *NetworkTransport api(this to use asio or steamNetworking)
+        *NetworkTransport api(this to use asio or steamNetworking) -- PARTIAL
             *Handshake feature
             *Client pool
             *NET AUTH(TO BE IMPLEMENTED)
@@ -29,20 +29,24 @@
                 *ASIO upd sockets
                 *Steam networking sockets (OPTIONAL DUE COMPLEXITY)
 
-        *Command api 
+        *Command api -- PARTIAL
             * MAP default commands (v1.0 command spec)
             * DB commands
             * Chat commands
             * Auth commands
 
-        *Server API
+        *Implement c++ client -- TODO
+        *Implement c# client -- TODO
+
+        *Implement tests  -- TODO
+
+        *Server API 
             *Event hooks
                 *server state 
                 *custom hooks (optional)
 
-    *Implement c++ client 
-    *Implement benchmarking,logger and config utils
-        *Cpp (ping,packet loss,etc)
+        *Implement benchmarking,logger and config utils
+            *Cpp (ping,packet loss,etc)
 
 
 -Create networking tests in c# client and c++ in his actual state

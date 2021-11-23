@@ -5,6 +5,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <memory>
 #include <cstdlib>
 
 #include <iostream>
@@ -27,39 +28,54 @@ namespace MAP
     public:
         MapServer(EncodingMethod encoding, TransportMethod transport, bool useDefaultCommands, short port);
         ~MapServer();
-        
-        //EXPOSED TO COMMANDS API...
-        void PushCommand(uint32_t commandId, bool broadcast, std::vector<IMapObject> payLoad, std::shared_ptr<MAP::Client> owner);
+
+        //SERVER API
+        MAP::Vector<MAP::SpawnedEntity> GetPoolSpawnedEntities(uint32_t poolId);
+        int32_t ConnectedClients();
+        MAP::Vector<std::shared_ptr<MAP::Client>> Clients();
+        void PushCommand(uint32_t commandId, bool broadcast, std::vector<std::shared_ptr<MAP::IMapObject>> payLoad, std::shared_ptr<MAP::Client> owner);
+        std::shared_ptr<MAP::Client> AddClient(const std::shared_ptr<MAP::Client> &newClient);
+        void RemoveClient(int32_t clientId);
+        std::shared_ptr<IMapDataFormat> GetCurrentDataFormat();
+        void SpawnObject(int32_t poolId, SpawnedEntity entity);
+        uint32_t UpsertValue(int32_t poolId, uint32_t key, std::shared_ptr<IMapObject> value);
+
     private:
-        //Server API
         void MultiThread();
         void SingleThread();
         void Initialize();
         bool ShouldSendData(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         void SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         std::shared_ptr<MAP::Client> GetCommandInfo(int clientId);
-        void OnRecive(const uint8_t *data, std::size_t length);
+        void PollMessages();
         void DispatchClientComands();
 
     private:
-        uint64_t serverTicks_;
-        uint64_t lastClientIndex;
-
-        MAP::Vector<MAP::Command> commandQueue_;
-        MAP::Vector<MAP::SpawnedEntity> spawnedObjects_;
-        MAP::Vector<std::shared_ptr<MAP::Client>> connectedClients_;
-
-        std::map<std::string, MAP::NetworkField> testingPool_;
-        std::map<MAP::ServerCommandType, std::function<void(MAP::CommandArgs &args)>> commands_;
-
-        //Server threading...
-        std::mutex commandMutex_;
-        std::thread receiverThread_, dispatcherThread_;
-
-        //Serialization config
+        //Map server internal systems...
         MAP::FormatManager m_current_format;
         MAP::TransportManager m_current_transport;
         MAP::CommandsManager m_commands_manager;
+        //SYSTEM TODOS
+        //server pools manager
+        //Thread Pool manager
+
+        //Cached implementations
+        std::shared_ptr<MAP::IMapTransport> m_transport;
+        std::shared_ptr<MAP::IMapDataFormat> m_dataFormater;
+        MAP::Map<uint32_t, std::shared_ptr<MAP::IMapCommand>> m_serverCommands;
+
+        uint64_t serverTicks_;
+        uint64_t lastClientIndex;
+
+        MAP::Vector<MAP::Command> m_command_queue;
+        MAP::Vector<MAP::SpawnedEntity> m_spawned_entities;
+        MAP::Vector<std::shared_ptr<MAP::Client>> m_session_clients;
+
+        std::map<std::string, std::shared_ptr<MAP::IMapObject>> m_testing_pool;
+        std::map<MAP::ServerCommandType, std::function<void(MAP::CommandArgs &args)>> commands_;
+        //Server threading...
+        std::mutex m_command_mutex;
+        std::thread m_receiver_thread, m_dispatcher_thread;
     };
 }
 

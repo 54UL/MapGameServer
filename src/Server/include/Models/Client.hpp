@@ -14,11 +14,11 @@ namespace MAP
     {
     public:
         Client() : UserId(0) {}
-        Client(uint64_t userid, std::string &playerName) : UserId(userid), PlayerName(playerName)
+        Client(int32_t userid, std::string &playerName) : UserId(userid), PlayerName(playerName)
         {
         }
         ~Client() {}
-        uint64_t UserId;
+        int32_t UserId;
         std::string PlayerName;
         std::string HostName;
         MAP::Vector<MAP::SpawnedEntity> CurrentSpawnedObjects;

@@ -7,12 +7,12 @@ namespace MAP
     class SpawnedEntity
     {
     public:
-        SpawnedEntity(std::string &prefabName, uint32_t playerOwner) : PrefabName(prefabName), PlayerOwner(playerOwner)
+        SpawnedEntity(std::string &prefabName, int32_t playerOwner) : PrefabName(prefabName), PlayerOwner(playerOwner)
         {
         }
         ~SpawnedEntity() {}
-        uint64_t id;
-        uint32_t PlayerOwner;
+        int32_t id;
+        int32_t PlayerOwner;
         std::string PrefabName;
     };
 } // namespace MAP

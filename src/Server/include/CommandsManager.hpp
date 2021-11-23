@@ -9,23 +9,23 @@ namespace MAP
     class CommandsManager
     {
     public:
-        CommandsManager(bool initializeDefaults)
+        CommandsManager()
         {
-            if (initializeDefaults)
-            {
-            }
+            
         }
 
         ~CommandsManager()
         {
         }
 
+    
+
         void AddSet(MAP::Map<uint32_t, std::shared_ptr<IMapCommand>> commands)
         {
-            //Insert
+            m_registered_commands.insert(commands.begin(),commands.end());
         }
 
-        MAP::Map<uint8_t, std::shared_ptr<IMapCommand>> GetDefaultSet()
+        MAP::Map<uint32_t, std::shared_ptr<IMapCommand>> GetDefaultSet()
         {
             return m_registered_commands;
         }

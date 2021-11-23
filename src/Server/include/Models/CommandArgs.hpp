@@ -16,6 +16,7 @@ namespace MAP
         {
 
         }
+
         std::shared_ptr<MAP::Client> Owner;
         std::map<std::string, std::shared_ptr<MAP::IMapObject>> Payload;
     };

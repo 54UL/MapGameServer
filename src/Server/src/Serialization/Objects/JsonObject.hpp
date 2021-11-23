@@ -12,17 +12,17 @@ namespace MAP
             
         }
         //Getters
-        uint8_t GetByte() override
+        uint8_t GetByte(const char *name) override
         {
             return 255;
         };
 
-        int32_t GetInt32() override
+        int32_t GetInt32(const char *name) override
         {
             return -1;
         };
 
-        std::string GetString() override
+        std::string GetString(const char *name) override
         {
             return std::string("null");
         };
@@ -37,21 +37,21 @@ namespace MAP
             return std::shared_ptr<IMapObject>();
         }
 
-        //Setters
-        void SetString(const char *fieldName, const std::string &value) override{
+        // //Setters
+        // void SetString(const char *fieldName, const std::string &value) override{
 
-        };
+        // };
 
-        void SetByte(const char *fieldName, const uint8_t value) override{
+        // void SetByte(const char *fieldName, const uint8_t value) override{
 
-        };
+        // };
 
-        void SetInt32(const char *fieldName, const int32_t value) override{
+        // void SetInt32(const char *fieldName, const int32_t value) override{
 
-        };
-        void SetArray(const char *fieldName, std::vector<std::shared_ptr<IMapObject>> value) override
-        {
-        }
+        // };
+        // void SetArray(const char *fieldName, std::vector<std::shared_ptr<IMapObject>> value) override
+        // {
+        // }
 
     private:
         bool isInitialized = false;
