@@ -10,6 +10,7 @@
 
 namespace MAP
 {
+    //TODO: RENAME PREFX xxxObject from classes to Container
     class BinaryObject : public IMapObject
     {
     public:

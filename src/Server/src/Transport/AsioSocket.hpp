@@ -60,13 +60,13 @@ namespace MAP
         void Send(uint8_t *bytes, std::size_t length, uint32_t clientId) override
         {
             asio::ip::udp::endpoint to; //find connection by clientId
-
+            //TODO: INSERT HERE A thread worker like algorithm to dispatch async sends??...idk
             m_socket->async_send_to(
                 asio::buffer(bytes, length), to,
                 [this](std::error_code err, std::size_t sended)
                 {
                     //DO SOMETHING WITH THE THINGS SENDED
-                    //  std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
+                    // std::cout << "[DATA SENDED (" << sended << ")]" << std::endl;
                     spdlog::info("[DATA SENDED{}]", sended);
                 });
             m_io_context.reset();

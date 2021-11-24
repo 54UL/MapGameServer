@@ -15,52 +15,56 @@
 
 namespace MAP
 {
-    MapServer::MapServer(EncodingMethod encoding, TransportMethod transport, bool useDefaultCommands, short port) : m_current_format(encoding),
+    MapServer::MapServer(EncodingMethod encoding, TransportMethod transport, short port) : m_current_format(encoding),
                                                                                                                     m_current_transport(transport, port),
                                                                                                                     m_commands_manager(),
                                                                                                                     lastClientIndex(32)
     {
         //         auto serverStartTime = std::chrono::high_resolution_clock::now();
-        //         // serializer_ = std::make_shared<MAP::BinaryUtils>();
-        // #ifndef SINGLE_THREAD
-        //         MultiThread(io_context);
-        // #else
-        //         SingleThread(io_context);
-        // #endif
-        //         Initialize();
-        //         std::cout << "SERVER RUNNING..." << std::endl;
+        //do some critical stuff here...
+    }
 
-        // defaults.insert( ) );
+    MapServer::~MapServer()
+    {
+        }
 
-        if (useDefaultCommands)
+    int MapServer::Run()
+    {
+        m_server_alive = true;
+        spdlog::info("SERVER ALIVE");
+        while (m_server_alive)
+        {
+            //Tick server
+            this->DispatchClientComands();
+            //Do other stuff???
+            //TODO:ADD SOME DELAY HERE(SUB-TODO:SYNCRONIZATION STUFF MANAGER)???
+        }
+        return 0;
+    }
+
+    void MapServer::Initialize(bool useVanillaCommads)
+    {
+        spdlog::info("STARTING SERVER....");
+        if (useVanillaCommads)
         {
             std::map<uint32_t, std::shared_ptr<MAP::IMapCommand>> defaults = {
                 {static_cast<uint32_t>(ServerCommandType::SUBSCRIBE), std::make_shared<MAP::Subscribe>()},
                 {static_cast<uint32_t>(ServerCommandType::UNSUBSCRIBE), std::make_shared<MAP::Unsubscribe>()},
                 {static_cast<uint32_t>(ServerCommandType::UPSERT), std::make_shared<MAP::Upsert>()},
                 {static_cast<uint32_t>(ServerCommandType::GET_ACTIVE_POOLS), std::make_shared<MAP::ActivePools>()},
-                {static_cast<uint32_t>(ServerCommandType::SPAWN), std::make_shared<MAP::Spawn>()}
-                };
+                {static_cast<uint32_t>(ServerCommandType::SPAWN), std::make_shared<MAP::Spawn>()}};
             this->m_commands_manager.AddSet(defaults);
         }
         m_transport = this->m_current_transport.GetCurrentMethod();
         m_dataFormater = this->m_current_format.GetCurrentMethod();
         m_serverCommands = this->m_commands_manager.GetDefaultSet();
         this->PollMessages();
-    }
-
-    MapServer::~MapServer()
-    {
-        m_receiver_thread.join();
-        m_dispatcher_thread.join();
-    }
-
-    void MapServer::Initialize()
-    {
+        spdlog::info("SERVER STARTED....");
     }
 
     void MapServer::PollMessages()
     {
+        //TODO: MIGHT BE MULTI THREAD PROBLEMS WITH uint8_t *bytes IN LAMDA EXPRESSION
         m_transport->PollMessages([&](uint8_t *bytes, std::size_t length)
                                   {
                                       //Decode incoming bytes
@@ -118,35 +122,6 @@ namespace MAP
         return 0;
     }
 
-    void MapServer::MultiThread()
-    {
-        spdlog::info("DUAL THREAD MODE");
-        m_receiver_thread = std::thread([&]()
-                                        {
-                                            while (1)
-                                            {
-                                                //Recive...
-                                            }
-                                        });
-        m_dispatcher_thread = std::thread([&]()
-                                          {
-                                              while (1)
-                                              {
-                                                  //Tick server
-                                              }
-                                          });
-    }
-
-    void MapServer::SingleThread()
-    {
-        spdlog::info("SINGLE THREAD MODE");
-        while (1)
-        {
-            // ReceiveData();
-            // TickServer();
-        }
-    }
-
     void MapServer::PushCommand(uint32_t commandId, bool broadcast, std::vector<std::shared_ptr<MAP::IMapObject>> payLoad, std::shared_ptr<MAP::Client> owner)
     {
         m_command_mutex.lock();
@@ -164,6 +139,7 @@ namespace MAP
 
     void MapServer::DispatchClientComands()
     {
+        //TODO: ADD MULTI THREAD DISPATCH... HOLY SHIIIIET
         auto queueCopy = m_command_queue;
         for (const auto &commands : m_command_queue)
         {
@@ -214,5 +190,4 @@ namespace MAP
         auto memoryBuffer = m_dataFormater->Encode(objStructure);
         m_transport->Send(memoryBuffer.data(), memoryBuffer.size(), client->UserId);
     }
-
 }

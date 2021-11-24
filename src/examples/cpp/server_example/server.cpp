@@ -6,18 +6,19 @@
 #include <MapServer.hpp>
 #include <MapApi.hpp>
 
-#define SERVER_PORT 5140
 using namespace MAP;
 
 int main(int argc, char *argv[])
 {
-    try
+    bool VanillaCommands = true;
+    int ServerPort = 5400;
+    
+    if (arc == 2)
     {
-        MapServer(EncodingMethod::MAP_BINARY, TransportMethod::ASIO_SOCKETS, true, SERVER_PORT);
+        //Add command line args.... xd
     }
-    catch (std::exception &e)
-    {
-        std::cerr << "Cannot initialize map server example due:" << e.what() << "\n";
-    }
-    return 0;
+
+    MapServer vanillaServer(EncodingMethod::MAP_BINARY, TransportMethod::ASIO_SOCKETS, ServerPort);
+    vanillaServer.Initialize(VanillaCommands);
+    return vanillaServer.Run();
 }

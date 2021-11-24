@@ -1,5 +1,5 @@
-#ifndef MAP_JSONFORMAT_H
-#define MAP_JSONFORMAT_H
+#ifndef MAP_JSON_FORMAT_H
+#define MAP_JSON_FORMAT_H
 #include "../../include/IMapDataFormat.hpp"
 
 namespace MAP

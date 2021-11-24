@@ -1,5 +1,5 @@
-#ifndef MAP_BINARYFORMAT_H
-#define MAP_BINARYFORMAT_H
+#ifndef MAP_BINARY_FORMAT_H
+#define MAP_BINARY_FORMAT_H
 #include <BinaryUtils.hpp>
 
 #include "../../include/IMapDataFormat.hpp"

@@ -29,7 +29,7 @@ namespace MAP
         MapServer(EncodingMethod encoding, TransportMethod transport, bool useDefaultCommands, short port);
         ~MapServer();
 
-        //SERVER API
+        //SERVER COMMAND API
         MAP::Vector<MAP::SpawnedEntity> GetPoolSpawnedEntities(uint32_t poolId);
         int32_t ConnectedClients();
         MAP::Vector<std::shared_ptr<MAP::Client>> Clients();
@@ -39,11 +39,15 @@ namespace MAP
         std::shared_ptr<IMapDataFormat> GetCurrentDataFormat();
         void SpawnObject(int32_t poolId, SpawnedEntity entity);
         uint32_t UpsertValue(int32_t poolId, uint32_t key, std::shared_ptr<IMapObject> value);
+        //SERVER COMMAND API END
+
+        //LEGIT PUBLIC MEMBERS
+        int Run();//TODO: THIS CAN'T BE RUN INSIDE OF A COMMAND 
+        void Initialize(bool useDefaultCommands);//TODO: THIS CAN'T BE RUN INSIDE OF A COMMAND
 
     private:
         void MultiThread();
         void SingleThread();
-        void Initialize();
         bool ShouldSendData(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         void SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client);
         std::shared_ptr<MAP::Client> GetCommandInfo(int clientId);
@@ -51,6 +55,7 @@ namespace MAP
         void DispatchClientComands();
 
     private:
+        bool m_server_alive=false;
         //Map server internal systems...
         MAP::FormatManager m_current_format;
         MAP::TransportManager m_current_transport;
