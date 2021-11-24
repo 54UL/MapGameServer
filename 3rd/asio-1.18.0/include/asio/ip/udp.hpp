@@ -39,7 +39,7 @@ namespace ip {
  * @par Concepts:
  * Protocol, InternetProtocol.
  */
-class udp
+class  udp
 {
 public:
   /// The type of a UDP endpoint.

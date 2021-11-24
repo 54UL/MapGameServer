@@ -7,8 +7,8 @@ namespace MAP
     class IMapTransport
     {
     public:
-        IMapTransport();
-        virtual ~IMapTransport();
+        IMapTransport(){}
+        virtual ~IMapTransport(){}
 
         virtual void Start(const short port) = 0;
         virtual void Close() = 0;

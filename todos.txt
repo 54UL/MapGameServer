@@ -36,6 +36,7 @@
             * Auth commands
 
         *Implement c++ client -- TODO
+            *
         *Implement c# client -- TODO
 
         *Implement tests  -- TODO

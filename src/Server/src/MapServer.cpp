@@ -16,9 +16,9 @@
 namespace MAP
 {
     MapServer::MapServer(EncodingMethod encoding, TransportMethod transport, short port) : m_current_format(encoding),
-                                                                                                                    m_current_transport(transport, port),
-                                                                                                                    m_commands_manager(),
-                                                                                                                    lastClientIndex(32)
+                                                                                           m_current_transport(transport, port),
+                                                                                           m_commands_manager(),
+                                                                                           lastClientIndex(32)
     {
         //         auto serverStartTime = std::chrono::high_resolution_clock::now();
         //do some critical stuff here...
@@ -26,7 +26,7 @@ namespace MAP
 
     MapServer::~MapServer()
     {
-        }
+    }
 
     int MapServer::Run()
     {
@@ -183,8 +183,9 @@ namespace MAP
 
     void MapServer::SendToClient(const MAP::Command &command, std::shared_ptr<MAP::Client> client)
     {
-        std::vector<std::shared_ptr<MAP::IMapObject>> objStructure = {
-            m_dataFormater->CreateCommand(command.Code, client->UserId)};
+        std::vector<std::shared_ptr<MAP::IMapObject>> objStructure =
+            {
+                m_dataFormater->CreateCommand(command.Code, client->UserId)};
 
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
         auto memoryBuffer = m_dataFormater->Encode(objStructure);

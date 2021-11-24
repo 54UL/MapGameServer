@@ -5,7 +5,7 @@
 #include "./IMapObject.hpp"
 #include "./IMapTransport.hpp"
 #include "./IMapDataFormat.hpp"
-
+#include "../src/Transport/AsioSocket.hpp"
 namespace MAP
 {
     class TransportManager
@@ -13,6 +13,7 @@ namespace MAP
     public:
         TransportManager(TransportMethod method,short port)
         {
+            m_current_transport_method = std::make_shared<AsioSocket>();
         }
         ~TransportManager()
         {

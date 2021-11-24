@@ -11,9 +11,9 @@ using namespace MAP;
 int main(int argc, char *argv[])
 {
     bool VanillaCommands = true;
-    int ServerPort = 5400;
+    int ServerPort = 5408;
     
-    if (arc == 2)
+    if (argc == 2)
     {
         //Add command line args.... xd
     }

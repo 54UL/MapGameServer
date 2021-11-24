@@ -26,7 +26,7 @@ namespace MAP
     class MapServer
     {
     public:
-        MapServer(EncodingMethod encoding, TransportMethod transport, bool useDefaultCommands, short port);
+        MapServer(EncodingMethod encoding, TransportMethod transport, short port);
         ~MapServer();
 
         //SERVER COMMAND API
