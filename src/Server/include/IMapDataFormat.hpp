@@ -12,8 +12,8 @@ namespace MAP
     class IMapDataFormat
     {
     public:
-        IMapDataFormat();
-        virtual ~IMapDataFormat();
+        IMapDataFormat(){}
+        virtual ~IMapDataFormat(){}
 
         virtual std::vector<uint8_t> Encode(std::vector<std::shared_ptr<IMapObject>> sequence) = 0;
         virtual std::map<std::string,std::shared_ptr<IMapObject>> Decode(uint8_t *bytes, std::size_t length) = 0;

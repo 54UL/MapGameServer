@@ -18,9 +18,7 @@ namespace MAP
 
         void Evalute(MapServer *context, CommandArgs &args)
         {
-            // std::string IpAddress = BinaryUtils::Get<MAP::NetString>(args.Payload, "IpAddress")->GetValue();
-            // std::string playerName = BinaryUtils::Get<MAP::NetString>(args.Payload, "PlayerName")->GetValue();
-
+            // auto IpAddress = args.Payload["IpAddress"]->GetString();
             auto IpAddress = args.Payload["IpAddress"]->GetString();
             auto playerName = args.Payload["PlayerName"]->GetString();
             auto port = args.Payload["Port"]->GetString();

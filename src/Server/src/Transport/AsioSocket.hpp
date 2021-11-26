@@ -66,7 +66,7 @@ namespace MAP
                     spdlog::info("[INCOMIG DATA: bytes from {} ]", m_receiver_endpoint.address().to_string());
                     if (KnownOrigin(m_receiver_endpoint))
                     {
-                        spdlog::warn("User had no server identification,but was created...");
+                        spdlog::warn("User had no server id,but was created...");
                     }
 
                     if (!ec && bytes_recvd > 0)

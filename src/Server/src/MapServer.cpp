@@ -93,6 +93,7 @@ namespace MAP
 
     void MapServer::RemoveClient(int32_t clientId)
     {
+        
     }
 
     std::shared_ptr<IMapDataFormat> MapServer::GetCurrentDataFormat()
@@ -185,7 +186,8 @@ namespace MAP
     {
         std::vector<std::shared_ptr<MAP::IMapObject>> objStructure =
             {
-                m_dataFormater->CreateCommand(command.Code, client->UserId)};
+                m_dataFormater->CreateCommand(command.Code, client->UserId)
+            };
 
         objStructure.insert(objStructure.begin(), command.PayLoad.begin(), command.PayLoad.end());
         auto memoryBuffer = m_dataFormater->Encode(objStructure);
